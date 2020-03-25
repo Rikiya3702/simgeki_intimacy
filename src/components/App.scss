@@ -1,0 +1,137 @@
+#section1{
+
+}
+
+.inputs{
+  display: block;
+  float: left;
+  margin: 20px;
+  margin-bottom: 50px;
+  padding: 20px;
+    border: 1px #111 solid;
+}
+.lovelv{
+  display: block;
+  float: left;
+  margin: 20px;
+  text-align: center;
+  width: 200px;
+  border: 2px #111 solid;
+  background-color: #fde;
+}
+
+.input_lv{
+  font-size: 120%;
+  text-align: right;
+  height: 1.8rem;
+  width: 2.6rem;
+  padding: 4px;
+}
+.input_item{
+  font-size: 120%;
+  text-align: right;
+  height: 1.8rem;
+  width: 3.3rem;
+  padding: 4px;
+}
+.input_money{
+  font-size: 120%;
+  text-align: right;
+  height: 1.8rem;
+  width: 6rem;
+  padding: 4px;
+}
+
+.table_lv{
+  clear: left;
+  margin: 50px 20px;
+
+  table{
+    width: 454px;
+    border: 2px #111 solid;
+    border-collapse:  collapse;
+  }
+  thead{
+    td{
+      text-align: center;
+      padding: 5px 10px;
+      border-bottom: 1px #111 solid;
+    }
+  }
+
+  tbody{
+    .progbar{
+      position: absolute;
+      z-index: 0;
+      left: 0;
+      top: 6px;
+      background: rgba( 240, 200, 220, 0.5);
+      height: 37px;
+    }
+    .progbar_i{
+      position: absolute;
+      z-index: 0;
+      left: 150;
+      top: 6px;
+      background: rgba( 250, 250, 210, 1);
+      height: 37px;
+    }
+    th{
+      position: relative;
+      border-bottom: 1px #111 solid;
+    }
+    td{
+      position: relative;
+      padding: 15px 10px;
+      border-bottom: 1px #111 solid;
+      }
+  }
+  .goal_lv{
+    position: relative;
+    z-index: 10;
+  }
+  .column_lv{
+    font-size: 150%;
+  }
+  .column_exp{
+    padding-right: 20px;
+    text-align: right;
+  }
+}
+
+.table_money{
+  margin: 50px 20px;
+
+  table{
+    width: 454px;
+    border: 2px #111 solid;
+    border-collapse:  collapse;
+  }
+  thead{
+    td{
+      text-align: center;
+      padding: 5px 10px;
+      border-bottom: 1px #111 solid;
+    }
+  }
+  tbody{
+    th{
+      border-bottom: 1px #111 solid;
+    }
+    td{
+      padding: 15px 10px;
+      border-bottom: 1px #111 solid;
+      }
+  }
+  .item_name{
+    font-size: 120%;
+
+  }
+  .column_stock{
+    text-align: right;
+  }
+  .column_exp{
+    padding-right: 20px;
+    text-align: right;
+  }
+}
