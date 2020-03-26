@@ -85,6 +85,10 @@ class App extends Component {
               <button onClick={ ()=> {props.button_change("money",0)} }>Clear</button>
             </div>
           </div>
+          <div>
+            オンゲキ 1曲プレイ
+            <button onClick={ ()=> {props.button_change("money",100)} }>40 GP でLet'sオンゲキ</button>
+          </div>
         </div>
         <Heart lv={getExp2Lv( props.exp.now + getItemExp(props.money, props.item))}
               par={ getExp2Lvper( props.exp.now + getItemExp(props.money, props.item)) } />
@@ -169,11 +173,10 @@ const validate = values => {
 }
 
 const mapStateToProps = state => ({
-
   lv: state.input.lv,
   exp: state.input.exp,
   item: state.input.item,
-  money: state.money.money
+  money: state.input.money
  })
 
 const mapDispatchToProps = ({

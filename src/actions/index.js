@@ -10,6 +10,7 @@ export const BUTTON_ITEM_S = "BUTTON_ITEM_S"
 export const BUTTON_ITEM_M = "BUTTON_ITEM_M"
 export const BUTTON_ITEM_L = "BUTTON_ITEM_L"
 export const BUTTON_MONEY = "BUTTON_MONEY"
+export const BUTTON_PLAY = "BUTTON_PLAY"
 
 const types = (type) => {
   switch(type){
@@ -18,7 +19,7 @@ const types = (type) => {
     case "l":     return BUTTON_ITEM_L
     case "lv":    return BUTTON_LV
     case "money": return BUTTON_MONEY
-    default:      return BUTTON_ITEM_S
+    default:      return BUTTON_MONEY
   }
 }
 
@@ -50,12 +51,12 @@ export const input_money = (money) => ({
   money: money
 })
 
-export const button_lv = (value) => ({
-  type: BUTTON_LV,
-  change: value
-})
-
 export const button_change = (type, value) => ({
   type: types(type),
   change: value,
+})
+
+export const button_play = (type, value) => ({
+  type: BUTTON_PLAY,
+  womens: value,
 })

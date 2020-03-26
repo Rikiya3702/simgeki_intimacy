@@ -4,18 +4,21 @@ import {
   INPUT_ITEM_S,
   INPUT_ITEM_M,
   INPUT_ITEM_L,
+  INPUT_MONEY,
   BUTTON_LV,
   BUTTON_ITEM_S,
   BUTTON_ITEM_M,
-  BUTTON_ITEM_L
+  BUTTON_ITEM_L,
+  BUTTON_MONEY
 } from '../actions'
 
 const initialState = {  lv:  {now: 0, goal: 600},
                         exp: {now: 0, goal: 29700},
                         item: {s: 0, m: 0, l: 0 },
+                        money: 0
                       }
 
-const lovelv2exp2 = lv => {
+const loveLv2Exp = lv => {
 
   let count = 0
 
@@ -58,80 +61,65 @@ const validate = (value, max) => {
 }
 
 export default (state = initialState, action) => {
-  let new_item = validate(action.item, 9999)
   let new_lv = validate(action.lv, 800)
+  let new_item = validate(action.item, 9999)
+  let new_money = validate(action.money, 99999999)
 
   switch(action.type){
     case INPUT:
-      return {
-        exp: { now: lovelv2exp2(new_lv),
-              goal: state.exp.goal},
-        lv: {  now: new_lv,
-              goal: state.lv.goal },
-        item: state.item,
-      }
+      return Object.assign({}, state,{
+        exp: {now: loveLv2Exp(new_lv)},
+        lv:  {now: new_lv}
+      })
 
     case INPUT_GOALLV:
-      return {
-         exp: { now: state.exp.now,
-                goal: lovelv2exp2(new_lv) },
-          lv: { now: state.lv.now,
-                goal: new_lv },
-        item: state.item
-      }
+      return Object.assign({}, state,{
+        exp: {goal: loveLv2Exp(new_lv)},
+        lv:  {goal: new_lv}
+      })
 
     case INPUT_ITEM_S:
-      return {
-        exp: state.exp,
-        lv:  state.lv,
-        item: { s: new_item, m: state.item.m, l: state.item.l }
-      }
+      return Object.assign({}, state,{ item: {s: new_item} })
 
     case INPUT_ITEM_M:
-    return {
-      exp: state.exp,
-      lv:  state.lv,
-      item: { s: state.item.s, m: new_item, l: state.item.l }
-    }
+      return Object.assign({}, state,{ item: {m: new_item} })
 
     case INPUT_ITEM_L:
-      return {
-        exp: state.exp,
-        lv:  state.lv,
-        item: { s: state.item.s, m: state.item.m, l: new_item }
-      }
+      return Object.assign({}, state,{ item: {l: new_item} })
+
+    case INPUT_MONEY:
+      return Object.assign({}, state,{ money: new_money })
 
     case BUTTON_LV:
     new_lv = action.change === 0 ? 0 : validate(state.lv.now + action.change, 800)
-      return {
-        exp: { now: lovelv2exp2(new_lv),
-              goal: state.exp.goal},
-        lv: {  now: new_lv,
-              goal: state.lv.goal },
-        item: state.item,
-      }
+    return Object.assign({}, state,{
+      exp: { now: loveLv2Exp(new_lv)},
+      lv:  { now: new_lv}
+    })
 
     case BUTTON_ITEM_S:
       new_item = action.change === 0 ? 0 : validate(state.item.s + action.change, 9999)
-      return {
-        exp: state.exp,
-        lv:  state.lv,
-        item: { s: new_item, m: state.item.m, l: state.item.l }
-      }
+      return Object.assign({}, state,{
+        item: {s: new_item}
+      })
+
     case BUTTON_ITEM_M:
       new_item = action.change === 0 ? 0 : validate(state.item.m + action.change, 9999)
-      return {
-        exp: state.exp,
-        lv:  state.lv,
-        item: { s: state.item.s, m: new_item, l: state.item.l },
-      }
+      return Object.assign({}, state,{
+        item: {m: new_item}
+      })
+
     case BUTTON_ITEM_L:
       new_item = action.change === 0 ? 0 : validate(state.item.l + action.change, 9999)
-      return {
-        exp: state.exp,
-        lv:  state.lv,
-        item: { s: state.item.s, m: state.item.m, l: new_item }
-      }
+      return Object.assign({}, state,{
+        item: {l: new_item}
+      })
+
+    case BUTTON_MONEY:
+      new_money = action.change === 0 ? 0 : validate(state.money + action.change, 99999999)
+      return Object.assign({}, state,{
+        money: new_money
+      })
 
     default:
       return state
