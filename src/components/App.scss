@@ -1,3 +1,7 @@
+$heart-inback: rgb(45, 45, 45);
+$heart-bar: rgb(255, 109, 144);
+
+
 #section1{
 
 }
@@ -10,6 +14,50 @@
   padding: 20px;
     border: 1px #111 solid;
 }
+.heart{
+  clear: left;
+  position: relative;
+  z-index: 20;
+}
+
+.heart_out{
+  position: relative;
+  z-index: 30;
+  width: 300px;
+  height: 300px;
+}
+.heart_lovep{
+  position: absolute;
+  z-index: 40;
+  font-size: 140%;
+  top: 5px;
+  left: 115px;
+}
+.heart_lv{
+  position: absolute;
+  z-index: 40;
+  font-size: 100px;
+  text-align: center;
+  width: 300px;
+  top: 70px;
+  color: #fefefd;
+}
+
+.heart_bar{
+  position: absolute;
+  z-index: 10;
+  background-color: $heart-bar;
+  width: 300px;
+}
+.heart_back{
+  position: absolute;
+  width: 300px;
+  z-index: 5;
+  background: $heart-inback;
+}
+
+
+
 .lovelv{
   display: block;
   float: left;

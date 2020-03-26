@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux'
-import { reduxForm } from 'redux-form'
+import { connect } from 'react-redux';
+import { reduxForm } from 'redux-form';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import HeartImage from '../image/onheart.png'
 import './App.scss';
+
 import { input, input_goal, input_item_s, input_item_m, input_item_l, input_money,
    button_change } from '../actions'
 
@@ -13,6 +16,8 @@ class App extends Component {
     return (
       <div className="App">
         <div id="section1">
+          <Heart lv={getExp2Lv( props.exp.now )}
+                par={ getExp2Lvper( props.exp.now ) } />
         <div className="inputs">
           <div>
             <label>現在レベル→</label>
@@ -81,6 +86,8 @@ class App extends Component {
             </div>
           </div>
         </div>
+        <Heart lv={getExp2Lv( props.exp.now + getItemExp(props.money, props.item))}
+              par={ getExp2Lvper( props.exp.now + getItemExp(props.money, props.item)) } />
         <div className="lovelv">
           <h4>親密度</h4>
           <div className="lovelv_number">
@@ -92,8 +99,8 @@ class App extends Component {
         <div className="lovelv">
           <h4>future</h4>
           <div className="lovelv_number">
-            <h1>{ getExp2Lv( Math.floor(props.exp.now + getItemExp(props.money, props.item))) }</h1>
-            <h6>({ getExp2Lvper( Math.floor(props.exp.now + getItemExp(props.money, props.item))) } %)</h6>
+            <h1>{ getExp2Lv( props.exp.now + getItemExp(props.money, props.item)) }</h1>
+            <h6>({ getExp2Lvper( props.exp.now + getItemExp(props.money, props.item)) } %)</h6>
           </div>
           <h5>貢げるEXP　{ getItemExp(props.money, props.item) } </h5>
           <h5>全捧げしたEXP　{ props.exp.now + getItemExp(props.money, props.item) } </h5>
@@ -179,31 +186,38 @@ const mapDispatchToProps = ({
   button_change
 })
 
-function LoveTableRecord(props) {
-  const parse = Math.floor((props.exp / props.expg )*100)
-  const parsebar = (parse >= 100) ? 450 : parse*4.5
-  const barstyle = { width: parsebar }
-    return(
-      <React.Fragment>
+function Heart(props) {
+  const lv = props.lv >= 800 ? 800 : props.lv
+  const par = lv === 800 ? 100 : props.par
+  const barheight = par * 2.4
+  const bartop = 270 - barheight
+  const barstyle = { height: barheight, top: bartop}
+  const backheight = 240 - barheight
+  const backtop = bartop - backheight
+  const backstyle = { height: backheight, top: backtop}
 
-        <tr>
-          <th className="column_lv">
-            <span className="goal_lv">{props.lv}</span>
-            <div className="progbar" style={barstyle}></div>
-          </th>
-          <td className="column_exp">{props.expg}</td>
-          <td className="column_exp">{Math.round((props.expg - props.exp) * 100) / 100 }</td>
-          <td className="column_exp">{ parse } %</td>
-        </tr>
-      </React.Fragment>
-    );
+  return(
+    <React.Fragment>
+      <div className="heart">
+        <span className="heart_lovep">親密度Lv.</span>
+        <span className="heart_lv">{ lv }</span>
+        <img src={HeartImage} className="heart_out"/>
+
+        <div className="heart_bar" style={ barstyle }></div>
+        <div className="heart_back" style={ backstyle }></div>
+      </div>
+    </React.Fragment>
+  );
 }
 
 function LoveTableWithItem(props) {
+
   const parse = Math.floor((props.exp / props.expg )*100)
   const parse_i = Math.floor((props.itemexp / props.expg )*100)
+
   let parsebar = 0
   let parsebar_i = 0
+
   if(parse >= 100){
     parsebar = 450
   }else if(parse + parse_i >= 100){
@@ -216,21 +230,22 @@ function LoveTableWithItem(props) {
 
   const barstyle = { width: parsebar }
   const barstyle_i = { width: parsebar_i, left: parsebar}
-    return(
-      <React.Fragment>
 
-        <tr>
-          <th className="column_lv">
-            <span className="goal_lv">{props.lv}</span>
-            <div className="progbar" style={barstyle}></div>
-            <div className="progbar_i" style={barstyle_i}></div>
-          </th>
-          <td className="column_exp">{props.expg}</td>
-          <td className="column_exp">{Math.round((props.expg - props.exp - props.itemexp) * 100) / 100 }</td>
-          <td className="column_exp">{ parse + parse_i } %</td>
-        </tr>
-      </React.Fragment>
-    );
+  return(
+    <React.Fragment>
+
+      <tr>
+        <th className="column_lv">
+          <span className="goal_lv">{props.lv}</span>
+          <div className="progbar" style={barstyle}></div>
+          <div className="progbar_i" style={barstyle_i}></div>
+        </th>
+        <td className="column_exp">{props.expg}</td>
+        <td className="column_exp">{Math.round((props.expg - props.exp - props.itemexp) * 100) / 100 }</td>
+        <td className="column_exp">{ parse + parse_i } %</td>
+      </tr>
+    </React.Fragment>
+  );
 }
 
 function MoneyTableRecord(props) {
@@ -256,7 +271,7 @@ function getItemExp(money, item){
 }
 
 function getExp2Lv(exp){
-  let count = exp
+  let count = exp * 10
   let next_exp = 0
   let i = 0
 
@@ -264,9 +279,9 @@ function getExp2Lv(exp){
     next_exp = 0
     if(i < 100){
       for( let j = Math.floor(i/10); j*10 <= i ; j++){
-        next_exp += 6 + (( j - 1 ) * 6)
+        next_exp += 60 + (( j - 1 ) * 60)
       }
-      next_exp +=  6
+      next_exp +=  60
     }
     else if(i >= 100 ){
       let h = Math.floor(i/100)
@@ -276,9 +291,9 @@ function getExp2Lv(exp){
       else if(  i >= 600){ h = 14 }
 
       for( let j = Math.floor(hi/10); j*10 <= hi ; j++){
-        next_exp += (6 + ( j - 1 ) * 6) * (1 + 0.2 * h )
+        next_exp += (6 + ( j - 1 ) * 6) * (10 + 2 * h )
       }
-      next_exp +=  6 *  (1 + 0.2 * h )
+      next_exp +=  6 *  (10 + 2 * h )
     }
     if(count - next_exp === 0){
       i++
@@ -290,19 +305,22 @@ function getExp2Lv(exp){
   }
   return i
 }
+
 function getExp2Lvper(exp){
   let parse = 0
-  let count = exp
+  let count = exp * 10
   let next_exp = 0
   let i = 0
+
+  if(exp >= 59400){ return 100}
 
   for( i = 0; count > 0; i++ ){
     next_exp = 0
     if(i < 100){
       for( let j = Math.floor(i/10); j*10 <= i ; j++){
-        next_exp += 6 + (( j - 1 ) * 6)
+        next_exp += 60 + (( j - 1 ) * 60)
       }
-      next_exp +=  6
+      next_exp +=  60
     }
     else if(i >= 100 ){
       let h = Math.floor(i/100)
@@ -312,22 +330,25 @@ function getExp2Lvper(exp){
       else if(  i >= 600){ h = 14 }
 
       for( let j = Math.floor(hi/10); j*10 <= hi ; j++){
-        next_exp += (6 + ( j - 1 ) * 6) * (1 + 0.2 * h )
+        next_exp += (6 + ( j - 1 ) * 6) * (10 + 2 * h )
       }
-      next_exp +=  6 *  (1 + 0.2 * h )
+      next_exp +=  6 *  (10 + 2 * h )
+      console.log("i:" +i + " hi:" + hi + " next_exp:" + next_exp + " count:" + count)
+
     }
 
-    if(count - next_exp === 0){
+    if(count === next_exp){
       parse = 0
       i++
       break
-    }else if(count - next_exp < 0){
-      parse = count / next_exp
+    }else if(count < next_exp){
+      parse = Math.floor( (count / next_exp) * 100 ) / 10
       break
     }
   count -= next_exp
   }
-  return Math.floor(parse * 100)
+
+  return parse * 10
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(reduxForm( {validate, form: 'loveform'})(App))

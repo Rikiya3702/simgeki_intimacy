@@ -1,4 +1,14 @@
-import { INPUT, INPUT_GOALLV, INPUT_ITEM_S, INPUT_ITEM_M, INPUT_ITEM_L, BUTTON_LV, BUTTON_ITEM, BUTTON_ITEM_S, BUTTON_ITEM_M, BUTTON_ITEM_L } from '../actions'
+import {
+  INPUT,
+  INPUT_GOALLV,
+  INPUT_ITEM_S,
+  INPUT_ITEM_M,
+  INPUT_ITEM_L,
+  BUTTON_LV,
+  BUTTON_ITEM_S,
+  BUTTON_ITEM_M,
+  BUTTON_ITEM_L
+} from '../actions'
 
 const initialState = {  lv:  {now: 0, goal: 600},
                         exp: {now: 0, goal: 29700},
@@ -37,49 +47,19 @@ const lovelv2exp2 = lv => {
   return Math.round(count * 100) / 100
 }
 
-const validateLv = lv => {
-  if( lv >= 0 && lv <= 800){
-    return Math.floor(lv)
-  }else if( lv > 800){
-    return 800
+const validate = (value, max) => {
+  if( value >= 0 && value <= max){
+    return Math.floor(value)
+  }else if( value > max){
+    return max
   }else{
     return 0
   }
-}
-
-const validateItem = item => {
-  if( item >= 0 && item <= 9999){
-    return Math.floor(item)
-  }else if( item > 9999){
-    return 9999
-  }else{
-    return 0
-  }
-}
-
-const validateMoney = money => {
-  if( money >= 0 && money <= 99999999){
-    return Math.floor(money)
-  }else if( money > 99999999){
-    return 99999999
-  }else{
-    return 0
-  }
-}
-
-const getItemAl = (money, item) => {
-  let exp = 0
-  exp += Math.floor(money * 0.01)
-  exp += item.s * 6
-  exp += item.m * 20
-  exp += item.l * 200
-  return exp
 }
 
 export default (state = initialState, action) => {
-  let new_item = validateItem(action.item)
-  let new_lv = validateLv(action.lv)
-  const money = validateMoney(action.money)
+  let new_item = validate(action.item, 9999)
+  let new_lv = validate(action.lv, 800)
 
   switch(action.type){
     case INPUT:
@@ -122,7 +102,7 @@ export default (state = initialState, action) => {
       }
 
     case BUTTON_LV:
-    new_lv = action.change === 0 ? 0 : validateLv(state.lv.now + action.change)
+    new_lv = action.change === 0 ? 0 : validate(state.lv.now + action.change, 800)
       return {
         exp: { now: lovelv2exp2(new_lv),
               goal: state.exp.goal},
@@ -132,21 +112,21 @@ export default (state = initialState, action) => {
       }
 
     case BUTTON_ITEM_S:
-      new_item = action.change === 0 ? 0 : validateItem(state.item.s + action.change)
+      new_item = action.change === 0 ? 0 : validate(state.item.s + action.change, 9999)
       return {
         exp: state.exp,
         lv:  state.lv,
         item: { s: new_item, m: state.item.m, l: state.item.l }
       }
     case BUTTON_ITEM_M:
-      new_item = action.change === 0 ? 0 : validateItem(state.item.m + action.change)
+      new_item = action.change === 0 ? 0 : validate(state.item.m + action.change, 9999)
       return {
         exp: state.exp,
         lv:  state.lv,
         item: { s: state.item.s, m: new_item, l: state.item.l },
       }
     case BUTTON_ITEM_L:
-      new_item = action.change === 0 ? 0 : validateItem(state.item.l + action.change)
+      new_item = action.change === 0 ? 0 : validate(state.item.l + action.change, 9999)
       return {
         exp: state.exp,
         lv:  state.lv,

@@ -1,34 +1,28 @@
-import { INPUT_MONEY, BUTTON_MONEY } from '../actions'
+import {
+  INPUT_MONEY,
+  BUTTON_MONEY
+} from '../actions'
 
-const initialState = { money: 370 }
+const initialState = { money: 0 }
 
-const validateMoney = money => {
-  if( money >= 0 && money <= 99999999){
-    return Math.floor(money)
-  }else if( money > 99999999){
-    return 99999999
+const validate = (value, max) => {
+  if( value >= 0 && value <= max){
+    return Math.floor(value)
+  }else if( value > max){
+    return max
   }else{
     return 0
   }
 }
 
-const getItemAl = (money, item) => {
-  let exp = 0
-  exp += Math.floor(money * 0.01)
-  exp += item.s * 6
-  exp += item.m * 20
-  exp += item.l * 200
-  return exp
-}
-
 export default (state = initialState, action) => {
 
-  const new_money = action.change === 0 ? 0 : validateMoney(state.money + action.change)
+  const new_money = action.change === 0 ? 0 : validate(state.money + action.change, 99999999)
 
   switch(action.type){
 
     case INPUT_MONEY:
-      return { money: validateMoney(action.money) }
+      return { money: validate(action.money, 99999999) }
 
     case BUTTON_MONEY:
       return { money: new_money }

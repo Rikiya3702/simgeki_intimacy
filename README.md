@@ -1,1 +1,3 @@
-# react_udemy1
+# ONGEKI LovePoint Simulater
+
+with React & Redux
