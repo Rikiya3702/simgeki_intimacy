@@ -5,16 +5,21 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import HeartImage from '../image/onheart.png'
 import './App.scss';
 
-import { input, input_goal, input_item_s, input_item_m, input_item_l, input_money,
-   button_change } from '../actions'
+import { input, input_goal, input_item_s, input_item_m, input_item_l, input_money, input_juwel_end, input_juwel_all,
+   button_change, button_play } from '../actions'
 
 class App extends Component {
+
 
   render(){
     const props = this.props
 
     return (
       <div className="App">
+        <div className="message_box">
+          <Messages messages={props.mes} />
+        </div>
+
         <div id="section1">
           <Heart lv={getExp2Lv( props.exp.now )}
                 par={ getExp2Lvper( props.exp.now ) } />
@@ -86,8 +91,31 @@ class App extends Component {
             </div>
           </div>
           <div>
+            <label>ENDジュエル</label>
+            <input type='text' className="input_item" value={props.juwel.end} onChange={ (eve) => { props.input_juwel_end(eve.target.value)} } />
+            <div>
+              <button onClick={ ()=> {props.button_change("je",1)} }>+1</button>
+              <button onClick={ ()=> {props.button_change("je",10)} }>+10</button>
+              <button onClick={ ()=> {props.button_change("je",-10)} }>-10</button>
+              <button onClick={ ()=> {props.button_change("je",0)} }>Clear</button>
+            </div>
+          </div>
+          <div>
+            <label>ALLジュエル</label>
+            <input type='text' className="input_item" value={props.juwel.all} onChange={ (eve) => { props.input_juwel_all(eve.target.value)} } />
+            <div>
+              <button onClick={ ()=> {props.button_change("ja",1)} }>+1</button>
+              <button onClick={ ()=> {props.button_change("ja",10)} }>+10</button>
+              <button onClick={ ()=> {props.button_change("ja",-10)} }>-10</button>
+              <button onClick={ ()=> {props.button_change("ja",0)} }>Clear</button>
+            </div>
+          </div>
+          <div>
             オンゲキ 1曲プレイ
-            <button onClick={ ()=> {props.button_change("money",100)} }>40 GP でLet'sオンゲキ</button>
+            <br /><button onClick={ ()=> {props.button_play("play",0)} }>40 GP(デッキ0枚) でLet'sオンゲキ</button>
+            <br /><button onClick={ ()=> {props.button_play("play",1)} }>40 GP(デッキ1枚)  でLet'sオンゲキ</button>
+            <br /><button onClick={ ()=> {props.button_play("play",2)} }>40 GP(デッキ2枚)  でLet'sオンゲキ</button>
+            <br /><button onClick={ ()=> {props.button_play("play",3)} }>40 GP(デッキ3枚)  でLet'sオンゲキ</button>
           </div>
         </div>
         <Heart lv={getExp2Lv( props.exp.now + getItemExp(props.money, props.item))}
@@ -173,10 +201,12 @@ const validate = values => {
 }
 
 const mapStateToProps = state => ({
+  mes: state.input.mes,
   lv: state.input.lv,
   exp: state.input.exp,
   item: state.input.item,
-  money: state.input.money
+  money: state.input.money,
+  juwel: state.input.juwel
  })
 
 const mapDispatchToProps = ({
@@ -186,8 +216,21 @@ const mapDispatchToProps = ({
   input_item_m,
   input_item_l,
   input_money,
-  button_change
+  input_juwel_end,
+  input_juwel_all,
+  button_change,
+  button_play
 })
+
+function Messages(props){
+  const messages = props.messages
+  const ListItems = messages.map((mes) =>
+    <li>{ mes }</li>
+  )
+  return (
+    <ul>{ ListItems }</ul>
+  )
+}
 
 function Heart(props) {
   const lv = props.lv >= 800 ? 800 : props.lv

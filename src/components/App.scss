@@ -6,13 +6,26 @@ $heart-bar: rgb(255, 109, 144);
 
 }
 
+.message_box{
+  width: 560px;
+  height: 170px;
+  overflow-y: scroll;
+  border: 1px #111 double;
+  border-radius: 5px;
+  padding: 15px;
+  margin: 20px;
+  ul{
+    list-style: none;
+  }
+}
+
 .inputs{
   display: block;
   float: left;
   margin: 20px;
   margin-bottom: 50px;
   padding: 20px;
-    border: 1px #111 solid;
+  border: 1px #111 solid;
 }
 .heart{
   clear: left;
