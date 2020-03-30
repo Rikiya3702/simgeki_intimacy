@@ -15,6 +15,7 @@ export const BUTTON_MONEY = "BUTTON_MONEY"
 export const BUTTON_JUWEL_END = "BUTTON_JUWEL_END"
 export const BUTTON_JUWEL_ALL = "BUTTON_JUWEL_ALL"
 export const BUTTON_PLAY = "BUTTON_PLAY"
+export const RADIO_JUWEL = "RADIO_JUWEL"
 
 export const ITEM_S = "ITEM_S"
 export const ITEM_M = "ITEM_M"
@@ -70,6 +71,11 @@ export const input_juwel_end = (juwel) => ({
 
 export const input_juwel_all = (juwel) => ({
   type: INPUT_JUWEL_ALL,
+  juwel: juwel
+})
+
+export const radio_juweltype = (juwel) => ({
+  type: RADIO_JUWEL,
   juwel: juwel
 })
 

@@ -19,7 +19,8 @@ import {
   ITEM_M,
   ITEM_L,
   JUWEL_END,
-  JUWEL_ALL
+  JUWEL_ALL,
+  RADIO_JUWEL
 } from '../actions'
 
 const MAX_LV = 800
@@ -33,7 +34,8 @@ const initialState = {  mes: ["ようこそ"],
                         exp: {now: 0, goal: 29700},
                         item: {s: 0, m: 0, l: 0 },
                         money: 0,
-                        juwel: {end: 0, all: 0}
+                        juwel: {end: 0, all: 0},
+                        juweltype: JUWEL_END
                       }
 
 const loveLv2Exp = lv => {
@@ -229,6 +231,11 @@ export default (state = initialState, action) => {
     case INPUT_JUWEL_ALL:
       return Object.assign({}, state,{ juwel: {all: new_juwel } })
 
+    case RADIO_JUWEL:
+      return Object.assign({}, state,{ juweltype: action.juwel })
+
+
+
     case BUTTON_LV:
       new_lv = action.change === 0 ? 0 : validate(state.lv.now + action.change, MAX_LV)
       let got_lv = new_lv - state.lv.now
@@ -302,10 +309,19 @@ export default (state = initialState, action) => {
     case BUTTON_PLAY:
       const get_money = Math.floor(Math.random() * 100) %100 +150
       const get_juwel = Math.floor(Math.random() * 7) %7 +4
+      const get_juweltype = state.juweltype === JUWEL_END ? "エンド" : "オールマイティ"
       new_exp = state.exp.now + action.womens
       new_money = state.money + get_money
-      new_juwel = state.juwel.end + get_juwel
-      mes.push("デッキ" +action.womens+ "枚編成で1曲遊びました。（獲得EXP: " +action.womens+ "　マニー: " +get_money+ " エンドジュエル: " +get_juwel+ "）")
+      switch(state.juweltype){
+        case JUWEL_END:
+          new_juwel = {end: state.juwel.end + get_juwel, all: state.juwel.all}
+          break
+        case JUWEL_ALL:
+          new_juwel = {end: state.juwel.end , all: state.juwel.all + get_juwel}
+          break
+      }
+      // new_juwel = state.juwel.end + get_juwel
+      mes.push("デッキ" +action.womens+ "枚編成で1曲遊びました。（獲得EXP: " +action.womens+ "　マニー: " +get_money+ "　" +get_juweltype+ "ジュエル: " +get_juwel+ "）")
 
       new_lv = getExp2Lv(new_exp)
       if( new_lv > state.lv.now){
@@ -316,7 +332,7 @@ export default (state = initialState, action) => {
         lv: {now: new_lv, goal: state.lv.goal },
         exp:{now: new_exp, goal: state.exp.goal},
         money: new_money,
-        juwel: {end: new_juwel, all: state.juwel.all },
+        juwel: new_juwel,
         mes: mes.concat( state.mes )
        });
 

@@ -6,8 +6,11 @@ import HeartImage from '../image/onheart.png'
 import './App.scss';
 
 import { input, input_goal, input_item_s, input_item_m, input_item_l, input_money, input_juwel_end, input_juwel_all,
-   button_change, button_play } from '../actions'
-
+   button_change, button_play, radio_juweltype } from '../actions'
+import {
+   JUWEL_END,
+   JUWEL_ALL
+ } from '../actions'
 class App extends Component {
 
 
@@ -117,6 +120,14 @@ class App extends Component {
             <br /><button onClick={ ()=> {props.button_play("play",2)} }>40 GP(デッキ2枚)  でLet'sオンゲキ</button>
             <br /><button onClick={ ()=> {props.button_play("play",3)} }>40 GP(デッキ3枚)  でLet'sオンゲキ</button>
           </div>
+          <div>
+            <label>End Juwel</label>
+            <input type="radio" name="aradio" value="JUWEL_END" checked={props.juweltype === JUWEL_END}
+                   onChange={() => props.radio_juweltype(JUWEL_END)}/> <br />
+            <label>All Juwel</label>
+            <input type="radio" name="aradio" value="JUWEL_ALL" checked={props.juweltype === JUWEL_ALL}
+                   onChange={() => props.radio_juweltype(JUWEL_ALL)}/>
+          </div>
         </div>
         <Heart lv={getExp2Lv( props.exp.now + getItemExp(props.money, props.item))}
               par={ getExp2Lvper( props.exp.now + getItemExp(props.money, props.item)) } />
@@ -206,7 +217,8 @@ const mapStateToProps = state => ({
   exp: state.input.exp,
   item: state.input.item,
   money: state.input.money,
-  juwel: state.input.juwel
+  juwel: state.input.juwel,
+  juweltype: state.input.juweltype
  })
 
 const mapDispatchToProps = ({
@@ -219,7 +231,8 @@ const mapDispatchToProps = ({
   input_juwel_end,
   input_juwel_all,
   button_change,
-  button_play
+  button_play,
+  radio_juweltype
 })
 
 function Messages(props){
