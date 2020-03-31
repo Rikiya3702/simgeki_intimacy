@@ -1,18 +1,16 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { useState,Component } from 'react';
+import { connect, useDispatch } from 'react-redux';
 import { reduxForm } from 'redux-form';
+import {CSSTransition, TransitionGroup } from 'react-transition-group';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import HeartImage from '../image/onheart.png'
 import './App.scss';
 
 import { input, input_goal, input_item_s, input_item_m, input_item_l, input_money, input_juwel_end, input_juwel_all,
-   button_change, button_play, radio_juweltype } from '../actions'
-import {
-   JUWEL_END,
-   JUWEL_ALL
- } from '../actions'
-class App extends Component {
+   button_change, button_play, radio_juweltype, anime_reset } from '../actions'
+import { JUWEL_END, JUWEL_ALL } from '../actions'
 
+class App extends Component {
 
   render(){
     const props = this.props
@@ -27,9 +25,10 @@ class App extends Component {
           <Heart lv={getExp2Lv( props.exp.now )}
                 par={ getExp2Lvper( props.exp.now ) } />
         <div className="inputs">
-          <div>
+          <div id="Level">
             <label>現在レベル→</label>
             <input type='text' className="input_lv" value={props.lv.now} onChange={ (eve) => { props.input(eve.target.value)} } />
+            <ChangeValue value={props.changed.lv}/>
             <div>
               <button onClick={ ()=> {props.button_change("lv",1)} }>+1</button>
               <button onClick={ ()=> {props.button_change("lv",10)} }>+10</button>
@@ -46,9 +45,10 @@ class App extends Component {
             <label>目標レベル→</label>
             <input type='text' className="input_lv" value={props.lv.goal} onChange={ (eve) => { props.input_goal(eve.target.value)} }/>
           </div>
-          <div>
+          <div id="Items">
             <label>親密度上昇プレゼント（小）→</label>
             <input type='text' className="input_item" value={props.item.s} onChange={ (eve) => { props.input_item_s(eve.target.value)} } />
+            <ChangeValue value={props.changed.items} />
             <div>
               <button onClick={ ()=> {props.button_change("s",1)} }>+1</button>
               <button onClick={ ()=> {props.button_change("s",10)} }>+10</button>
@@ -56,9 +56,10 @@ class App extends Component {
               <button onClick={ ()=> {props.button_change("s",0)} }>Clear</button>
             </div>
           </div>
-          <div>
+          <div id="Itemm">
             <label>親密度上昇プレゼント（中）→</label>
             <input type='text' className="input_item" value={props.item.m} onChange={ (eve) => { props.input_item_m(eve.target.value)} } />
+            <ChangeValue value={props.changed.itemm} />
             <div>
               <button onClick={ ()=> {props.button_change("m",1)} }>+1</button>
               <button onClick={ ()=> {props.button_change("m",10)} }>+10</button>
@@ -66,9 +67,10 @@ class App extends Component {
               <button onClick={ ()=> {props.button_change("m",0)} }>Clear</button>
             </div>
           </div>
-          <div>
+          <div id="Iteml">
             <label>親密度上昇プレゼント（大）→</label>
             <input type='text' className="input_item" value={props.item.l} onChange={ (eve) => { props.input_item_l(eve.target.value)} } />
+            <ChangeValue value={props.changed.iteml} />
             <div>
               <button onClick={ ()=> {props.button_change("l",1)} }>+1</button>
               <button onClick={ ()=> {props.button_change("l",10)} }>+10</button>
@@ -76,11 +78,12 @@ class App extends Component {
               <button onClick={ ()=> {props.button_change("l",0)} }>Clear</button>
             </div>
           </div>
-          <div>
+          <div id="Money">
             <label>所持マニー→</label>
             <input type='text' className="input_money" value={props.money} onChange={ (eve) => { props.input_money(eve.target.value)} } />
+            <ChangeValue value={props.changed.money} />
             <div>
-              <button onClick={ ()=> {props.button_change("money",100)} }>+100</button>
+              <button onClick={ ()=> {props.button_change("money",100) } }>+100</button>
               <button onClick={ ()=> {props.button_change("money",10000)} }>+10,000</button>
               <button onClick={ ()=> {props.button_change("money",100000)} }>+100,000</button>
               <button onClick={ ()=> {props.button_change("money",5400)} }>+360 GP</button>
@@ -93,19 +96,21 @@ class App extends Component {
               <button onClick={ ()=> {props.button_change("money",0)} }>Clear</button>
             </div>
           </div>
-          <div>
+          <div id="Juwelend">
             <label>ENDジュエル</label>
             <input type='text' className="input_item" value={props.juwel.end} onChange={ (eve) => { props.input_juwel_end(eve.target.value)} } />
-            <div>
+            <ChangeValue value={props.changed.jend} />
+          <div>
               <button onClick={ ()=> {props.button_change("je",1)} }>+1</button>
               <button onClick={ ()=> {props.button_change("je",10)} }>+10</button>
               <button onClick={ ()=> {props.button_change("je",-10)} }>-10</button>
               <button onClick={ ()=> {props.button_change("je",0)} }>Clear</button>
             </div>
           </div>
-          <div>
+          <div id="Juwelall">
             <label>ALLジュエル</label>
             <input type='text' className="input_item" value={props.juwel.all} onChange={ (eve) => { props.input_juwel_all(eve.target.value)} } />
+            <ChangeValue value={props.changed.jall} />
             <div>
               <button onClick={ ()=> {props.button_change("ja",1)} }>+1</button>
               <button onClick={ ()=> {props.button_change("ja",10)} }>+10</button>
@@ -138,7 +143,6 @@ class App extends Component {
           </div>
           <h5>EXP　{ props.exp.now } </h5>
         </div>
-      <i class="fas fa-heart"></i>
         <div className="lovelv">
           <h4>future</h4>
           <div className="lovelv_number">
@@ -218,7 +222,8 @@ const mapStateToProps = state => ({
   item: state.input.item,
   money: state.input.money,
   juwel: state.input.juwel,
-  juweltype: state.input.juweltype
+  juweltype: state.input.juweltype,
+  changed: state.input.changed
  })
 
 const mapDispatchToProps = ({
@@ -232,20 +237,20 @@ const mapDispatchToProps = ({
   input_juwel_all,
   button_change,
   button_play,
-  radio_juweltype
+  radio_juweltype,
 })
 
-function Messages(props){
+const Messages = props => {
   const messages = props.messages
-  const ListItems = messages.map((mes) =>
-    <li>{ mes }</li>
+  const ListItems = messages.map((mes,index) =>
+    <li key={index}>{ mes }</li>
   )
   return (
     <ul>{ ListItems }</ul>
   )
 }
 
-function Heart(props) {
+const Heart = props => {
   const lv = props.lv >= 800 ? 800 : props.lv
   const par = lv === 800 ? 100 : props.par
   const barheight = par * 2.4
@@ -269,7 +274,30 @@ function Heart(props) {
   );
 }
 
-function LoveTableWithItem(props) {
+const ChangeValue = props => {
+  const classname = "changed_value"
+  const blue = { color: "rgb(40,40,240)"}
+  const red = { color: "rgb(240,40,40)"}
+  return(
+    <React.Fragment>
+
+      <TransitionGroup>
+        {props.value.map((value, index) => (
+          <CSSTransition
+            key={index}
+            classNames={classname}
+            timeout={1000}
+            unmountOnExit
+            >
+              <p className={classname} style={value > 0 ? blue : red}>{value >= 0 ? "+"+value : value}</p>
+          </CSSTransition>
+        ))}
+      </TransitionGroup>
+    </React.Fragment>
+  );
+}
+
+const LoveTableWithItem = props => {
 
   const parse = Math.floor((props.exp / props.expg )*100)
   const parse_i = Math.floor((props.itemexp / props.expg )*100)
@@ -307,20 +335,20 @@ function LoveTableWithItem(props) {
   );
 }
 
-function MoneyTableRecord(props) {
-    return(
-      <React.Fragment>
-        <tr>
-          <th className="column_name">{props.item}</th>
-          <td className="column_exp">{props.exp}</td>
-          <td className="column_stock">{props.stock }</td>
-          <td className="column_exp">{ props.exp * props.stock }</td>
-        </tr>
-      </React.Fragment>
-    );
+const MoneyTableRecord = props => {
+  return(
+    <React.Fragment>
+      <tr>
+        <th className="column_name">{props.item}</th>
+        <td className="column_exp">{props.exp}</td>
+        <td className="column_stock">{props.stock }</td>
+        <td className="column_exp">{ props.exp * props.stock }</td>
+      </tr>
+    </React.Fragment>
+  );
 }
 
-function getItemExp(money, item){
+const getItemExp = (money, item) => {
   let exp = 0
   exp += Math.floor(money * 0.01)
   exp += item.s * 6
@@ -329,7 +357,7 @@ function getItemExp(money, item){
   return exp
 }
 
-function getExp2Lv(exp){
+const getExp2Lv = exp => {
   let count = exp * 10
   let next_exp = 0
   let i = 0
@@ -365,7 +393,7 @@ function getExp2Lv(exp){
   return i
 }
 
-function getExp2Lvper(exp){
+const getExp2Lvper = exp => {
   let parse = 0
   let count = exp * 10
   let next_exp = 0
@@ -392,8 +420,6 @@ function getExp2Lvper(exp){
         next_exp += (6 + ( j - 1 ) * 6) * (10 + 2 * h )
       }
       next_exp +=  6 *  (10 + 2 * h )
-      console.log("i:" +i + " hi:" + hi + " next_exp:" + next_exp + " count:" + count)
-
     }
 
     if(count === next_exp){

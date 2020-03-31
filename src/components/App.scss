@@ -196,3 +196,45 @@ $heart-bar: rgb(255, 109, 144);
     text-align: right;
   }
 }
+#Level{
+  position: relative;
+}
+#Items{
+  position: relative;
+}
+#Itemm{
+  position: relative;
+}
+
+#Iteml{
+  position: relative;
+}
+#Juwelend{
+  position: relative;
+}
+#Juwelall{
+  position: relative;
+}
+#Money{
+  position: relative;
+}
+.changed_value{
+  position: absolute;
+  top: -50px;
+  left: 200px;
+  color: #111;
+  padding: 3pc 10px 5px;
+}
+
+.changed_value-enter{
+  opacity: 1;
+}
+.changed_value-enter-active{
+  transition: all 1.2s ease-in-out;
+  top: -80px;
+  opacity: 0;
+}
+.changed_value-enter-done{
+  display: none;
+  opacity: 0;
+}
