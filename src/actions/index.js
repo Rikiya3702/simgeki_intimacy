@@ -17,7 +17,7 @@ export const BUTTON_JUWEL_END = "BUTTON_JUWEL_END"
 export const BUTTON_JUWEL_ALL = "BUTTON_JUWEL_ALL"
 export const BUTTON_PLAY = "BUTTON_PLAY"
 export const RADIO_JUWEL = "RADIO_JUWEL"
-export const ANIME_RESET = "ANIME_RESET"
+export const CHECK_ITEMFLAG = "CHECK_ITEMFLAG"
 
 export const MONEY = "MONEY"
 export const ITEM_S = "ITEM_S"
@@ -83,6 +83,11 @@ export const radio_juweltype = (juwel) => ({
 export const button_change = (type, value) => ({
   type: types(type),
   change: value,
+})
+
+export const check_itemflag = (type) => ({
+  type: CHECK_ITEMFLAG,
+  check: type
 })
 
 export const button_play = (type, value) => ({

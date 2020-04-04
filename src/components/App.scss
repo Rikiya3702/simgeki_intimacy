@@ -1,10 +1,28 @@
 $heart-inback: rgb(45, 45, 45);
 $heart-bar: rgb(255, 109, 144);
+$hover-button: rgba(144, 109, 255, 0.3);
 
 
 #section1{
-
+  width: 95%;
+  margin-left: auto;
+  margin-right: auto;
 }
+
+.row{
+  clear: left;
+}
+.col{
+  float: left;
+}
+.w-150{ width: 150px; }
+.w-200{ width: 200px; }
+.w-450{ width: 450px; }
+
+.text-right{ text-align: right; }
+.text-center{ text-align: center; }
+.pos-rel{ position: relative; }
+.signboard{ text-align: center; }
 
 .message_box{
   width: 560px;
@@ -36,23 +54,23 @@ $heart-bar: rgb(255, 109, 144);
 .heart_out{
   position: relative;
   z-index: 30;
-  width: 300px;
-  height: 300px;
+  width: 200px;
+  height: 200px;
 }
 .heart_lovep{
   position: absolute;
   z-index: 40;
   font-size: 140%;
-  top: 5px;
-  left: 115px;
+  top: -5px;
+  text-align: center;
 }
 .heart_lv{
   position: absolute;
   z-index: 40;
-  font-size: 100px;
+  font-size: 65px;
   text-align: center;
-  width: 300px;
-  top: 70px;
+  width: 200px;
+  top: 55px;
   color: #fefefd;
 }
 
@@ -60,16 +78,14 @@ $heart-bar: rgb(255, 109, 144);
   position: absolute;
   z-index: 10;
   background-color: $heart-bar;
-  width: 300px;
+  width: 200px;
 }
 .heart_back{
   position: absolute;
-  width: 300px;
+  width: 200px;
   z-index: 5;
   background: $heart-inback;
 }
-
-
 
 .lovelv{
   display: block;
@@ -81,26 +97,77 @@ $heart-bar: rgb(255, 109, 144);
   background-color: #fde;
 }
 
+.input_field{
+  padding-top: 20px;
+  input{
+    font-size: 120%;
+    text-align: right;
+    height: 1.8rem;
+    padding: 4px;
+  }
+  button{
+    position: relative;
+    margin: 8px;
+    width: 45px;
+    height: 45px;
+    border-radius: 4px;
+    box-shadow: 3px 2px #555;
+    &:hover{
+      transition: 0.3s;
+      font-size: 80%;
+      border-color: $hover-button;
+      background-color: $hover-button;
+    }
+    &:active{
+      box-shadow:none;
+      top: 3px;
+      left: 2px;
+    }
+  }
+  .btn-reset{
+    border-color: #f55;
+  }
+}
+
 .input_lv{
-  font-size: 120%;
-  text-align: right;
-  height: 1.8rem;
-  width: 2.6rem;
-  padding: 4px;
+  width: 2.3rem;
+  margin: 0 10px 7px;
 }
 .input_item{
-  font-size: 120%;
-  text-align: right;
-  height: 1.8rem;
-  width: 3.3rem;
-  padding: 4px;
+  position: relative;
+  input{
+    width: 2.9rem;
+  }
+  button{
+    width: 45px;
+  }
+  span{
+    right: 20px;
+  }
+}
+.input_juwel{
+  position: relative;
+
+  input{
+    width: 4.0rem;
+  }
+  button{
+    width: 45px;
+  }
+  span{
+  }
 }
 .input_money{
-  font-size: 120%;
-  text-align: right;
-  height: 1.8rem;
-  width: 6rem;
-  padding: 4px;
+  position: relative;
+  input{
+    width: 6rem;
+  }
+  button{
+    width: 70px;
+  }
+  span{
+    left: 130px;
+  }
 }
 
 .table_lv{
@@ -222,7 +289,7 @@ $heart-bar: rgb(255, 109, 144);
 .changed_value{
   position: absolute;
   top: -50px;
-  left: 200px;
+  right: 0px;
   color: #111;
   padding: 3pc 10px 5px;
 }
@@ -232,13 +299,20 @@ $heart-bar: rgb(255, 109, 144);
 }
 .changed_value-enter-active{
   transition: all 1.2s ease-in-out;
-  top: -80px;
+  top: -70px;
   opacity: 0;
 }
 .changed_value-enter-done{
   display: none;
   opacity: 0;
 }
+
+.btn-toggle{
+  margin-top: 15px auto;
+  width: 200px;
+  height: 45px;
+}
+
 .door{
   display: block;
   border: 1px solid #111;
