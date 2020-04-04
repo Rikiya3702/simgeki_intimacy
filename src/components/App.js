@@ -1,17 +1,31 @@
-import React, { useState,Component } from 'react';
-import { connect, useDispatch } from 'react-redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { reduxForm } from 'redux-form';
 import {CSSTransition, TransitionGroup } from 'react-transition-group';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import HeartImage from '../image/onheart.png'
 import './App.scss';
 
 import { input, input_goal, input_item_s, input_item_m, input_item_l, input_money, input_juwel_end, input_juwel_all,
-   button_change, button_play, radio_juweltype, anime_reset } from '../actions'
-import { JUWEL_END, JUWEL_ALL } from '../actions'
+   button_change, button_play, radio_juweltype } from '../actions'
+import { JUWEL_END, JUWEL_ALL,
+  BUTTON_LV,
+  BUTTON_LV_GOAL,
+  BUTTON_ITEM_S,
+  BUTTON_ITEM_M,
+  BUTTON_ITEM_L,
+  BUTTON_MONEY,
+  BUTTON_JUWEL_END,
+  BUTTON_JUWEL_ALL } from '../actions'
 
 class App extends Component {
-
+  constructor(props) {
+    super(props)
+    this.state = {kore: false}
+  }
+  handleClick = () => {
+    this.setState( {kore: !this.state.kore})
+  }
   render(){
     const props = this.props
 
@@ -21,102 +35,41 @@ class App extends Component {
           <Messages messages={props.mes} />
         </div>
 
+        <div>
+          <button onClick={ this.handleClick }>{ this.state.kore ? "閉じ" : "開け" }まーす</button>
+          <CSSTransition in={this.state.kore} classNames="door" timeout={1000}>
+            <div className="door">
+              <div id="Money">
+                <InputMoney value={props.money} changed={props.changed.money} buttonChange={props.button_change} inputMoney={props.input_money}/>
+              </div>
+            </div>
+          </CSSTransition>
+        </div>
+
         <div id="section1">
           <Heart lv={getExp2Lv( props.exp.now )}
                 par={ getExp2Lvper( props.exp.now ) } />
         <div className="inputs">
           <div id="Level">
-            <label>現在レベル→</label>
-            <input type='text' className="input_lv" value={props.lv.now} onChange={ (eve) => { props.input(eve.target.value)} } />
-            <ChangeValue value={props.changed.lv}/>
-            <div>
-              <button onClick={ ()=> {props.button_change("lv",1)} }>+1</button>
-              <button onClick={ ()=> {props.button_change("lv",10)} }>+10</button>
-              <button onClick={ ()=> {props.button_change("lv",100)} }>+100</button>
-            </div>
-            <div>
-              <button onClick={ ()=> {props.button_change("lv",-1)} }>-1</button>
-              <button onClick={ ()=> {props.button_change("lv",-10)} }>-10</button>
-              <button onClick={ ()=> {props.button_change("lv",-100)} }>-100</button>
-              <button onClick={ ()=> {props.button_change("lv",0)} }>Clear</button>
-            </div>
+            <InputLv  value={props.lv.now} changed={props.changed.lv} buttonChange={props.button_change} inputValue={props.input_lv}/>
           </div>
           <div>
-            <label>目標レベル→</label>
-            <input type='text' className="input_lv" value={props.lv.goal} onChange={ (eve) => { props.input_goal(eve.target.value)} }/>
+            <InputLvGoal  value={props.lv.goal} changed={props.changed.goal} buttonChange={props.button_change} inputValue={props.input_goal}/>
           </div>
           <div id="Items">
-            <label>親密度上昇プレゼント（小）→</label>
-            <input type='text' className="input_item" value={props.item.s} onChange={ (eve) => { props.input_item_s(eve.target.value)} } />
-            <ChangeValue value={props.changed.items} />
-            <div>
-              <button onClick={ ()=> {props.button_change("s",1)} }>+1</button>
-              <button onClick={ ()=> {props.button_change("s",10)} }>+10</button>
-              <button onClick={ ()=> {props.button_change("s",-10)} }>-10</button>
-              <button onClick={ ()=> {props.button_change("s",0)} }>Clear</button>
-            </div>
+            <InputItem type={BUTTON_ITEM_S} value={props.item.s} changed={props.changed.items} buttonChange={props.button_change} inputValue={props.input_item_s}/>
           </div>
           <div id="Itemm">
-            <label>親密度上昇プレゼント（中）→</label>
-            <input type='text' className="input_item" value={props.item.m} onChange={ (eve) => { props.input_item_m(eve.target.value)} } />
-            <ChangeValue value={props.changed.itemm} />
-            <div>
-              <button onClick={ ()=> {props.button_change("m",1)} }>+1</button>
-              <button onClick={ ()=> {props.button_change("m",10)} }>+10</button>
-              <button onClick={ ()=> {props.button_change("m",-10)} }>-10</button>
-              <button onClick={ ()=> {props.button_change("m",0)} }>Clear</button>
-            </div>
+            <InputItem type={BUTTON_ITEM_M} value={props.item.m} changed={props.changed.itemm} buttonChange={props.button_change} inputValue={props.input_item_m}/>
           </div>
           <div id="Iteml">
-            <label>親密度上昇プレゼント（大）→</label>
-            <input type='text' className="input_item" value={props.item.l} onChange={ (eve) => { props.input_item_l(eve.target.value)} } />
-            <ChangeValue value={props.changed.iteml} />
-            <div>
-              <button onClick={ ()=> {props.button_change("l",1)} }>+1</button>
-              <button onClick={ ()=> {props.button_change("l",10)} }>+10</button>
-              <button onClick={ ()=> {props.button_change("l",-10)} }>-10</button>
-              <button onClick={ ()=> {props.button_change("l",0)} }>Clear</button>
-            </div>
-          </div>
-          <div id="Money">
-            <label>所持マニー→</label>
-            <input type='text' className="input_money" value={props.money} onChange={ (eve) => { props.input_money(eve.target.value)} } />
-            <ChangeValue value={props.changed.money} />
-            <div>
-              <button onClick={ ()=> {props.button_change("money",100) } }>+100</button>
-              <button onClick={ ()=> {props.button_change("money",10000)} }>+10,000</button>
-              <button onClick={ ()=> {props.button_change("money",100000)} }>+100,000</button>
-              <button onClick={ ()=> {props.button_change("money",5400)} }>+360 GP</button>
-              <button onClick={ ()=> {props.button_change("money",5550)} }>+370 GP</button>
-            </div>
-            <div>
-              <button onClick={ ()=> {props.button_change("money",-100)} }>-100</button>
-              <button onClick={ ()=> {props.button_change("money",-10000)} }>-10,000</button>
-              <button onClick={ ()=> {props.button_change("money",-100000)} }>-100,000</button>
-              <button onClick={ ()=> {props.button_change("money",0)} }>Clear</button>
-            </div>
+            <InputItem type={BUTTON_ITEM_L} value={props.item.l} changed={props.changed.iteml} buttonChange={props.button_change} inputValue={props.input_item_l}/>
           </div>
           <div id="Juwelend">
-            <label>ENDジュエル</label>
-            <input type='text' className="input_item" value={props.juwel.end} onChange={ (eve) => { props.input_juwel_end(eve.target.value)} } />
-            <ChangeValue value={props.changed.jend} />
-          <div>
-              <button onClick={ ()=> {props.button_change("je",1)} }>+1</button>
-              <button onClick={ ()=> {props.button_change("je",10)} }>+10</button>
-              <button onClick={ ()=> {props.button_change("je",-10)} }>-10</button>
-              <button onClick={ ()=> {props.button_change("je",0)} }>Clear</button>
-            </div>
+            <InputItem type={BUTTON_JUWEL_END} value={props.juwel.end} changed={props.changed.jend} buttonChange={props.button_change} inputValue={props.input_juwel_end}/>
           </div>
           <div id="Juwelall">
-            <label>ALLジュエル</label>
-            <input type='text' className="input_item" value={props.juwel.all} onChange={ (eve) => { props.input_juwel_all(eve.target.value)} } />
-            <ChangeValue value={props.changed.jall} />
-            <div>
-              <button onClick={ ()=> {props.button_change("ja",1)} }>+1</button>
-              <button onClick={ ()=> {props.button_change("ja",10)} }>+10</button>
-              <button onClick={ ()=> {props.button_change("ja",-10)} }>-10</button>
-              <button onClick={ ()=> {props.button_change("ja",0)} }>Clear</button>
-            </div>
+            <InputItem type={BUTTON_JUWEL_ALL} value={props.juwel.all} changed={props.changed.jall} buttonChange={props.button_change} inputValue={props.input_juwel_all}/>
           </div>
           <div>
             オンゲキ 1曲プレイ
@@ -216,6 +169,7 @@ const validate = values => {
 }
 
 const mapStateToProps = state => ({
+  openflag: {menu1: false},
   mes: state.input.mes,
   lv: state.input.lv,
   exp: state.input.exp,
@@ -237,8 +191,140 @@ const mapDispatchToProps = ({
   input_juwel_all,
   button_change,
   button_play,
-  radio_juweltype,
+  radio_juweltype
 })
+
+class Menu extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {kore: true}
+  }
+  handleClick = () => {
+    this.setState( {kore: !this.state.kore})
+  }
+
+  render(){
+    return(
+      <div>
+        <button onClick={ this.handleClick }>{ this.state.kore ? "閉じ" : "開け" }まーす</button>
+        <CSSTransition
+          in={this.state.kore}
+          classNames="door"
+          timeout={1000}
+          >
+          <div className="door">
+            <p >でしてー</p>
+          </div>
+        </CSSTransition>
+      </div>
+      )
+  }
+}
+
+class InputMoney extends Component {
+  constructor(props) {
+    super(props)
+  }
+  render(){
+  return(
+    <React.Fragment>
+      <label>所持マニー→</label>
+      <input type='text' className="input_money" value={this.props.value} onChange={ (eve) => { this.props.inputValue(eve.target.value)} } />
+      <ChangeValue value={this.props.changed} />
+      <div>
+        <button onClick={ ()=> {this.props.buttonChange(BUTTON_MONEY,100) } }>+100</button>
+        <button onClick={ ()=> {this.props.buttonChange(BUTTON_MONEY,10000)} }>+10,000</button>
+        <button onClick={ ()=> {this.props.buttonChange(BUTTON_MONEY,100000)} }>+100,000</button>
+        <button onClick={ ()=> {this.props.buttonChange(BUTTON_MONEY,5400)} }>+360 GP</button>
+        <button onClick={ ()=> {this.props.buttonChange(BUTTON_MONEY,5550)} }>+370 GP</button>
+      </div>
+      <div>
+        <button onClick={ ()=> {this.props.buttonChange(BUTTON_MONEY,-100)} }>-100</button>
+        <button onClick={ ()=> {this.props.buttonChange(BUTTON_MONEY,-10000)} }>-10,000</button>
+        <button onClick={ ()=> {this.props.buttonChange(BUTTON_MONEY,-100000)} }>-100,000</button>
+        <button onClick={ ()=> {this.props.buttonChange(BUTTON_MONEY,0)} }>Clear</button>
+      </div>
+    </React.Fragment>
+  )}
+}
+
+class InputLv extends Component {
+  constructor(props) {
+    super(props)
+  }
+  render(){
+  return(
+    <React.Fragment>
+      <label>現在レベル→</label>
+      <input type='text' className="input_lv" value={this.props.value} onChange={ (eve) => { this.props.inputValue(eve.target.value)} } />
+      <ChangeValue value={this.props.changed} />
+      <div>
+        <button onClick={ ()=> {this.props.buttonChange(BUTTON_LV, 1)} }>+1</button>
+        <button onClick={ ()=> {this.props.buttonChange(BUTTON_LV, 10)} }>+10</button>
+        <button onClick={ ()=> {this.props.buttonChange(BUTTON_LV, 100)} }>+100</button>
+      </div>
+      <div>
+        <button onClick={ ()=> {this.props.buttonChange(BUTTON_LV, -1)} }>-1</button>
+        <button onClick={ ()=> {this.props.buttonChange(BUTTON_LV, -10)} }>-10</button>
+        <button onClick={ ()=> {this.props.buttonChange(BUTTON_LV, -100)} }>-100</button>
+        <button onClick={ ()=> {this.props.buttonChange(BUTTON_LV, 0)} }>Clear</button>
+      </div>
+    </React.Fragment>
+  )}
+}
+class InputLvGoal extends Component {
+  constructor(props) {
+    super(props)
+  }
+  render(){
+  return(
+    <React.Fragment>
+      <label>目標レベル→</label>
+      <input type='text' className="input_lv" value={this.props.value} onChange={ (eve) => { this.props.inputValue(eve.target.value)} } />
+      <ChangeValue value={this.props.changed} />
+      <div>
+        <button onClick={ ()=> {this.props.buttonChange(BUTTON_LV_GOAL, 100)} }>+100</button>
+        <button onClick={ ()=> {this.props.buttonChange(BUTTON_LV_GOAL, -100)} }>-100</button>
+        <button onClick={ ()=> {this.props.buttonChange(BUTTON_LV_GOAL, 0)} }>Clear</button>
+      </div>
+    </React.Fragment>
+  )}
+}
+class InputItem extends Component {
+  constructor(props) {
+    super(props)
+  }
+
+  render(){
+    const labeled = type => {
+      switch(type){
+        case BUTTON_ITEM_S: return "親密度上昇プレゼント（小）→"
+        case BUTTON_ITEM_M: return "親密度上昇プレゼント（中）→"
+        case BUTTON_ITEM_L: return "親密度上昇プレゼント（大）→"
+        case BUTTON_JUWEL_END: return "エンドジュエル→"
+        case BUTTON_JUWEL_ALL: return "オールマイティジュエル→"
+      }
+    }
+    const label = labeled( this.props.type)
+  return(
+    <React.Fragment>
+      <label>{label}</label>
+      <input type='text' className="input_item" value={this.props.value} onChange={ (eve) => { this.props.inputValue(eve.target.value)} } />
+      <ChangeValue value={this.props.changed} />
+      <div>
+        <button onClick={ ()=> {this.props.buttonChange(this.props.type,1) } }>+1</button>
+        <button onClick={ ()=> {this.props.buttonChange(this.props.type,10)} }>+10</button>
+        <button onClick={ ()=> {this.props.buttonChange(this.props.type,100)} }>+100</button>
+      </div>
+      <div>
+        <button onClick={ ()=> {this.props.buttonChange(this.props.type,-1)} }>-1</button>
+        <button onClick={ ()=> {this.props.buttonChange(this.props.type,-10)} }>-10</button>
+        <button onClick={ ()=> {this.props.buttonChange(this.props.type,-100)} }>-100</button>
+        <button onClick={ ()=> {this.props.buttonChange(this.props.type,0)} }>Clear</button>
+      </div>
+    </React.Fragment>
+  )}
+}
 
 const Messages = props => {
   const messages = props.messages

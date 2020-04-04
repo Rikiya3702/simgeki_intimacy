@@ -8,6 +8,7 @@ import {
   INPUT_JUWEL_END,
   INPUT_JUWEL_ALL,
   BUTTON_LV,
+  BUTTON_LV_GOAL,
   BUTTON_ITEM_S,
   BUTTON_ITEM_M,
   BUTTON_ITEM_L,
@@ -36,7 +37,7 @@ const initialState = {  mes: ["ようこそ"],
                         money: 0,
                         juwel: {end: 0, all: 0},
                         juweltype: JUWEL_END,
-                        changed: {lv: [], items: [], itemm: [], iteml: [], money: [], jend: [], jall: []}
+                        changed: {lv: [], goal:[], items: [], itemm: [], iteml: [], money: [], jend: [], jall: []}
                       }
 
 const loveLv2Exp = lv => {
@@ -122,6 +123,9 @@ const changeds = (type, changed, value) => {
   switch(type){
     case BUTTON_LV:
       retobj = Object.assign({}, changed, {lv: changed.lv.concat( value )})
+      break
+    case BUTTON_LV_GOAL:
+      retobj = Object.assign({}, changed, {goal: changed.goal.concat( value )})
       break
     case BUTTON_ITEM_S:
       retobj = Object.assign({}, changed, {items: changed.items.concat( value )})
@@ -287,6 +291,25 @@ export default (state = initialState, action) => {
     return Object.assign({}, state,{
       exp: { now: loveLv2Exp(new_lv)},
       lv:  { now: new_lv},
+      mes: mes.concat( state.mes ),
+      changed: changeds(action.type, state.changed, changed_value)
+    })
+
+    case BUTTON_LV_GOAL:
+      new_lv = action.change === 0 ? 600 : validate(state.lv.goal + action.change, MAX_LV)
+      new_exp = loveLv2Exp(new_lv)
+
+      if(action.change === 0){
+        mes.push("目標レベルを600にしました")
+      }else if(new_lv === state.lv.goal){
+        if( new_lv === MIN_ZERO ){ mes.push("最低レベルです") }
+        else if( new_lv === MAX_LV ){ mes.push("最高レベルです") }
+      }else{
+        mes.push("目標レベルを"+ new_lv +"にしました")
+      }
+    return Object.assign({}, state,{
+      exp: { goal: loveLv2Exp(new_lv)},
+      lv:  { goal: new_lv},
       mes: mes.concat( state.mes ),
       changed: changeds(action.type, state.changed, changed_value)
     })

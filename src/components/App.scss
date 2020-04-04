@@ -217,6 +217,7 @@ $heart-bar: rgb(255, 109, 144);
 }
 #Money{
   position: relative;
+
 }
 .changed_value{
   position: absolute;
@@ -237,4 +238,45 @@ $heart-bar: rgb(255, 109, 144);
 .changed_value-enter-done{
   display: none;
   opacity: 0;
+}
+.door{
+  display: block;
+  border: 1px solid #111;
+  color: #111;
+  padding: 3pc 10px 5px;
+}
+
+.door-enter{
+  #Money{
+    height: 0px;
+  }
+}
+.door-enter-active{
+
+  #Money{
+    transition: all 0.5s ease-in-out;
+    height: 80px;
+  }
+}
+.door-enter-done{
+  #Money{
+    height: 80px;
+  }
+}
+
+.door-exit{
+  #Money{
+    height: 80px;
+  }
+}
+.door-exit-active{
+  #Money{
+    transition: all 0.5s ease-in-out;
+    height: 0px;
+  }
+}
+.door-exit-done{
+  #Money{
+    height: 0px;
+  }
 }

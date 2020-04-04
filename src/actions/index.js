@@ -7,6 +7,7 @@ export const INPUT_MONEY = "INPUT_MONEY"
 export const INPUT_JUWEL_END = "INPUT_JUWEL_END"
 export const INPUT_JUWEL_ALL = "INPUT_JUWEL_ALL"
 export const BUTTON_LV = "BUTTON_LV"
+export const BUTTON_LV_GOAL = "BUTTON_LV_GOAL"
 export const BUTTON_ITEM = "BUTTON_ITEM"
 export const BUTTON_ITEM_S = "BUTTON_ITEM_S"
 export const BUTTON_ITEM_M = "BUTTON_ITEM_M"
@@ -18,6 +19,7 @@ export const BUTTON_PLAY = "BUTTON_PLAY"
 export const RADIO_JUWEL = "RADIO_JUWEL"
 export const ANIME_RESET = "ANIME_RESET"
 
+export const MONEY = "MONEY"
 export const ITEM_S = "ITEM_S"
 export const ITEM_M = "ITEM_M"
 export const ITEM_L = "ITEM_L"
@@ -29,11 +31,9 @@ const types = (type) => {
     case "s":     return BUTTON_ITEM_S
     case "m":     return BUTTON_ITEM_M
     case "l":     return BUTTON_ITEM_L
-    case "lv":    return BUTTON_LV
-    case "money": return BUTTON_MONEY
     case "je":    return BUTTON_JUWEL_END
     case "ja":    return BUTTON_JUWEL_ALL
-    default:      return BUTTON_MONEY
+    default:      return type
   }
 }
 
