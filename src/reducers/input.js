@@ -39,7 +39,7 @@ const initialState = {  mes: ["ようこそ"],
                         money: 0,
                         juwel: {end: 0, all: 0},
                         juweltype: JUWEL_END,
-                        itemflag: {s: true, m: false, l: true, money: true, jall: true},
+                        itemflag: {s: true, m: true, l: true, money: true, jall: true},
                         changed: {lv: [], goal:[], items: [], itemm: [], iteml: [], money: [], jend: [], jall: []}
                       }
 
@@ -269,33 +269,33 @@ export default (state = initialState, action) => {
   switch(action.type){
     case INPUT:
       return Object.assign({}, state,{
-        exp: {now: loveLv2Exp(new_lv)},
-        lv:  {now: new_lv},
+        exp: {now: loveLv2Exp(new_lv), goal: state.exp.goal },
+        lv:  {now: new_lv, goal: state.lv.goal },
       })
 
     case INPUT_GOALLV:
       return Object.assign({}, state,{
-        exp: {goal: loveLv2Exp(new_lv)},
-        lv:  {goal: new_lv}
+        exp: {goal: loveLv2Exp(new_lv), now: state.exp.now },
+        lv:  {goal: new_lv, now: state.lv.now }
       })
 
     case INPUT_ITEM_S:
-      return Object.assign({}, state,{ item: {s: new_item} })
+      return Object.assign({}, state,{ item: {s: new_item, m: state.item.m, l: state.item.l} })
 
     case INPUT_ITEM_M:
-      return Object.assign({}, state,{ item: {m: new_item} })
+      return Object.assign({}, state,{ item: {m: new_item, s: state.item.s, l: state.item.l} })
 
     case INPUT_ITEM_L:
-      return Object.assign({}, state,{ item: {l: new_item} })
+      return Object.assign({}, state,{ item: {l: new_item, s: state.item.s, m: state.item.m} })
 
     case INPUT_MONEY:
       return Object.assign({}, state,{ money: new_money })
 
     case INPUT_JUWEL_END:
-      return Object.assign({}, state,{ juwel: {end: new_juwel } })
+      return Object.assign({}, state,{ juwel: {end: new_juwel, all: state.juwel.all } })
 
     case INPUT_JUWEL_ALL:
-      return Object.assign({}, state,{ juwel: {all: new_juwel } })
+      return Object.assign({}, state,{ juwel: {all: new_juwel, end: state.juwel.end } })
 
     case RADIO_JUWEL:
       return Object.assign({}, state,{ juweltype: action.juwel })
@@ -440,7 +440,6 @@ export default (state = initialState, action) => {
        })
 
     case CHECK_ITEMFLAG:
-
       return Object.assign({}, state, {
         itemflag: flag_toggle(action.check, state.itemflag)
        })

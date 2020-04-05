@@ -2,7 +2,14 @@ $heart-inback: rgb(45, 45, 45);
 $heart-bar: rgb(255, 109, 144);
 $hover-button: rgba(144, 109, 255, 0.3);
 
-
+button{
+  cursor: pointer;
+  &:active{
+    box-shadow:none;
+    top: 3px;
+    left: 2px;
+  }
+}
 #section1{
   width: 95%;
   margin-left: auto;
@@ -15,13 +22,32 @@ $hover-button: rgba(144, 109, 255, 0.3);
 .col{
   float: left;
 }
+.mx-auto{
+  margin-left: auto;
+  margin-right: auto;
+}
+.px-auto{
+  padding-left: auto;
+  padding-right: auto;
+}
+
+.w-100p{ width: 100%; }
 .w-150{ width: 150px; }
 .w-200{ width: 200px; }
 .w-450{ width: 450px; }
-
+.mt-1{ margin-top: 10px;}
+.mt-2{ margin-top: 20px;}
+.mt-5{ margin-top: 50px;}
+.pt-2{ padding-top: 20px;}
+.pt-4{ padding-top: 40px;}
+.pt-5{ padding-top: 50px;}
+.px-1{ padding-left: 10px; padding-right: 10px;}
+.px-2{ padding-left: 20px; padding-right: 20px;}
 .text-right{ text-align: right; }
 .text-center{ text-align: center; }
 .pos-rel{ position: relative; }
+.d-inline{ display: inline-block;}
+.d-none{ display: none;}
 .signboard{ text-align: center; }
 
 .message_box{
@@ -109,7 +135,7 @@ $hover-button: rgba(144, 109, 255, 0.3);
     position: relative;
     margin: 8px;
     width: 45px;
-    height: 45px;
+    height: 30px;
     border-radius: 4px;
     box-shadow: 3px 2px #555;
     &:hover{
@@ -117,11 +143,6 @@ $hover-button: rgba(144, 109, 255, 0.3);
       font-size: 80%;
       border-color: $hover-button;
       background-color: $hover-button;
-    }
-    &:active{
-      box-shadow:none;
-      top: 3px;
-      left: 2px;
     }
   }
   .btn-reset{
@@ -228,10 +249,9 @@ $hover-button: rgba(144, 109, 255, 0.3);
 }
 
 .table_money{
-  margin: 50px 20px;
 
   table{
-    width: 454px;
+    width: 450px;
     border: 2px #111 solid;
     border-collapse:  collapse;
   }
@@ -239,7 +259,7 @@ $hover-button: rgba(144, 109, 255, 0.3);
     td{
       text-align: center;
       padding: 5px 10px;
-      border-bottom: 1px #111 solid;
+      border-bottom: 2px #111 solid;
     }
   }
   tbody{
@@ -255,12 +275,32 @@ $hover-button: rgba(144, 109, 255, 0.3);
     font-size: 120%;
 
   }
+  .column_name{
+    font-size: 110%;
+    width: 90px;
+  }
   .column_stock{
     text-align: right;
+    width: 100px;
   }
   .column_exp{
-    padding-right: 20px;
     text-align: right;
+    width: 20px;
+  }
+  .column_getexp{
+    text-align: right;
+    width: 40px;
+  }
+  .column_check{
+    width: 15px;
+    text-align: center;
+  }
+  .table_input{
+    font-size: 120%;
+    text-align: right;
+    height: 1.8rem;
+    width: 100px;
+    padding: 4px;
   }
 }
 #Level{
