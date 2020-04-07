@@ -1,6 +1,8 @@
 $heart-inback: rgb(45, 45, 45);
 $heart-bar: rgb(255, 109, 144);
 $hover-button: rgba(144, 109, 255, 0.3);
+$table-outborder: 2px solid #111;
+$table-inborder: 1px solid #111;
 
 button{
   cursor: pointer;
@@ -34,6 +36,7 @@ button{
 .w-100p{ width: 100%; }
 .w-150{ width: 150px; }
 .w-200{ width: 200px; }
+.w-300{ width: 300px; }
 .w-450{ width: 450px; }
 .mt-1{ margin-top: 10px;}
 .mt-2{ margin-top: 20px;}
@@ -63,14 +66,6 @@ button{
   }
 }
 
-.inputs{
-  display: block;
-  float: left;
-  margin: 20px;
-  margin-bottom: 50px;
-  padding: 20px;
-  border: 1px #111 solid;
-}
 .heart{
   clear: left;
   position: relative;
@@ -113,16 +108,6 @@ button{
   background: $heart-inback;
 }
 
-.lovelv{
-  display: block;
-  float: left;
-  margin: 20px;
-  text-align: center;
-  width: 200px;
-  border: 2px #111 solid;
-  background-color: #fde;
-}
-
 .input_field{
   padding-top: 20px;
   input{
@@ -156,62 +141,78 @@ button{
 }
 .input_item{
   position: relative;
-  input{
-    width: 2.9rem;
-  }
-  button{
-    width: 45px;
-  }
-  span{
-    right: 20px;
-  }
+  input{ width: 2.9rem; }
+  button{ width: 45px; }
+  span{ right: 20px; }
 }
 .input_juwel{
   position: relative;
-
-  input{
-    width: 4.0rem;
-  }
-  button{
-    width: 45px;
-  }
-  span{
-  }
+  input{ width: 4.0rem; }
+  button{ width: 45px; }
+  span{ }
 }
 .input_money{
   position: relative;
-  input{
-    width: 6rem;
-  }
-  button{
-    width: 70px;
-  }
-  span{
-    left: 130px;
-  }
+  input{ width: 6rem; }
+  button{ width: 70px; }
+  span{ left: 130px; }
 }
 
+table{
+  width: 454px;
+  border: $table-outborder;
+  border-collapse:  collapse;
+}
+thead{
+  td{
+    text-align: center;
+    padding: 5px 10px;
+    border-bottom: $table-inborder;
+  }
+}
+tbody{
+  th{
+    border-bottom: $table-inborder;
+  }
+  td{
+    padding: 10px 10px;
+    border-bottom: $table-inborder;
+  }
+}
+.table_title{
+  display: inline-block;
+  padding: 10px 0;
+  font-size: 110%;
+  font-weight: bold;
+}
+.table_example{
+  table{
+    font-size: 85%;
+    text-align: right;
+  }
+  .column_example{
+    width: 150px;
+    text-align: center;
+  }
+  .column_count{
+    width: 50px;
+  }
+  .column_cost{
+    width: 70px;
+  }
+  .column_time{
+    width: 130px;
+  }
+}
 .table_lv{
-  clear: left;
-  margin: 50px 20px;
-
   table{
     width: 454px;
-    border: 2px #111 solid;
-    border-collapse:  collapse;
   }
-  thead{
-    td{
-      text-align: center;
-      padding: 5px 10px;
-      border-bottom: 1px #111 solid;
-    }
-  }
-
   tbody{
     .progbar{
       position: absolute;
       z-index: 0;
+      width: 225px;
       left: 0;
       top: 6px;
       background: rgba( 240, 200, 220, 0.5);
@@ -220,20 +221,19 @@ button{
     .progbar_i{
       position: absolute;
       z-index: 0;
-      left: 150;
+      width: 225px;
+      left: 225px;
       top: 6px;
       background: rgba( 250, 250, 210, 1);
       height: 37px;
     }
     th{
       position: relative;
-      border-bottom: 1px #111 solid;
     }
     td{
       position: relative;
       padding: 15px 10px;
-      border-bottom: 1px #111 solid;
-      }
+    }
   }
   .goal_lv{
     position: relative;
@@ -246,38 +246,23 @@ button{
     padding-right: 20px;
     text-align: right;
   }
+  .column_graph{
+    text-align: center;
+  }
+  .graph_text{
+    position: relative;
+    z-index: 10;
+    text-align: center;
+
+  }
 }
 
 .table_money{
-
-  table{
-    width: 450px;
-    border: 2px #111 solid;
-    border-collapse:  collapse;
-  }
-  thead{
-    td{
-      text-align: center;
-      padding: 5px 10px;
-      border-bottom: 2px #111 solid;
-    }
-  }
-  tbody{
-    th{
-      border-bottom: 1px #111 solid;
-    }
-    td{
-      padding: 15px 10px;
-      border-bottom: 1px #111 solid;
-      }
-  }
   .item_name{
     font-size: 120%;
-
   }
   .column_name{
-    font-size: 110%;
-    width: 90px;
+    width: 130px;
   }
   .column_stock{
     text-align: right;
@@ -302,29 +287,6 @@ button{
     width: 100px;
     padding: 4px;
   }
-}
-#Level{
-  position: relative;
-}
-#Items{
-  position: relative;
-}
-#Itemm{
-  position: relative;
-}
-
-#Iteml{
-  position: relative;
-}
-#Juwelend{
-  position: relative;
-}
-#Juwelall{
-  position: relative;
-}
-#Money{
-  position: relative;
-
 }
 .changed_value{
   position: absolute;
@@ -355,7 +317,7 @@ button{
 
 .door{
   display: block;
-  border: 1px solid #111;
+  border: $table-inborder;
   color: #111;
   padding: 3pc 10px 5px;
 }
