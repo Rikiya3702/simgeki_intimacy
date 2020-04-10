@@ -1,15 +1,34 @@
-$heart-inback: rgb(45, 45, 45);
-$heart-bar: rgb(255, 109, 144);
-$hover-button: rgba(144, 109, 255, 0.3);
-$table-outborder: 2px solid #111;
-$table-inborder: 1px solid #111;
+@import url('./Heart.scss');
+@import url('./Table.scss');
+@import url('./Transitions.scss');
+
+$button-border:       rgba(250, 95, 213, 0.5);
+$button-border-hover: rgba(250, 95, 213, 0.8);
+$button-back:         rgba(250, 95, 213, 0.05);
+$button-back-hover:   rgba(250, 95, 213, 0.3);
+$button-shadow:        3px 2px rgba(120, 95, 95, 0.7);
+$button-shadow-active: 0.5px 0.5px rgba(120, 95, 95, 0.7);
+
+body{
+  margin-bottom: 37px;
+}
 
 button{
+  outline: none;
   cursor: pointer;
+  border-radius: 4px;
+  box-shadow: $button-shadow;
+  border-color: $button-border;
+  background-color: $button-back;
+  &:hover{
+    transition: 0.3s;
+    border-color: $button-border-hover;
+    background-color: $button-back-hover;
+  }
   &:active{
-    box-shadow:none;
-    top: 3px;
-    left: 2px;
+    box-shadow: $button-shadow-active;
+    top: 2.5px;
+    left: 1.5px;
   }
 }
 hr{
@@ -34,6 +53,7 @@ ul{ list-style: none; }
   padding-left: auto;
   padding-right: auto;
 }
+.bold{ font-weight: bold; }
 .color_red{ color: rgb(185, 110, 114); }
 .color_yellow{ color: rgb(170, 160, 44); }
 .row{ clear: left; }
@@ -77,56 +97,6 @@ ul{ list-style: none; }
   border: 1px #111 double;
   border-radius: 5px;
   padding: 15px;
-  margin: 20px;
-}
-
-.heart{
-  clear: left;
-  position: relative;
-  z-index: 20;
-}
-
-.heart_out{
-  position: relative;
-  z-index: 30;
-  width: 200px;
-  height: 200px;
-}
-.heart_label{
-  position: absolute;
-  z-index: 40;
-  font-size: 140%;
-  top: -5px;
-  width: 200px;
-  text-align: center;
-}
-.heart_lv{
-  position: absolute;
-  z-index: 40;
-  font-size: 65px;
-  text-align: center;
-  width: 200px;
-  top: 55px;
-  color: #fefefd;
-}
-
-.heart_bar{
-  position: absolute;
-  z-index: 10;
-  background-color: $heart-bar;
-  width: 200px;
-}
-.heart_back{
-  position: absolute;
-  width: 200px;
-  z-index: 5;
-  background: $heart-inback;
-}
-.heart_with_item{
-  .heart_label{
-    width: 280px;
-    text-align: left;
-  }
 }
 
 .input_field{
@@ -142,17 +112,9 @@ ul{ list-style: none; }
     margin: 8px;
     width: 45px;
     height: 30px;
-    border-radius: 4px;
-    box-shadow: 3px 2px #555;
-    &:hover{
-      transition: 0.3s;
-      font-size: 80%;
-      border-color: $hover-button;
-      background-color: $hover-button;
-    }
   }
   .btn-reset{
-    border-color: #f55;
+    width: 60px;
   }
 }
 
@@ -179,155 +141,20 @@ ul{ list-style: none; }
   span{ left: 130px; }
 }
 .example_list{
+  position: relative;
+  top: -10px;
   font-size: 90%;
   text-align: left;
   list-style: circle;
-}
-table{
-  width: 454px;
-  border: $table-outborder;
-  border-collapse:  collapse;
-}
-thead{
-  td{
-    text-align: center;
-    padding: 5px 10px;
-    border-bottom: $table-inborder;
-  }
-}
-tbody{
-  th{
-    border-bottom: $table-inborder;
-  }
-  td{
-    padding: 10px 10px;
-    border-bottom: $table-inborder;
-  }
-}
-.table_title{
-  display: inline-block;
-  padding: 10px 0;
-  font-size: 110%;
-  font-weight: bold;
-}
-.table_example{
-  table{
-    font-size: 85%;
-    text-align: right;
-  }
-}
-.table_lv{
-  table{ width: 454px; }
-  tbody{
-    .progbar{
-      position: absolute;
-      z-index: 0;
-      width: 225px;
-      top: 6px;
-      height: 37px;
-    }
-    .progbar_lv{
-      left: 0;
-      background: rgba( 240, 200, 220, 0.5);
-    }
-    .progbar_item{
-      left: 225px;
-      background: rgba( 250, 250, 210, 1);
-    }
-    td{
-      position: relative;
-      padding: 15px 10px;
-    }
-  }
-  .goal_lv{
-    position: relative;
-    z-index: 10;
-  }
-  .column_lv{
-    position: relative;
-    font-size: 150%;
-  }
-  .column_exp{
-    padding-right: 20px;
-    text-align: right;
-  }
-  .graph_text{
-    position: relative;
-    z-index: 10;
-    top: -2px;
-    text-align: center;
-    font-weight: bold;
-    font-size: 85%;
-    text-shadow: 1px 2px #ddd;
-  }
-}
-
-.table_money{
-  .item_name{
-    font-size: 120%;
-  }
-  .table_input{
-    font-size: 120%;
-    text-align: right;
-    height: 1.8rem;
-    width: 100px;
-    padding: 4px;
-  }
-}
-.changed_value{
-  position: absolute;
-  top: -50px;
-  right: 0px;
-  color: #111;
-  padding: 3pc 10px 5px;
-}
-
-.changed_value-enter{
-  opacity: 1;
-}
-.changed_value-enter-active{
-  transition: all 1.2s ease-in-out;
-  top: -70px;
-  opacity: 0;
-}
-.changed_value-enter-done{
-  display: none;
-  opacity: 0;
+  border: 1px solid #000;
+  padding: 20px 30px;
+  background: #fee;
 }
 
 .btn-toggle{
+  position: relative;
   margin-top: 15px auto;
-  width: 45px;
+  font-size: 80%;
+  width: 180px;
   height: 30px;
-}
-
-.door{
-  display: block;
-  color: #111;
-  max-height: 300px;
-  overflow: hidden;
-}
-
-.door-enter{
-  max-height: 0px;
-}
-.door-enter-active{
-  transition: all 0.5s ease-in-out;
-  max-height: 300px;
-}
-.door-enter-done{
-  max-height: 300px;
-  overflow: hidden;
-}
-
-.door-exit{
-  max-height: 300px;
-}
-.door-exit-active{
-  transition: all 0.5s ease-in-out;
-  max-height: 0px;
-}
-.door-exit-done{
-  max-height: 0px;
-  overflow: hidden;
 }

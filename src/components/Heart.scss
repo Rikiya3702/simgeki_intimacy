@@ -1,0 +1,59 @@
+$heart-size: 200px;
+$heart-inback: rgb(45, 45, 45);
+$heart-bar: rgb(255, 109, 144);
+$heart-label-shadow: rgba(255, 222, 222, 0.4);
+
+.heart{
+  clear: left;
+  position: relative;
+  z-index: 20;
+}
+
+.heart_out{
+  position: relative;
+  z-index: 30;
+  width: $heart-size;
+  height: $heart-size;
+}
+
+.heart_label{
+  position: absolute;
+  z-index: 40;
+  font-size: 140%;
+  top: -5px;
+  width: $heart-size;
+  text-align: center;
+  font-weight: bold;
+  text-shadow: 2px 2px $heart-label-shadow;
+}
+
+.heart_lv{
+  position: absolute;
+  z-index: 40;
+  font-size: 65px;
+  text-align: center;
+  width: $heart-size;
+  top: 55px;
+  color: #fefefd;
+}
+
+.heart_bar{
+  position: absolute;
+  z-index: 10;
+  background-color: $heart-bar;
+  width: $heart-size;
+}
+
+.heart_back{
+  position: absolute;
+  width: $heart-size;
+  z-index: 5;
+  background: $heart-inback;
+}
+
+.heart_with_item{
+  .heart_label{
+    width: 280px;
+    text-align: left;
+  }
+}

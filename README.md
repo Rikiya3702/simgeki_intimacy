@@ -1,3 +1,3 @@
-# ONGEKI LovePoint Simulater
+# ONGEKI Intimacy Simulator
 
 with React & Redux

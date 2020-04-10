@@ -4,19 +4,22 @@ import { reduxForm } from 'redux-form';
 import {CSSTransition, TransitionGroup } from 'react-transition-group';
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import HeartImage from '../image/onheart.png'
+import { getExp2Lv } from '../reducers/input.js'
 import './App.scss';
 
-import { input, input_goal, input_item_s, input_item_m, input_item_l, input_money, input_juwel_end, input_juwel_all,
-   button_change, button_play, radio_juweltype, check_itemflag } from '../actions'
-import { JUWEL_END, JUWEL_ALL, ITEM_S, ITEM_M, ITEM_L, MONEY,
-  BUTTON_LV,
-  BUTTON_LV_GOAL,
-  BUTTON_ITEM_S,
-  BUTTON_ITEM_M,
-  BUTTON_ITEM_L,
-  BUTTON_MONEY,
-  BUTTON_JUWEL_END,
-  BUTTON_JUWEL_ALL } from '../actions'
+import {
+  input, input_goal,
+  input_item_s, input_item_m, input_item_l, input_money,
+  input_juwel_end, input_juwel_all,
+  button_change, button_play, radio_juweltype, check_itemflag
+  } from '../actions'
+
+import {
+  ITEM_S, ITEM_M, ITEM_L, MONEY, JUWEL_END, JUWEL_ALL,
+  BUTTON_LV,  BUTTON_LV_GOAL,
+  BUTTON_ITEM_S,  BUTTON_ITEM_M,  BUTTON_ITEM_L,  BUTTON_MONEY,
+  BUTTON_JUWEL_END,  BUTTON_JUWEL_ALL
+  } from '../actions/'
 
 const EXP_MONEY = 0.01
 const EXP_ITEM_S = 6
@@ -36,10 +39,10 @@ const ONE_CREDIT = 300
 class App extends Component {
   constructor(props) {
     super(props)
-    this.state = {kore: true}
+    this.state = {simcon_flag: true}
   }
-  handleClick = () => {
-    this.setState( {kore: !this.state.kore})
+  simconHandleClick = () => {
+    this.setState( {simcon_flag: !this.state.simcon_flag} )
   }
   render(){
     const props = this.props
@@ -65,9 +68,9 @@ class App extends Component {
           <div className="col pos-rel w-200 text-right">
             <InputLvGoal  value={props.lv.goal} changed={props.changed.goal} buttonChange={props.button_change} inputValue={props.input_goal}/>
             <div>
-              <p>EXP: {props.exp.now}</p>
-              <p>目標EXP: {props.exp.goal}</p>
-              <p>必要EXP: { Math.ceil(props.exp.goal - props.exp.now)}</p>
+              <p>EXP: <span className="bold">{props.exp.now}</span></p>
+              <p>目標EXP: <span className="bold">{props.exp.goal}</span></p>
+              <p>必要EXP: <span className="bold">{ Math.ceil(props.exp.goal - props.exp.now)}</span></p>
             </div>
           </div>
         </div>
@@ -76,9 +79,9 @@ class App extends Component {
           <ExampleTable nesexp={ Math.max(props.exp.goal - props.exp.now, 0 ) } />
         </div>
         <div className="row w-450 mx-auto py-1 text-right">
-          <span className="text-right">シミュレート条件</span>
-          <button className="btn-toggle" onClick={ this.handleClick }>[{ this.state.kore ? "x" : "+" }]</button>
-          <CSSTransition in={this.state.kore} classNames="door" timeout={1000}>
+          <span className="text-right"></span>
+          <button className="btn-toggle" onClick={ this.simconHandleClick }>シミュレート条件{ this.state.simcon_flag ? "を閉じる" : "" }</button>
+          <CSSTransition in={this.state.simcon_flag} classNames="door" timeout={1000}>
             <div className="door mx-auto">
               <ul className="example_list">
                 <li>マニーラン1セットにつき{MONEYRUN_TIME}秒</li>
@@ -196,13 +199,13 @@ class App extends Component {
         </div>
         <div className="heart_with_item row mt-2 w-450 mx-auto">
           <div className="col pt-2 px-1">
-            <Heart label="全部貢いだ時の親密度Lv." lv={getExp2Lv( props.exp.now + getItemExp(props))} par={ getExp2Lvper( props.exp.now + getItemExp(props)) } />
+            <Heart label="全部貢いだ時の親密度Lv." lv={getExp2Lv( props.exp.now + props.itemexp)} par={ getExp2Lvper( props.exp.now + props.itemexp) } />
           </div>
           <div className="col pos-rel w-200 mt-4 text-right">
-            <p>現在のEXP: {props.exp.now}</p>
-            <p>アイテムのEXP: {getItemExp(props)}</p>
-            <p>合計EXP: {props.exp.now + getItemExp(props)}</p>
-            <p>目標レベルのEXP: {props.exp.goal}</p>
+            <p>現在のEXP: <span className="bold">{props.exp.now}</span></p>
+            <p>アイテムのEXP: <span className="bold">{props.itemexp}</span></p>
+            <p>合計EXP: <span className="bold">{props.exp.now + props.itemexp}</span></p>
+            <p>目標レベルのEXP: <span className="bold">{props.exp.goal}</span></p>
           </div>
         </div>
 
@@ -221,14 +224,14 @@ class App extends Component {
                 </tr>
               </thead>
               <tbody>
-                <LoveTableWithItem exp={props.exp.now} itemexp={getItemExp(props)} lv={100} expg={3300} />
-                <LoveTableWithItem exp={props.exp.now} itemexp={getItemExp(props)} lv={200} expg={7260} />
-                <LoveTableWithItem exp={props.exp.now} itemexp={getItemExp(props)} lv={300} expg={11880} />
-                <LoveTableWithItem exp={props.exp.now} itemexp={getItemExp(props)} lv={400} expg={17160} />
-                <LoveTableWithItem exp={props.exp.now} itemexp={getItemExp(props)} lv={500} expg={23100} />
-                <LoveTableWithItem exp={props.exp.now} itemexp={getItemExp(props)} lv={600} expg={29700} />
-                <LoveTableWithItem exp={props.exp.now} itemexp={getItemExp(props)} lv={700} expg={42240} />
-                <LoveTableWithItem exp={props.exp.now} itemexp={getItemExp(props)} lv={800} expg={59400} />
+                <LoveTableWithItem exp={props.exp.now} itemexp={props.itemexp} lv={100} expg={3300} />
+                <LoveTableWithItem exp={props.exp.now} itemexp={props.itemexp} lv={200} expg={7260} />
+                <LoveTableWithItem exp={props.exp.now} itemexp={props.itemexp} lv={300} expg={11880} />
+                <LoveTableWithItem exp={props.exp.now} itemexp={props.itemexp} lv={400} expg={17160} />
+                <LoveTableWithItem exp={props.exp.now} itemexp={props.itemexp} lv={500} expg={23100} />
+                <LoveTableWithItem exp={props.exp.now} itemexp={props.itemexp} lv={600} expg={29700} />
+                <LoveTableWithItem exp={props.exp.now} itemexp={props.itemexp} lv={700} expg={42240} />
+                <LoveTableWithItem exp={props.exp.now} itemexp={props.itemexp} lv={800} expg={59400} />
                 <tr>
                   <td className="text-center" colSpan="2">
                     <span className="graph_text color_red">現在EXP</span>
@@ -279,11 +282,11 @@ class App extends Component {
           <div className="lovelv">
             <h4>future</h4>
             <div className="lovelv_number">
-              <h1>{ getExp2Lv( props.exp.now + getItemExp(props)) }</h1>
-              <h6>({ getExp2Lvper( props.exp.now + getItemExp(props)) } %)</h6>
+              <h1>{ getExp2Lv( props.exp.now + props.itemexp) }</h1>
+              <h6>({ getExp2Lvper( props.exp.now + props.itemexp) } %)</h6>
             </div>
-            <h5>貢げるEXP　{ getItemExp(props) } </h5>
-            <h5>全捧げしたEXP　{ props.exp.now + getItemExp(props) } </h5>
+            <h5>貢げるEXP　{ props.itemexp } </h5>
+            <h5>全捧げしたEXP　{ props.exp.now + props.itemexp } </h5>
           </div>
 
           <div className="lovelv">
@@ -295,7 +298,7 @@ class App extends Component {
             <br />残り　{ props.exp.goal - props.exp.now } ({ Math.floor((props.exp.now / props.exp.goal)*100) } %)</h5>
           </div>
         </div>
-        <div className="message_box w-400 mx-auto mt-2">
+        <div className="message_box w-400 mx-auto mt-5 d-none">
           <Messages messages={props.mes} />
         </div>
     </div>
@@ -310,7 +313,6 @@ const validate = values => {
 }
 
 const mapStateToProps = state => ({
-  openflag: {menu1: false},
   mes: state.input.mes,
   lv: state.input.lv,
   exp: state.input.exp,
@@ -319,7 +321,8 @@ const mapStateToProps = state => ({
   juwel: state.input.juwel,
   juweltype: state.input.juweltype,
   changed: state.input.changed,
-  itemflag: state.input.itemflag
+  itemflag: state.input.itemflag,
+  itemexp: getItemExp(state.input)
  })
 
 const mapDispatchToProps = ({
@@ -366,7 +369,14 @@ class InputLv extends Component {
   return(
     <div className="input_field">
       <label>現在レベル→</label>
-      <input className="input_lv" type='text' value={this.props.value} onChange={ (eve) => { this.props.inputValue(eve.target.value)} } />
+      <input
+        className="input_lv"
+        type="tel"
+        autocomplete="off"
+        maxlength="3"
+        size="3"
+        value={this.props.value}
+        onChange={ (eve) => { this.props.inputValue(eve.target.value)} } />
       <ChangeValue value={this.props.changed} />
       <div>
         <button onClick={ ()=> {this.props.buttonChange(BUTTON_LV, 1)} }>+1</button>
@@ -377,7 +387,7 @@ class InputLv extends Component {
         <button onClick={ ()=> {this.props.buttonChange(BUTTON_LV, -1)} }>-1</button>
         <button onClick={ ()=> {this.props.buttonChange(BUTTON_LV, -10)} }>-10</button>
         <button onClick={ ()=> {this.props.buttonChange(BUTTON_LV, -100)} }>-100</button>
-        <button onClick={ ()=> {this.props.buttonChange(BUTTON_LV, 0)} } className="btn-reset" >Clear</button>
+        <button onClick={ ()=> {this.props.buttonChange(BUTTON_LV, 0)} } className="btn-reset" >リセット</button>
       </div>
     </div>
   )}
@@ -388,12 +398,18 @@ class InputLvGoal extends Component {
   return(
     <div className="input_field">
       <label>目標レベル→</label>
-      <input className="input_lv" type='text' value={this.props.value} onChange={ (eve) => { this.props.inputValue(eve.target.value)} } />
+      <input className="input_lv"
+        type="tel"
+        autocomplete="off"
+        maxlength="3"
+        size="3"
+        value={this.props.value}
+        onChange={ (eve) => { this.props.inputValue(eve.target.value)} } />
       <ChangeValue value={this.props.changed} />
       <div>
         <button onClick={ ()=> {this.props.buttonChange(BUTTON_LV_GOAL, -100)} }>-100</button>
         <button onClick={ ()=> {this.props.buttonChange(BUTTON_LV_GOAL, 100)} }>+100</button>
-        <button onClick={ ()=> {this.props.buttonChange(BUTTON_LV_GOAL, 0)} } className="btn-reset" >Clear</button>
+        <button onClick={ ()=> {this.props.buttonChange(BUTTON_LV_GOAL, 0)} } className="btn-reset" >リセット</button>
       </div>
     </div>
   )}
@@ -415,7 +431,13 @@ class InputItem extends Component {
   return(
     <div className="input_field">
       <label>{label}</label>
-      <input type='text' value={this.props.value} onChange={ (eve) => { this.props.inputValue(eve.target.value)} } />
+      <input
+        type="tel"
+        autocomplete="off"
+        maxlength="4"
+        size="4"
+        value={this.props.value}
+        onChange={ (eve) => { this.props.inputValue(eve.target.value)} } />
       <ChangeValue value={this.props.changed} />
     </div>
   )}
@@ -547,7 +569,11 @@ const MoneyTableRecordInput = props => {
         <th className="w-130">{item_name}</th>
         <td className="w-20 text-right">{item_exp}</td>
         <td className="w-100 text-right">
-          <input type='text' className="table_input" value={props.stock} onChange={ (eve) => { props.inputValue(eve.target.value)} } />
+          <input className="table_input"
+            type="tel"
+            autocomplete="off"
+            value={props.stock}
+            onChange={ (eve) => { props.inputValue(eve.target.value)} } />
         </td>
         <td className="w-40 text-right">{ Math.floor(item_exp * props.stock) }</td>
         <td className="w-15 text-center">
@@ -629,42 +655,6 @@ const getItemExp = props => {
   if(props.itemflag.l){ exp += props.item.l * EXP_ITEM_L }
   if(props.itemflag.jall){ exp += props.juwel.all * EXP_JUWEL_ALL }
   return exp
-}
-
-const getExp2Lv = exp => {
-  let count = exp * 10
-  let next_exp = 0
-  let i = 0
-
-  for( i = 0; count > 0; i++ ){
-    next_exp = 0
-    if(i < 100){
-      for( let j = Math.floor(i/10); j*10 <= i ; j++){
-        next_exp += 60 + (( j - 1 ) * 60)
-      }
-      next_exp +=  60
-    }
-    else if(i >= 100 ){
-      let h = Math.floor(i/100)
-      const hi = i - h * 100;
-
-      if(       i >= 700){ h = 21 }
-      else if(  i >= 600){ h = 14 }
-
-      for( let j = Math.floor(hi/10); j*10 <= hi ; j++){
-        next_exp += (6 + ( j - 1 ) * 6) * (10 + 2 * h )
-      }
-      next_exp +=  6 *  (10 + 2 * h )
-    }
-    if(count - next_exp === 0){
-      i++
-      break
-    }else if(count - next_exp < 0){
-      break
-    }
-  count -= next_exp
-  }
-  return i
 }
 
 const getExp2Lvper = exp => {

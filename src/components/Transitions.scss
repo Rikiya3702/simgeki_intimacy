@@ -1,0 +1,51 @@
+.changed_value{
+  position: absolute;
+  top: -50px;
+  right: 0px;
+  color: #111;
+  padding: 3pc 10px 5px;
+}
+
+.changed_value-enter{
+  opacity: 1;
+}
+.changed_value-enter-active{
+  transition: all 1.2s ease-in-out;
+  top: -70px;
+  opacity: 0;
+}
+.changed_value-enter-done{
+  display: none;
+  opacity: 0;
+}
+
+.door{
+  display: block;
+  color: #111;
+  max-height: 300px;
+  overflow: hidden;
+}
+
+.door-enter{
+  max-height: 0px;
+}
+.door-enter-active{
+  transition: all 0.5s ease-in-out;
+  max-height: 300px;
+}
+.door-enter-done{
+  max-height: 300px;
+  overflow: hidden;
+}
+
+.door-exit{
+  max-height: 300px;
+}
+.door-exit-active{
+  transition: all 0.5s ease-in-out;
+  max-height: 0px;
+}
+.door-exit-done{
+  max-height: 0px;
+  overflow: hidden;
+}
