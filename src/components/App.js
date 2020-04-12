@@ -39,7 +39,7 @@ const ONE_CREDIT = 300
 class App extends Component {
   constructor(props) {
     super(props)
-    this.state = {simcon_flag: true}
+    this.state = {simcon_flag: false}
   }
   simconHandleClick = () => {
     this.setState( {simcon_flag: !this.state.simcon_flag} )
