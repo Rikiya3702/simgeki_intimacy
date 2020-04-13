@@ -1,3 +1,4 @@
+// changed_value /////
 .changed_value{
   position: absolute;
   top: -50px;
@@ -19,6 +20,7 @@
   opacity: 0;
 }
 
+// door /////
 .door{
   display: block;
   color: #111;
@@ -48,4 +50,69 @@
 .door-exit-done{
   max-height: 0px;
   overflow: hidden;
+}
+
+
+// sidedoor /////
+#About{
+  display: none;
+  position: absolute;
+  width: 450px;
+  font-size: 90%;
+  ul{
+    list-style: circle;
+  }
+}
+#Main{
+  display: block;
+  position: absolute;
+  width: 450px;
+}
+
+.sidedoor{
+}
+.sidedoor-enter{
+  #Main{ transform: rotateY(0deg) }
+  #About{ transform: rotateY(-90deg);
+  display: block;
+  }
+}
+.sidedoor-enter-active{
+  #Main{
+    transition: all 0.5s ease-in;
+    transform: rotateY(90deg)
+  }
+  #About{
+    transition: all 0.5s ease-out 0.5s;
+    transform: rotateY(0deg)
+  }
+}
+.sidedoor-enter-done{
+  #Main{ display: none; }
+  #About{ display: block; }
+}
+
+.sidedoor-exit{
+  #Main{
+    transform: rotateY(90deg);
+    display: block;
+  }
+  #About{
+    transform: rotateY(0deg);
+    display: block;
+  }
+}
+.sidedoor-exit-active{
+  #Main{
+    transition: all 0.5s ease-out 0.5s;
+    transform: rotateY(0deg)
+  }
+  #About{
+    transition: all 0.5s ease-in;
+    transform: rotateY(-90deg)
+  }
+}
+.sidedoor-exit-done{
+  #Main{ display: block; }
+  #About{ display: none; }
 }
