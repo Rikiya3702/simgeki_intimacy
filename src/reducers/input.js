@@ -32,7 +32,15 @@ const MAX_MONEY = 99999999
 const MAX_JUWEL = 99999
 const MIN_ZERO = 0
 
+const updateMessage = () =>{
+  let mes = []
+  mes.push("更新履歴")
+  mes.push("2020/04/12　公開")
+  return mes
+}
+
 const initialState = {  mes: ["ようこそ"],
+                        updated: updateMessage(),
                         lv:  {now: 0, goal: 600},
                         exp: {now: 0, goal: 29700},
                         item: {s: 0, m: 0, l: 0 },
@@ -42,6 +50,8 @@ const initialState = {  mes: ["ようこそ"],
                         itemflag: {s: true, m: true, l: true, money: true, jall: true},
                         changed: {lv: [], goal:[], items: [], itemm: [], iteml: [], money: [], jend: [], jall: []}
                       }
+
+
 
 const getLv2Exp = lv => {
 
@@ -179,7 +189,6 @@ const flag_toggle = (type, itemflag) => {
   }
   return retobj
 }
-
 
 export default (state = initialState, action) => {
   let new_lv = validate(action.lv, MAX_LV)

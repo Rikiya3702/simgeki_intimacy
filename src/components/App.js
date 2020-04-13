@@ -39,10 +39,20 @@ const ONE_CREDIT = 300
 class App extends Component {
   constructor(props) {
     super(props)
-    this.state = {simcon_flag: false}
+    this.state = {
+      simcon_flag: false,
+      updated_flag: false,
+      about_flag: false
+    }
   }
   simconHandleClick = () => {
     this.setState( {simcon_flag: !this.state.simcon_flag} )
+  }
+  updatedHandleClick = () => {
+    this.setState( {updated_flag: !this.state.updated_flag} )
+  }
+  aboutHandleClick = () => {
+    this.setState( {about_flag: !this.state.about_flag} )
   }
   render(){
     const props = this.props
@@ -52,6 +62,17 @@ class App extends Component {
 
         <h1 className="signboard">オンゲキ親密度シミュレーター</h1>
         <hr />
+
+        <div className="w-450 mx-auto mt-5">
+          <button className="btn-toggle" onClick={ this.aboutHandleClick }>HowTo{ this.state.about_flag ? "を閉じる" : "" }</button>
+          <CSSTransition in={this.state.about_flag} classNames="door" timeout={1000}>
+            <div className="door mx-auto">
+              <div className="">
+                <p>でしてー</p>
+              </div>
+            </div>
+          </CSSTransition>
+        </div>
 
         <div className="row w-450 mx-auto">
           <div className="col pt-2 px-1">
@@ -247,6 +268,17 @@ class App extends Component {
           </div>
         </div>
 
+        <div className="w-450 mx-auto mt-5">
+          <button className="btn-toggle" onClick={ this.updatedHandleClick }>更新履歴{ this.state.updated_flag ? "を閉じる" : "" }</button>
+          <CSSTransition in={this.state.updated_flag} classNames="door" timeout={1000}>
+            <div className="door mx-auto">
+              <div className="message_box updated">
+                <Messages messages={props.updated} />
+              </div>
+            </div>
+          </CSSTransition>
+        </div>
+
         <div className="d-none">
           <button className="btn-toggle" onClick={ this.handleClick }>{ this.state.kore ? "閉じ" : "開け" }まーす</button>
           <CSSTransition in={this.state.kore} classNames="door" timeout={1000}>
@@ -298,6 +330,8 @@ class App extends Component {
             <br />残り　{ props.exp.goal - props.exp.now } ({ Math.floor((props.exp.now / props.exp.goal)*100) } %)</h5>
           </div>
         </div>
+
+
         <div className="message_box w-400 mx-auto mt-5 d-none">
           <Messages messages={props.mes} />
         </div>
@@ -313,6 +347,7 @@ const validate = values => {
 }
 
 const mapStateToProps = state => ({
+  updated: state.input.updated,
   mes: state.input.mes,
   lv: state.input.lv,
   exp: state.input.exp,

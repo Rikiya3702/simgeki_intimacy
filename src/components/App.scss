@@ -92,13 +92,23 @@ ul{ list-style: none; }
 .signboard{ text-align: center; }
 
 .message_box{
+  font-size: 90%;
   height: 170px;
   overflow-y: scroll;
-  border: 1px #111 double;
+  border: 3px #111 double;
   border-radius: 5px;
-  padding: 15px;
+  ul{
+    padding: 0 8px;
+  }
 }
-
+.updated{
+  ul{
+    li:first-child{
+      font-size: 110%;
+      font-weight: bold;
+    }
+  }
+}
 .input_field{
   padding-top: 20px;
   input{
