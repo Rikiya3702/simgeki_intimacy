@@ -96,18 +96,17 @@ class App extends Component {
                   </div>
                 </div>
                 <div className="row mx-auto py-1">
-                  <ExampleTable nesexp={ Math.max(props.exp.goal - props.exp.now, 0 ) } />
+                  <ExampleTable lv={props.lv.now} goal={props.lv.goal} nesexp={ Math.max(props.exp.goal - props.exp.now, 0 ) } />
                 </div>
                 <div className="row mx-auto py-1 text-right">
-                  <span className="text-right"></span>
                   <button className="btn-toggle" onClick={ this.simconHandleClick }>シミュレート条件{ this.state.simcon_flag ? "を閉じる" : "" }</button>
                   <CSSTransition in={this.state.simcon_flag} classNames="door" timeout={1000}>
                     <div className="door mx-auto">
                       <ul className="example_list">
                         <li>マニーラン1セットにつき{MONEYRUN_TIME}秒</li>
                         <li>オンゲキ1曲につき{GAMEPLAY_TIME}秒</li>
-                        <li>楽曲プレイで獲得するマニーは{EXPEC_MONEY}マニー、全て親密度に使う</li>
-                        <li>デッキ編成は親密度を上げたいキャラクター3枚編成</li>
+                        <li>1曲で獲得するマニーは{EXPEC_MONEY}マニー、全て親密度に使う</li>
+                        <li>デッキ編成は親密度を上げるキャラクター3枚編成</li>
                         <li>獲得ジュエルは1曲あたり{EXPEC_JUWEL}個</li>
                         <li>獲得したジュエルは親密度に使わず、計算に影響しない</li>
                         <li>370GPはコンテニューなし(余る10GP→150マニーに変換)</li>
@@ -116,6 +115,7 @@ class App extends Component {
                     </div>
                   </CSSTransition>
                 </div>
+
                 <div className="d-none">
                   <div className="row pos-rel w-450 text-center mx-auto">
                     <InputMoney value={props.money} changed={props.changed.money} buttonChange={props.button_change} inputValue={props.input_money}/>
@@ -385,7 +385,7 @@ class About extends Component {
         <h4>このアプリについて</h4>
         <ul>
           <li>オンゲキ非公式の親密度シミュレータです。</li>
-          <li>計算式は<a href="https://ongeki.gamerch.com/%E8%A6%AA%E5%AF%86%E5%BA%A6" target="_blank">wiki</a>の情報を元に作成しましたが、誤差があったらごめんなさい。</li>
+          <li>計算式は<a href="https://ongeki.gamerch.com/%E8%A6%AA%E5%AF%86%E5%BA%A6" rel="noopener noreferrer" target="_blank">wiki</a>の情報を元に作成しましたが、誤差があったらごめんなさい。</li>
           <li>あなたのオンゲキライフがより良い物となりますように。</li>
 
         </ul>
@@ -399,7 +399,6 @@ class About extends Component {
     )
   }
 }
-
 
 class InputMoney extends Component {
   render(){
@@ -433,8 +432,8 @@ class InputLv extends Component {
       <input
         className="input_lv"
         type="tel"
-        autocomplete="off"
-        maxlength="3"
+        autoComplete="off"
+        maxLength="3"
         size="3"
         value={this.props.value}
         onChange={ (eve) => { this.props.inputValue(eve.target.value)} } />
@@ -461,8 +460,8 @@ class InputLvGoal extends Component {
       <label>目標レベル→</label>
       <input className="input_lv"
         type="tel"
-        autocomplete="off"
-        maxlength="3"
+        autoComplete="off"
+        maxLength="3"
         size="3"
         value={this.props.value}
         onChange={ (eve) => { this.props.inputValue(eve.target.value)} } />
@@ -494,8 +493,8 @@ class InputItem extends Component {
       <label>{label}</label>
       <input
         type="tel"
-        autocomplete="off"
-        maxlength="4"
+        autoComplete="off"
+        maxLength="4"
         size="4"
         value={this.props.value}
         onChange={ (eve) => { this.props.inputValue(eve.target.value)} } />
@@ -624,7 +623,7 @@ const MoneyTableRecordInput = props => {
       <td className="w-100 text-right">
         <input className="table_input"
           type="tel"
-          autocomplete="off"
+          autoComplete="off"
           value={props.stock}
           onChange={ (eve) => { props.inputValue(eve.target.value)} } />
       </td>
@@ -643,7 +642,7 @@ const ExampleTable = props => {
       <table>
         <thead>
           <tr><td colSpan="4">
-            <span className="table_title">目標レベルまでの目安</span>
+            Lv.{props.lv}からLv.{props.goal}までの目安
           </td></tr>
         </thead>
         <tbody>
@@ -655,10 +654,10 @@ const ExampleTable = props => {
           </tr>
           <ExampleTableRecord label="マニーラン (370GP)" nesexp={props.nesexp} oneexp={EXP_MONEYRUN_A} cost={ONE_CREDIT} onetime={MONEYRUN_TIME} onejuwel={0} />
           <ExampleTableRecord label="マニーラン (360GP)" nesexp={props.nesexp} oneexp={EXP_MONEYRUN_B} cost={ONE_CREDIT} onetime={MONEYRUN_TIME} onejuwel={0}/>
-          <ExampleTableRecord label="オンゲキ9曲 (370GP)" nesexp={props.nesexp} oneexp={ (3 + EXPEC_MONEY /100) *9 +1.5 } cost={ONE_CREDIT} onetime={GAMEPLAY_TIME * 9} onejuwel={EXPEC_JUWEL}/>
-          <ExampleTableRecord label="オンゲキ9曲 (360GP)" nesexp={props.nesexp} oneexp={ (3 + EXPEC_MONEY /100) *9 } cost={ONE_CREDIT} onetime={GAMEPLAY_TIME * 9} onejuwel={EXPEC_JUWEL}/>
-          <ExampleTableRecord label="オンゲキ3曲3倍 (370GP)" nesexp={props.nesexp} oneexp={ (3 + EXPEC_MONEY /100) *3 +1.5 } cost={ONE_CREDIT} onetime={GAMEPLAY_TIME * 3} onejuwel={EXPEC_JUWEL *3 }/>
-          <ExampleTableRecord label="オンゲキ3曲3倍 (360GP)" nesexp={props.nesexp} oneexp={ (3 + EXPEC_MONEY /100) *3 } cost={ONE_CREDIT} onetime={GAMEPLAY_TIME * 3} onejuwel={EXPEC_JUWEL *3 }/>
+          <ExampleTableRecord label="オンゲキ9曲 (370GP)" nesexp={props.nesexp} oneexp={ (3 + EXPEC_MONEY /100) *9 +1.5 } cost={ONE_CREDIT} onetime={GAMEPLAY_TIME *9} onejuwel={EXPEC_JUWEL *9}/>
+          <ExampleTableRecord label="オンゲキ9曲 (360GP)" nesexp={props.nesexp} oneexp={ (3 + EXPEC_MONEY /100) *9 } cost={ONE_CREDIT} onetime={GAMEPLAY_TIME *9} onejuwel={EXPEC_JUWEL *9}/>
+          <ExampleTableRecord label="オンゲキ3曲3倍 (370GP)" nesexp={props.nesexp} oneexp={ (3 + EXPEC_MONEY /100) *3 +1.5 } cost={ONE_CREDIT} onetime={GAMEPLAY_TIME *3} onejuwel={EXPEC_JUWEL *3 *3 }/>
+          <ExampleTableRecord label="オンゲキ3曲3倍 (360GP)" nesexp={props.nesexp} oneexp={ (3 + EXPEC_MONEY /100) *3 } cost={ONE_CREDIT} onetime={GAMEPLAY_TIME *3} onejuwel={EXPEC_JUWEL *3 *3 }/>
         </tbody>
       </table>
     </div>
@@ -680,6 +679,8 @@ const ExampleTableRecord = props => {
   );
 }
 
+
+//計算系メソッド
 const convertTime = time => {
   let mes = ""
   if(time /60/60 > 0){

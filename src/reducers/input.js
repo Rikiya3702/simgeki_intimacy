@@ -220,7 +220,7 @@ export default (state = initialState, action) => {
       if(action.change === 0){
         mes += "リセットしました"
       }else if(got === 0){
-        if( new_value === MIN_ZERO){ mes = "プレゼントは0個未満には出来ません。" }
+        if( new_value === MIN_ZERO){ mes = "プレゼントは" +MIN_ZERO+ "個未満には出来ません。" }
         else if( new_value === MAX_ITEM){ mes = "プレゼントは" +MAX_ITEM+ "個までしか持てません。" }
       }else if( got > 0){
         mes += got +"個増やして"+ new_value +"個になりました。"
@@ -248,7 +248,7 @@ export default (state = initialState, action) => {
       if(action.change === 0){
         mes += "リセットしました"
       }else if(got === 0){
-        if( new_value === MIN_ZERO){ mes = "ジュエルは0個未満には出来ません。" }
+        if( new_value === MIN_ZERO){ mes = "ジュエルは" +MIN_ZERO+ "個未満には出来ません。" }
         else if( new_value === MAX_JUWEL){ mes = "ジュエルは" +MAX_JUWEL+ "個までしか持てません。" }
       }else if( got > 0){
         mes += got +"個増やして"+ new_value +"個になりました。"
@@ -265,7 +265,7 @@ export default (state = initialState, action) => {
       if(action.change === 0){
         mes += "マニーをリセットしました。"
       }else if(got === 0){
-        if( new_value === MIN_ZERO){ mes = "マニーは0未満には出来ません。" }
+        if( new_value === MIN_ZERO){ mes = "マニーは" +MIN_ZERO+ "未満には出来ません。" }
         else if( new_value === MAX_MONEY){ mes = "マニーは" +MAX_MONEY+ "までしか持てません。" }
       }else if( got > 0){
         mes += got +"マニー増やして"+ new_value +"マニーになりました。"

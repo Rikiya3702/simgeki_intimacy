@@ -79,11 +79,11 @@
 }
 .sidedoor-enter-active{
   #Main{
-    transition: all 0.5s ease-in;
+    transition: all 0.4s ease-in;
     transform: rotateY(90deg)
   }
   #About{
-    transition: all 0.5s ease-out 0.5s;
+    transition: all 0.4s ease-out 0.4s;
     transform: rotateY(0deg)
   }
 }
@@ -104,11 +104,11 @@
 }
 .sidedoor-exit-active{
   #Main{
-    transition: all 0.5s ease-out 0.5s;
+    transition: all 0.4s ease-out 0.4s;
     transform: rotateY(0deg)
   }
   #About{
-    transition: all 0.5s ease-in;
+    transition: all 0.4s ease-in;
     transform: rotateY(-90deg)
   }
 }
