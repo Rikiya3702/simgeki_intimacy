@@ -32,7 +32,18 @@ const MAX_MONEY = 99999999
 const MAX_JUWEL = 99999
 const MIN_ZERO = 0
 
+const updateMessage = () =>{
+  let mes = []
+  mes.push("更新履歴")
+  mes.push("")
+  mes.push("2020/04/16　360/370GPのON/OFF機能追加")
+  mes.push("2020/04/13　デザイン調整、About追加")
+  mes.push("2020/04/12　公開")
+  return mes
+}
+
 const initialState = {  mes: ["ようこそ"],
+                        updated: updateMessage(),
                         lv:  {now: 0, goal: 600},
                         exp: {now: 0, goal: 29700},
                         item: {s: 0, m: 0, l: 0 },
@@ -180,7 +191,6 @@ const flag_toggle = (type, itemflag) => {
   return retobj
 }
 
-
 export default (state = initialState, action) => {
   let new_lv = validate(action.lv, MAX_LV)
   let new_item = validate(action.item, MAX_ITEM)
@@ -211,7 +221,7 @@ export default (state = initialState, action) => {
       if(action.change === 0){
         mes += "リセットしました"
       }else if(got === 0){
-        if( new_value === MIN_ZERO){ mes = "プレゼントは0個未満には出来ません。" }
+        if( new_value === MIN_ZERO){ mes = "プレゼントは" +MIN_ZERO+ "個未満には出来ません。" }
         else if( new_value === MAX_ITEM){ mes = "プレゼントは" +MAX_ITEM+ "個までしか持てません。" }
       }else if( got > 0){
         mes += got +"個増やして"+ new_value +"個になりました。"
@@ -239,7 +249,7 @@ export default (state = initialState, action) => {
       if(action.change === 0){
         mes += "リセットしました"
       }else if(got === 0){
-        if( new_value === MIN_ZERO){ mes = "ジュエルは0個未満には出来ません。" }
+        if( new_value === MIN_ZERO){ mes = "ジュエルは" +MIN_ZERO+ "個未満には出来ません。" }
         else if( new_value === MAX_JUWEL){ mes = "ジュエルは" +MAX_JUWEL+ "個までしか持てません。" }
       }else if( got > 0){
         mes += got +"個増やして"+ new_value +"個になりました。"
@@ -256,7 +266,7 @@ export default (state = initialState, action) => {
       if(action.change === 0){
         mes += "マニーをリセットしました。"
       }else if(got === 0){
-        if( new_value === MIN_ZERO){ mes = "マニーは0未満には出来ません。" }
+        if( new_value === MIN_ZERO){ mes = "マニーは" +MIN_ZERO+ "未満には出来ません。" }
         else if( new_value === MAX_MONEY){ mes = "マニーは" +MAX_MONEY+ "までしか持てません。" }
       }else if( got > 0){
         mes += got +"マニー増やして"+ new_value +"マニーになりました。"

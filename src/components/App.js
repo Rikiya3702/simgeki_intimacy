@@ -21,6 +21,9 @@ import {
   BUTTON_JUWEL_END,  BUTTON_JUWEL_ALL
   } from '../actions/'
 
+const TABLE_HIDDEN_FLAG_360GP = "FLAG_360GP"
+const TABLE_HIDDEN_FLAG_370GP = "FLAG_370GP"
+const TABLE_HIDDEN_FLAG_BOTH = "FLAG_BOTH"
 const EXP_MONEY = 0.01
 const EXP_ITEM_S = 6
 const EXP_ITEM_M = 20
@@ -39,280 +42,313 @@ const ONE_CREDIT = 300
 class App extends Component {
   constructor(props) {
     super(props)
-    this.state = {simcon_flag: false}
+    this.state = {
+      simcon_flag: false,
+      updated_flag: false,
+      table_hidden_flag: "TABLE_HIDDEN_FLAG_BOTH"
+    }
   }
   simconHandleClick = () => {
     this.setState( {simcon_flag: !this.state.simcon_flag} )
+  }
+  updatedHandleClick = () => {
+    this.setState( {updated_flag: !this.state.updated_flag} )
+  }
+  aboutHandleClick = () => {
+    this.setState( {about_flag: !this.state.about_flag} )
   }
   render(){
     const props = this.props
 
     return (
-      <div className="App">
+      <div id="App">
 
         <h1 className="signboard">オンゲキ親密度シミュレーター</h1>
         <hr />
 
-        <div className="row w-450 mx-auto">
-          <div className="col pt-2 px-1">
-            <Heart label="親密度Lv." lv={getExp2Lv( props.exp.now )} par={ getExp2Lvper( props.exp.now ) } />
+        <div className="w-450 mx-auto">
+          <div className="text-right">
+            <button className="btn-toggle btn-about d-none" onClick={ this.aboutHandleClick }>{ this.state.about_flag ? "戻る" : "About" }</button>
           </div>
-          <div className="col pos-rel w-200 text-right">
-            <InputLv className="" value={props.lv.now} changed={props.changed.lv} buttonChange={props.button_change} inputValue={props.input}/>
-          </div>
-        </div>
-        <div className="row w-450 mx-auto pt-1">
-          <div className="col pt-2 px-1">
-            <Heart label="目標の親密度Lv." lv={getExp2Lv( props.exp.goal )} par={ getExp2Lvper( props.exp.goal ) } />
-          </div>
-          <div className="col pos-rel w-200 text-right">
-            <InputLvGoal  value={props.lv.goal} changed={props.changed.goal} buttonChange={props.button_change} inputValue={props.input_goal}/>
-            <div>
-              <p>EXP: <span className="bold">{props.exp.now}</span></p>
-              <p>目標EXP: <span className="bold">{props.exp.goal}</span></p>
-              <p>必要EXP: <span className="bold">{ Math.ceil(props.exp.goal - props.exp.now)}</span></p>
-            </div>
-          </div>
-        </div>
+          <CSSTransition in={this.state.about_flag} classNames="sidedoor" timeout={1000}>
+            <div className="sidedoor mx-auto mt-3">
+              <div id="About">
+                <About updated={props.updated}/>
+              </div>
 
-        <div className="row w-450 mx-auto py-1">
-          <ExampleTable nesexp={ Math.max(props.exp.goal - props.exp.now, 0 ) } />
-        </div>
-        <div className="row w-450 mx-auto py-1 text-right">
-          <span className="text-right"></span>
-          <button className="btn-toggle" onClick={ this.simconHandleClick }>シミュレート条件{ this.state.simcon_flag ? "を閉じる" : "" }</button>
-          <CSSTransition in={this.state.simcon_flag} classNames="door" timeout={1000}>
-            <div className="door mx-auto">
-              <ul className="example_list">
-                <li>マニーラン1セットにつき{MONEYRUN_TIME}秒</li>
-                <li>オンゲキ1曲につき{GAMEPLAY_TIME}秒</li>
-                <li>楽曲プレイで獲得するマニーは{EXPEC_MONEY}マニー、全て親密度に使う</li>
-                <li>デッキ編成は親密度を上げたいキャラクター3枚編成</li>
-                <li>獲得ジュエルは1曲あたり{EXPEC_JUWEL}個</li>
-                <li>獲得したジュエルは親密度に使わず、計算に影響しない</li>
-                <li>370GPはコンテニューなし(余る10GP→150マニーに変換)</li>
-                <li>ログインボーナス、ミッション等は計算外</li>
-              </ul>
+              <div id="Main">
+                <div className="row mx-auto">
+                  <div className="col pt-2 px-1">
+                    <Heart label="親密度Lv." lv={getExp2Lv( props.exp.now )} par={ getExp2Lvper( props.exp.now ) } />
+                  </div>
+                  <div className="col pos-rel w-200 text-right pl-2">
+                    <InputLv className="" value={props.lv.now} changed={props.changed.lv} buttonChange={props.button_change} inputValue={props.input}/>
+                  </div>
+                </div>
+                <div className="row mx-auto pt-1">
+                  <div className="col pt-2 px-1">
+                    <Heart label="目標の親密度Lv." lv={getExp2Lv( props.exp.goal )} par={ getExp2Lvper( props.exp.goal ) } />
+                  </div>
+                  <div className="col pos-rel w-200 text-right pl-2">
+                    <InputLvGoal  value={props.lv.goal} changed={props.changed.goal} buttonChange={props.button_change} inputValue={props.input_goal}/>
+                    <div>
+                      <p>EXP: <span className="bold">{props.exp.now}</span></p>
+                      <p>目標EXP: <span className="bold">{props.exp.goal}</span></p>
+                      <p>必要EXP: <span className="bold">{ Math.ceil(props.exp.goal - props.exp.now)}</span></p>
+                      <p>到達度: <span className="bold">{ Math.round( (props.exp.now / props.exp.goal)*10000)/100}%</span></p>
+                    </div>
+                  </div>
+                </div>
+                <div className="row mx-auto py-1">
+                  <ExampleTable lv={props.lv.now} goal={props.lv.goal} nesexp={ Math.max(props.exp.goal - props.exp.now, 0 ) } tableflag={this.state.table_hidden_flag}/>
+                </div>
+                <div className="row mx-auto py-1 text-right">
+                  <select className="hidden-select" value={this.state.table_hidden_flag} onChange={ e => this.setState({table_hidden_flag: e.target.value}) }>
+                    <option value={TABLE_HIDDEN_FLAG_BOTH}>全て表示</option>
+                    <option value={TABLE_HIDDEN_FLAG_360GP}>370GPのみ</option>
+                    <option value={TABLE_HIDDEN_FLAG_370GP}>360GPのみ</option>
+                  </select>
+                  <button className="btn-toggle" onClick={ this.simconHandleClick }>シミュレート条件{ this.state.simcon_flag ? "を閉じる" : "" }</button>
+                  <CSSTransition in={this.state.simcon_flag} classNames="door" timeout={1000}>
+                    <div className="door mx-auto">
+                      <ul className="example-list">
+                        <li>マニーラン1セットにつき{MONEYRUN_TIME}秒</li>
+                        <li>オンゲキ1曲につき{GAMEPLAY_TIME}秒</li>
+                        <li>1曲で獲得するマニーは{EXPEC_MONEY}マニー、全て親密度に使う</li>
+                        <li>デッキ編成は親密度を上げるキャラクター3枚編成</li>
+                        <li>獲得ジュエルは1曲あたり{EXPEC_JUWEL}個</li>
+                        <li>獲得したジュエルは親密度に使わず、計算に影響しない</li>
+                        <li>370GPはコンテニューなし(余る10GP→150マニーに変換)</li>
+                        <li>ログインボーナス、ミッション等は計算外</li>
+                      </ul>
+                    </div>
+                  </CSSTransition>
+                </div>
+
+                <div className="d-none">
+                  <div className="row pos-rel w-450 text-center mx-auto">
+                    <InputMoney value={props.money} changed={props.changed.money} buttonChange={props.button_change} inputValue={props.input_money}/>
+                  </div>
+
+                  <div id="Items" className="row pos_rel w-450 input_field text-center mx-auto">
+                    <p className="text-center">親密度上昇プレゼント</p>
+
+                    <div className="col w-150 pos_rel input_item">
+                      <InputItem type={BUTTON_ITEM_S} value={props.item.s} changed={props.changed.items} buttonChange={props.button_change} inputValue={props.input_item_s}/>
+                      <div>
+                        <button onClick={ ()=> {props.button_change(BUTTON_ITEM_S,1) } }>+1</button>
+                        <button onClick={ ()=> {props.button_change(BUTTON_ITEM_S,10)} }>+10</button>
+                      </div>
+                      <div>
+                        <button onClick={ ()=> {props.button_change(BUTTON_ITEM_S,-1)} }>-1</button>
+                        <button onClick={ ()=> {props.button_change(BUTTON_ITEM_S,-10)} }>-10</button>
+                        <button onClick={ ()=> {props.button_change(BUTTON_ITEM_S,0)} } className="btn-reset">Clear</button>
+                      </div>
+                    </div>
+                    <div className="col w-150 pos_rel input_item">
+                      <InputItem type={BUTTON_ITEM_M} value={props.item.m} changed={props.changed.itemm} buttonChange={props.button_change} inputValue={props.input_item_m}/>
+                      <div>
+                        <button onClick={ ()=> {props.button_change(BUTTON_ITEM_M,1) } }>+1</button>
+                        <button onClick={ ()=> {props.button_change(BUTTON_ITEM_M,10)} }>+10</button>
+                      </div>
+                      <div>
+                        <button onClick={ ()=> {props.button_change(BUTTON_ITEM_M,-1)} }>-1</button>
+                        <button onClick={ ()=> {props.button_change(BUTTON_ITEM_M,-10)} }>-10</button>
+                        <button onClick={ ()=> {props.button_change(BUTTON_ITEM_M,0)} } className="btn-reset">Clear</button>
+                      </div>
+                    </div>
+                    <div className="col w-150 pos_rel input_item">
+                      <InputItem type={BUTTON_ITEM_L} value={props.item.l} changed={props.changed.iteml} buttonChange={props.button_change} inputValue={props.input_item_l}/>
+                      <div>
+                        <button onClick={ ()=> {props.button_change(BUTTON_ITEM_L,1) } }>+1</button>
+                        <button onClick={ ()=> {props.button_change(BUTTON_ITEM_L,10)} }>+10</button>
+                      </div>
+                      <div>
+                        <button onClick={ ()=> {props.button_change(BUTTON_ITEM_L,-1)} }>-1</button>
+                        <button onClick={ ()=> {props.button_change(BUTTON_ITEM_L,-10)} }>-10</button>
+                        <button onClick={ ()=> {props.button_change(BUTTON_ITEM_L,0)} } className="btn-reset">Clear</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="row pos-rel w-450 text-center input_field mx-auto">
+                    <div className="col w-200 pos_rel input_juwel">
+                      <InputItem type={BUTTON_JUWEL_END} value={props.juwel.end} changed={props.changed.jend} buttonChange={props.button_change} inputValue={props.input_juwel_end}/>
+                      <div>
+                        <button onClick={ ()=> {props.button_change(BUTTON_JUWEL_END,1) } }>+1</button>
+                        <button onClick={ ()=> {props.button_change(BUTTON_JUWEL_END,10)} }>+10</button>
+                      </div>
+                      <div>
+                        <button onClick={ ()=> {props.button_change(BUTTON_JUWEL_END,-1)} }>-1</button>
+                        <button onClick={ ()=> {props.button_change(BUTTON_JUWEL_END,-10)} }>-10</button>
+                        <button onClick={ ()=> {props.button_change(BUTTON_JUWEL_END,0)} } className="btn-reset">Clear</button>
+                      </div>
+                    </div>
+                    <div className="col w-200 pos_rel input_juwel">
+                      <InputItem type={BUTTON_JUWEL_ALL} value={props.juwel.all} changed={props.changed.jall} buttonChange={props.button_change} inputValue={props.input_juwel_all}/>
+                      <div>
+                        <button onClick={ ()=> {props.button_change(BUTTON_JUWEL_ALL,1) } }>+1</button>
+                        <button onClick={ ()=> {props.button_change(BUTTON_JUWEL_ALL,10)} }>+10</button>
+                      </div>
+                      <div>
+                        <button onClick={ ()=> {props.button_change(BUTTON_JUWEL_ALL,-1)} }>-1</button>
+                        <button onClick={ ()=> {props.button_change(BUTTON_JUWEL_ALL,-10)} }>-10</button>
+                        <button onClick={ ()=> {props.button_change(BUTTON_JUWEL_ALL,0)} } className="btn-reset">Clear</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <hr />
+
+                <div className="row mx-auto pt-2">
+                  <div className="table_money">
+                    <table>
+                      <thead>
+                        <tr><td colSpan="5">
+                          <span className="table_title">アイテム使用後のレベルを計算</span>
+                        </td></tr>
+                        <tr>
+                          <td>アイテム</td>
+                          <td>EXP</td>
+                          <td>所持数</td>
+                          <td>獲得EXP</td>
+                          <td>貢ぐ</td>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <MoneyTableRecordInput item={MONEY} stock={props.money} flag={props.itemflag.money} itemFlag={props.check_itemflag} inputValue={props.input_money}/>
+                        <MoneyTableRecordInput item={ITEM_S} stock={props.item.s} flag={props.itemflag.s} itemFlag={props.check_itemflag} inputValue={props.input_item_s}/>
+                        <MoneyTableRecordInput item={ITEM_M} stock={props.item.m} flag={props.itemflag.m} itemFlag={props.check_itemflag} inputValue={props.input_item_m}/>
+                        <MoneyTableRecordInput item={ITEM_L} stock={props.item.l} flag={props.itemflag.l} itemFlag={props.check_itemflag} inputValue={props.input_item_l}/>
+                        <MoneyTableRecordInput item={JUWEL_ALL} stock={props.juwel.all} flag={props.itemflag.jall} itemFlag={props.check_itemflag} inputValue={props.input_juwel_all}/>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div className="heart_with_item row mt-2 mx-auto">
+                  <div className="col pt-2 px-1">
+                    <Heart label="全部貢いだ時の親密度Lv." lv={getExp2Lv( props.exp.now + props.itemexp)} par={ getExp2Lvper( props.exp.now + props.itemexp) } />
+                  </div>
+                  <div className="col pos-rel w-200 mt-4 text-right">
+                    <p>現在のEXP: <span className="bold">{props.exp.now}</span></p>
+                    <p>アイテムのEXP: <span className="bold">{props.itemexp}</span></p>
+                    <p>合計EXP: <span className="bold">{props.exp.now + props.itemexp}</span></p>
+                    <p>目標レベルのEXP: <span className="bold">{props.exp.goal}</span></p>
+                    <p>到達度: <span className="bold">{ Math.round( ((props.exp.now + props.itemexp) / props.exp.goal)*10000)/100}%</span></p>
+                  </div>
+                </div>
+
+                <div className="row mx-auto pt-2">
+                  <div className="table_lv">
+                    <table>
+                      <thead>
+                        <tr><td colSpan="4">
+                          <span className="table_title">アイテム使用後のレベル</span>
+                        </td></tr>
+                        <tr>
+                          <td>目標の親密度</td>
+                          <td>必要EXP</td>
+                          <td>残りEXP</td>
+                          <td>到達度</td>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <LoveTableWithItem exp={props.exp.now} itemexp={props.itemexp} lv={100} expg={3300} />
+                        <LoveTableWithItem exp={props.exp.now} itemexp={props.itemexp} lv={200} expg={7260} />
+                        <LoveTableWithItem exp={props.exp.now} itemexp={props.itemexp} lv={300} expg={11880} />
+                        <LoveTableWithItem exp={props.exp.now} itemexp={props.itemexp} lv={400} expg={17160} />
+                        <LoveTableWithItem exp={props.exp.now} itemexp={props.itemexp} lv={500} expg={23100} />
+                        <LoveTableWithItem exp={props.exp.now} itemexp={props.itemexp} lv={600} expg={29700} />
+                        <LoveTableWithItem exp={props.exp.now} itemexp={props.itemexp} lv={700} expg={42240} />
+                        <LoveTableWithItem exp={props.exp.now} itemexp={props.itemexp} lv={800} expg={59400} />
+                        <tr>
+                          <td className="text-center" colSpan="2">
+                            <span className="graph_text color_red">現在EXP</span>
+                            <div className="progbar progbar_lv" ></div>
+                            <div className="progbar progbar_item" ></div>
+                          </td>
+                          <td className="text-center" colSpan="2">
+                            <span className="graph_text color_yellow">アイテムEXP</span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div className="d-none">
+                  <button className="btn-toggle" onClick={ this.handleClick }>{ this.state.kore ? "閉じ" : "開け" }まーす</button>
+                  <CSSTransition in={this.state.kore} classNames="door" timeout={1000}>
+                    <div className="door">
+                      <div id="Money">
+                        <p>でしてー</p>
+                      </div>
+                    </div>
+                  </CSSTransition>
+                  <div>
+                    オンゲキ 1曲プレイ
+                    <br /><button onClick={ ()=> {props.button_play("play",0)} }>40 GP(デッキ0枚) でLet'sオンゲキ</button>
+                    <br /><button onClick={ ()=> {props.button_play("play",1)} }>40 GP(デッキ1枚)  でLet'sオンゲキ</button>
+                    <br /><button onClick={ ()=> {props.button_play("play",2)} }>40 GP(デッキ2枚)  でLet'sオンゲキ</button>
+                    <br /><button onClick={ ()=> {props.button_play("play",3)} }>40 GP(デッキ3枚)  でLet'sオンゲキ</button>
+                  </div>
+                  <div>
+                    <label>End Juwel</label>
+                    <input type="radio" name="aradio" checked={props.juweltype === JUWEL_END}
+                           onChange={() => props.radio_juweltype(JUWEL_END)}/> <br />
+                    <label>All Juwel</label>
+                    <input type="radio" name="aradio" checked={props.juweltype === JUWEL_ALL}
+                           onChange={() => props.radio_juweltype(JUWEL_ALL)}/>
+                  </div>
+
+                  <div className="lovelv">
+                    <h4>親密度</h4>
+                    <div className="lovelv_number">
+                      <h1>{ props.lv.now }</h1>
+                    </div>
+                    <h5>EXP　{ props.exp.now } </h5>
+                  </div>
+                  <div className="lovelv">
+                    <h4>future</h4>
+                    <div className="lovelv_number">
+                      <h1>{ getExp2Lv( props.exp.now + props.itemexp) }</h1>
+                      <h6>({ getExp2Lvper( props.exp.now + props.itemexp) } %)</h6>
+                    </div>
+                    <h5>貢げるEXP　{ props.itemexp } </h5>
+                    <h5>全捧げしたEXP　{ props.exp.now + props.itemexp } </h5>
+                  </div>
+
+                  <div className="lovelv">
+                    <h4>目標値</h4>
+                    <div className="lovelv_number">
+                      <h1>{ props.lv.goal }</h1>
+                    </div>
+                    <h5>EXP　{ props.exp.goal }
+                    <br />残り　{ props.exp.goal - props.exp.now } ({ Math.floor((props.exp.now / props.exp.goal)*100) } %)</h5>
+                  </div>
+                </div>
+
+                <div className="message_box w-400 mx-auto mt-5 d-none">
+                  <Messages messages={props.mes} />
+                </div>
+
+              </div>
             </div>
           </CSSTransition>
         </div>
-        <div className="d-none">
-          <div className="row pos-rel w-450 text-center mx-auto">
-            <InputMoney value={props.money} changed={props.changed.money} buttonChange={props.button_change} inputValue={props.input_money}/>
-          </div>
-
-          <div id="Items" className="row pos_rel w-450 input_field text-center mx-auto">
-            <p className="text-center">親密度上昇プレゼント</p>
-
-            <div className="col w-150 pos_rel input_item">
-              <InputItem type={BUTTON_ITEM_S} value={props.item.s} changed={props.changed.items} buttonChange={props.button_change} inputValue={props.input_item_s}/>
-              <div>
-                <button onClick={ ()=> {props.button_change(BUTTON_ITEM_S,1) } }>+1</button>
-                <button onClick={ ()=> {props.button_change(BUTTON_ITEM_S,10)} }>+10</button>
-              </div>
-              <div>
-                <button onClick={ ()=> {props.button_change(BUTTON_ITEM_S,-1)} }>-1</button>
-                <button onClick={ ()=> {props.button_change(BUTTON_ITEM_S,-10)} }>-10</button>
-                <button onClick={ ()=> {props.button_change(BUTTON_ITEM_S,0)} } className="btn-reset">Clear</button>
-              </div>
-            </div>
-            <div className="col w-150 pos_rel input_item">
-              <InputItem type={BUTTON_ITEM_M} value={props.item.m} changed={props.changed.itemm} buttonChange={props.button_change} inputValue={props.input_item_m}/>
-              <div>
-                <button onClick={ ()=> {props.button_change(BUTTON_ITEM_M,1) } }>+1</button>
-                <button onClick={ ()=> {props.button_change(BUTTON_ITEM_M,10)} }>+10</button>
-              </div>
-              <div>
-                <button onClick={ ()=> {props.button_change(BUTTON_ITEM_M,-1)} }>-1</button>
-                <button onClick={ ()=> {props.button_change(BUTTON_ITEM_M,-10)} }>-10</button>
-                <button onClick={ ()=> {props.button_change(BUTTON_ITEM_M,0)} } className="btn-reset">Clear</button>
-              </div>
-            </div>
-            <div className="col w-150 pos_rel input_item">
-              <InputItem type={BUTTON_ITEM_L} value={props.item.l} changed={props.changed.iteml} buttonChange={props.button_change} inputValue={props.input_item_l}/>
-              <div>
-                <button onClick={ ()=> {props.button_change(BUTTON_ITEM_L,1) } }>+1</button>
-                <button onClick={ ()=> {props.button_change(BUTTON_ITEM_L,10)} }>+10</button>
-              </div>
-              <div>
-                <button onClick={ ()=> {props.button_change(BUTTON_ITEM_L,-1)} }>-1</button>
-                <button onClick={ ()=> {props.button_change(BUTTON_ITEM_L,-10)} }>-10</button>
-                <button onClick={ ()=> {props.button_change(BUTTON_ITEM_L,0)} } className="btn-reset">Clear</button>
-              </div>
-            </div>
-          </div>
-
-          <div className="row pos-rel w-450 text-center input_field mx-auto">
-            <div className="col w-200 pos_rel input_juwel">
-              <InputItem type={BUTTON_JUWEL_END} value={props.juwel.end} changed={props.changed.jend} buttonChange={props.button_change} inputValue={props.input_juwel_end}/>
-              <div>
-                <button onClick={ ()=> {props.button_change(BUTTON_JUWEL_END,1) } }>+1</button>
-                <button onClick={ ()=> {props.button_change(BUTTON_JUWEL_END,10)} }>+10</button>
-              </div>
-              <div>
-                <button onClick={ ()=> {props.button_change(BUTTON_JUWEL_END,-1)} }>-1</button>
-                <button onClick={ ()=> {props.button_change(BUTTON_JUWEL_END,-10)} }>-10</button>
-                <button onClick={ ()=> {props.button_change(BUTTON_JUWEL_END,0)} } className="btn-reset">Clear</button>
-              </div>
-            </div>
-            <div className="col w-200 pos_rel input_juwel">
-              <InputItem type={BUTTON_JUWEL_ALL} value={props.juwel.all} changed={props.changed.jall} buttonChange={props.button_change} inputValue={props.input_juwel_all}/>
-              <div>
-                <button onClick={ ()=> {props.button_change(BUTTON_JUWEL_ALL,1) } }>+1</button>
-                <button onClick={ ()=> {props.button_change(BUTTON_JUWEL_ALL,10)} }>+10</button>
-              </div>
-              <div>
-                <button onClick={ ()=> {props.button_change(BUTTON_JUWEL_ALL,-1)} }>-1</button>
-                <button onClick={ ()=> {props.button_change(BUTTON_JUWEL_ALL,-10)} }>-10</button>
-                <button onClick={ ()=> {props.button_change(BUTTON_JUWEL_ALL,0)} } className="btn-reset">Clear</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <hr />
-
-        <div className="row mx-auto pt-2 w-450">
-          <div className="table_money">
-            <table>
-              <thead>
-                <tr><td colSpan="5">
-                  <span className="table_title">アイテム使用後のレベルを計算</span>
-                </td></tr>
-                <tr>
-                  <td>アイテム</td>
-                  <td>EXP</td>
-                  <td>所持数</td>
-                  <td>獲得EXP</td>
-                  <td>貢ぐ</td>
-                </tr>
-              </thead>
-              <tbody>
-                <MoneyTableRecordInput item={MONEY} stock={props.money} flag={props.itemflag.money} itemFlag={props.check_itemflag} inputValue={props.input_money}/>
-                <MoneyTableRecordInput item={ITEM_S} stock={props.item.s} flag={props.itemflag.s} itemFlag={props.check_itemflag} inputValue={props.input_item_s}/>
-                <MoneyTableRecordInput item={ITEM_M} stock={props.item.m} flag={props.itemflag.m} itemFlag={props.check_itemflag} inputValue={props.input_item_m}/>
-                <MoneyTableRecordInput item={ITEM_L} stock={props.item.l} flag={props.itemflag.l} itemFlag={props.check_itemflag} inputValue={props.input_item_l}/>
-                <MoneyTableRecordInput item={JUWEL_ALL} stock={props.juwel.all} flag={props.itemflag.jall} itemFlag={props.check_itemflag} inputValue={props.input_juwel_all}/>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div className="heart_with_item row mt-2 w-450 mx-auto">
-          <div className="col pt-2 px-1">
-            <Heart label="全部貢いだ時の親密度Lv." lv={getExp2Lv( props.exp.now + props.itemexp)} par={ getExp2Lvper( props.exp.now + props.itemexp) } />
-          </div>
-          <div className="col pos-rel w-200 mt-4 text-right">
-            <p>現在のEXP: <span className="bold">{props.exp.now}</span></p>
-            <p>アイテムのEXP: <span className="bold">{props.itemexp}</span></p>
-            <p>合計EXP: <span className="bold">{props.exp.now + props.itemexp}</span></p>
-            <p>目標レベルのEXP: <span className="bold">{props.exp.goal}</span></p>
-          </div>
-        </div>
-
-        <div className="row mx-auto pt-2 w-450">
-          <div className="table_lv">
-            <table>
-              <thead>
-                <tr><td colSpan="4">
-                  <span className="table_title">アイテム使用後のレベル</span>
-                </td></tr>
-                <tr>
-                  <td>目標の親密度</td>
-                  <td>必要EXP</td>
-                  <td>残りEXP</td>
-                  <td>到達度</td>
-                </tr>
-              </thead>
-              <tbody>
-                <LoveTableWithItem exp={props.exp.now} itemexp={props.itemexp} lv={100} expg={3300} />
-                <LoveTableWithItem exp={props.exp.now} itemexp={props.itemexp} lv={200} expg={7260} />
-                <LoveTableWithItem exp={props.exp.now} itemexp={props.itemexp} lv={300} expg={11880} />
-                <LoveTableWithItem exp={props.exp.now} itemexp={props.itemexp} lv={400} expg={17160} />
-                <LoveTableWithItem exp={props.exp.now} itemexp={props.itemexp} lv={500} expg={23100} />
-                <LoveTableWithItem exp={props.exp.now} itemexp={props.itemexp} lv={600} expg={29700} />
-                <LoveTableWithItem exp={props.exp.now} itemexp={props.itemexp} lv={700} expg={42240} />
-                <LoveTableWithItem exp={props.exp.now} itemexp={props.itemexp} lv={800} expg={59400} />
-                <tr>
-                  <td className="text-center" colSpan="2">
-                    <span className="graph_text color_red">現在EXP</span>
-                    <div className="progbar progbar_lv" ></div>
-                    <div className="progbar progbar_item" ></div>
-                  </td>
-                  <td className="text-center" colSpan="2">
-                    <span className="graph_text color_yellow">アイテムEXP</span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div className="d-none">
-          <button className="btn-toggle" onClick={ this.handleClick }>{ this.state.kore ? "閉じ" : "開け" }まーす</button>
-          <CSSTransition in={this.state.kore} classNames="door" timeout={1000}>
-            <div className="door">
-              <div id="Money">
-                <p>でしてー</p>
-              </div>
-            </div>
-          </CSSTransition>
-          <div>
-            オンゲキ 1曲プレイ
-            <br /><button onClick={ ()=> {props.button_play("play",0)} }>40 GP(デッキ0枚) でLet'sオンゲキ</button>
-            <br /><button onClick={ ()=> {props.button_play("play",1)} }>40 GP(デッキ1枚)  でLet'sオンゲキ</button>
-            <br /><button onClick={ ()=> {props.button_play("play",2)} }>40 GP(デッキ2枚)  でLet'sオンゲキ</button>
-            <br /><button onClick={ ()=> {props.button_play("play",3)} }>40 GP(デッキ3枚)  でLet'sオンゲキ</button>
-          </div>
-          <div>
-            <label>End Juwel</label>
-            <input type="radio" name="aradio" checked={props.juweltype === JUWEL_END}
-                   onChange={() => props.radio_juweltype(JUWEL_END)}/> <br />
-            <label>All Juwel</label>
-            <input type="radio" name="aradio" checked={props.juweltype === JUWEL_ALL}
-                   onChange={() => props.radio_juweltype(JUWEL_ALL)}/>
-          </div>
-
-          <div className="lovelv">
-            <h4>親密度</h4>
-            <div className="lovelv_number">
-              <h1>{ props.lv.now }</h1>
-            </div>
-            <h5>EXP　{ props.exp.now } </h5>
-          </div>
-          <div className="lovelv">
-            <h4>future</h4>
-            <div className="lovelv_number">
-              <h1>{ getExp2Lv( props.exp.now + props.itemexp) }</h1>
-              <h6>({ getExp2Lvper( props.exp.now + props.itemexp) } %)</h6>
-            </div>
-            <h5>貢げるEXP　{ props.itemexp } </h5>
-            <h5>全捧げしたEXP　{ props.exp.now + props.itemexp } </h5>
-          </div>
-
-          <div className="lovelv">
-            <h4>目標値</h4>
-            <div className="lovelv_number">
-              <h1>{ props.lv.goal }</h1>
-            </div>
-            <h5>EXP　{ props.exp.goal }
-            <br />残り　{ props.exp.goal - props.exp.now } ({ Math.floor((props.exp.now / props.exp.goal)*100) } %)</h5>
-          </div>
-        </div>
-        <div className="message_box w-400 mx-auto mt-5 d-none">
-          <Messages messages={props.mes} />
-        </div>
-    </div>
+      </div>
     );
   }
 }
+
 const validate = values => {
   const errors = {}
-
-  if( !values.lovep ) errors.lovep = "This is Err"
   return errors
 }
 
 const mapStateToProps = state => ({
+  updated: state.input.updated,
   mes: state.input.mes,
   lv: state.input.lv,
   exp: state.input.exp,
@@ -339,6 +375,51 @@ const mapDispatchToProps = ({
   radio_juweltype,
   check_itemflag
 })
+
+
+class About extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      updated_flag: false,
+    }
+  }
+  updatedHandleClick = () => {
+    this.setState( {updated_flag: !this.state.updated_flag} )
+  }
+
+  render(){
+    return(
+      <React.Fragment>
+        <h4>このアプリについて</h4>
+        <ul>
+          <li>オンゲキ非公式の親密度シミュレータです。</li>
+          <li>計算式は<a href="https://ongeki.gamerch.com/%E8%A6%AA%E5%AF%86%E5%BA%A6" rel="noopener noreferrer" target="_blank">wiki</a>の情報を元に作成しましたが、誤差があったらごめんなさい。</li>
+          <li>必ずしも実機と同じ数値になる保証はありません、マニーラン等は自己責任でお願いします。</li>
+          <li>あなたのオンゲキライフがより良い物となりますように。</li>
+
+        </ul>
+        <ul>
+          <li>作者はプログラミング初心者で、Reactの勉強も兼ねて本アプリを制作しました。</li>
+          <li>バグ報告や感想・要望など頂けたら励みになります。</li>
+          <li>Twitter</li>
+          <li>YouTube</li>
+        </ul>
+        <div className="mx-auto mt-2">
+          <button className="btn-toggle mb-2" onClick={ this.updatedHandleClick }>更新履歴{ this.state.updated_flag ? "を閉じる" : "" }</button>
+          <CSSTransition in={this.state.updated_flag} classNames="door" timeout={1000}>
+            <div className="door mx-auto">
+              <div className="message_box updated">
+                <Messages messages={this.props.updated} />
+              </div>
+            </div>
+          </CSSTransition>
+        </div>
+
+      </React.Fragment>
+    )
+  }
+}
 
 class InputMoney extends Component {
   render(){
@@ -368,12 +449,13 @@ class InputLv extends Component {
   render(){
   return(
     <div className="input_field">
-      <label>現在レベル→</label>
+      <label for="lv_now">現在レベル→</label>
       <input
+        id="lv_now"
         className="input_lv"
         type="tel"
-        autocomplete="off"
-        maxlength="3"
+        autoComplete="off"
+        maxLength="3"
         size="3"
         value={this.props.value}
         onChange={ (eve) => { this.props.inputValue(eve.target.value)} } />
@@ -397,11 +479,13 @@ class InputLvGoal extends Component {
   render(){
   return(
     <div className="input_field">
-      <label>目標レベル→</label>
-      <input className="input_lv"
+      <label for="lv_goal">目標レベル→</label>
+      <input
+        name="lv_goal"
+        className="input_lv"
         type="tel"
-        autocomplete="off"
-        maxlength="3"
+        autoComplete="off"
+        maxLength="3"
         size="3"
         value={this.props.value}
         onChange={ (eve) => { this.props.inputValue(eve.target.value)} } />
@@ -433,8 +517,8 @@ class InputItem extends Component {
       <label>{label}</label>
       <input
         type="tel"
-        autocomplete="off"
-        maxlength="4"
+        autoComplete="off"
+        maxLength="4"
         size="4"
         value={this.props.value}
         onChange={ (eve) => { this.props.inputValue(eve.target.value)} } />
@@ -464,39 +548,34 @@ const Heart = props => {
   const backstyle = { height: backheight, top: backtop}
 
   return(
-    <React.Fragment>
-      <div className="heart" >
-        <span className="heart_label">{props.label}</span>
-        <span className="heart_lv">{ lv }</span>
-        <img src={HeartImage} className="heart_out" alt="ハート"/>
+    <div className="heart" >
+      <span className="heart_label">{props.label}</span>
+      <span className="heart_lv">{ lv }</span>
+      <img src={HeartImage} className="heart_out" alt="ハート"/>
 
-        <div className="heart_bar" style={ barstyle }></div>
-        <div className="heart_back" style={ backstyle }></div>
-      </div>
-    </React.Fragment>
-  );
+      <div className="heart_bar" style={ barstyle }></div>
+      <div className="heart_back" style={ backstyle }></div>
+    </div>
+  )
 }
 
 const ChangeValue = props => {
-  const classname = "changed_value"
+  const classname = "changed-value"
   const blue = { color: "rgb(40,40,240)"}
   const red = { color: "rgb(240,40,40)"}
   return(
-    <React.Fragment>
-
-      <TransitionGroup>
-        {props.value.map((value, index) => (
-          <CSSTransition
-            key={index}
-            classNames={classname}
-            timeout={1000}
-            unmountOnExit
-            >
-              <span className={classname} style={value >= 0 ? blue : red}>{value >= 0 ? "+"+value : value}</span>
-          </CSSTransition>
-        ))}
-      </TransitionGroup>
-    </React.Fragment>
+    <TransitionGroup>
+      {props.value.map((value, index) => (
+        <CSSTransition
+          key={index}
+          classNames={classname}
+          timeout={1000}
+          unmountOnExit
+          >
+            <span className={classname} style={value >= 0 ? blue : red}>{value >= 0 ? "+"+value : value}</span>
+        </CSSTransition>
+      ))}
+    </TransitionGroup>
   );
 }
 
@@ -521,18 +600,16 @@ const LoveTableWithItem = props => {
   const barstyle_i = { width: parsebar_i, left: parsebar}
 
   return(
-    <React.Fragment>
-      <tr>
-        <th className="column_lv">
-          <span className="goal_lv">{props.lv}</span>
-          <div className="progbar progbar_lv" style={barstyle}></div>
-          <div className="progbar progbar_item" style={barstyle_i}></div>
-        </th>
-        <td className="column_exp">{props.expg}</td>
-        <td className="column_exp">{Math.round((props.expg - props.exp - props.itemexp) * 100) / 100 }</td>
-        <td className="column_exp">{ parse + parse_i } %</td>
-      </tr>
-    </React.Fragment>
+    <tr>
+      <th className="column_lv">
+        <span className="goal_lv">{props.lv}</span>
+        <div className="progbar progbar_lv" style={barstyle}></div>
+        <div className="progbar progbar_item" style={barstyle_i}></div>
+      </th>
+      <td className="column_exp">{props.expg}</td>
+      <td className="column_exp">{Math.round((props.expg - props.exp - props.itemexp) * 100) / 100 }</td>
+      <td className="column_exp">{ parse + parse_i } %</td>
+    </tr>
   );
 }
 
@@ -564,35 +641,32 @@ const MoneyTableRecordInput = props => {
       break
   }
   return(
-    <React.Fragment>
-      <tr>
-        <th className="w-130">{item_name}</th>
-        <td className="w-20 text-right">{item_exp}</td>
-        <td className="w-100 text-right">
-          <input className="table_input"
-            type="tel"
-            autocomplete="off"
-            value={props.stock}
-            onChange={ (eve) => { props.inputValue(eve.target.value)} } />
-        </td>
-        <td className="w-40 text-right">{ Math.floor(item_exp * props.stock) }</td>
-        <td className="w-15 text-center">
-          <input type="checkbox" name="acheck" checked={props.flag}
-             onChange={() => props.itemFlag(props.item)}/>
-       </td>
-      </tr>
-    </React.Fragment>
+    <tr>
+      <th className="w-130">{item_name}</th>
+      <td className="w-20 text-right">{item_exp}</td>
+      <td className="w-100 text-right">
+        <input className="table_input"
+          type="tel"
+          autoComplete="off"
+          value={props.stock}
+          onChange={ (eve) => { props.inputValue(eve.target.value)} } />
+      </td>
+      <td className="w-40 text-right">{ Math.floor(item_exp * props.stock) }</td>
+      <td className="w-15 text-center">
+        <input type="checkbox" name="acheck" checked={props.flag}
+           onChange={() => props.itemFlag(props.item)}/>
+     </td>
+    </tr>
   );
 }
 
 const ExampleTable = props => {
   return(
-    <React.Fragment>
     <div className="table_example">
       <table>
         <thead>
-          <tr><td colSpan="4">
-            <span className="table_title">目標レベルまでの目安</span>
+          <tr className=""><td colSpan="4">
+            Lv.{props.lv}からLv.{props.goal}までの目安
           </td></tr>
         </thead>
         <tbody>
@@ -602,16 +676,21 @@ const ExampleTable = props => {
             <td className="w-70 text-center">＝</td>
             <td className="text-left">{ Math.ceil(props.nesexp / EXP_ITEM_L) * 20000 }マニー</td>
           </tr>
-          <ExampleTableRecord label="マニーラン (370GP)" nesexp={props.nesexp} oneexp={EXP_MONEYRUN_A} cost={ONE_CREDIT} onetime={MONEYRUN_TIME} onejuwel={0} />
-          <ExampleTableRecord label="マニーラン (360GP)" nesexp={props.nesexp} oneexp={EXP_MONEYRUN_B} cost={ONE_CREDIT} onetime={MONEYRUN_TIME} onejuwel={0}/>
-          <ExampleTableRecord label="オンゲキ9曲 (370GP)" nesexp={props.nesexp} oneexp={ (3 + EXPEC_MONEY /100) *9 +1.5 } cost={ONE_CREDIT} onetime={GAMEPLAY_TIME * 9} onejuwel={EXPEC_JUWEL}/>
-          <ExampleTableRecord label="オンゲキ9曲 (360GP)" nesexp={props.nesexp} oneexp={ (3 + EXPEC_MONEY /100) *9 } cost={ONE_CREDIT} onetime={GAMEPLAY_TIME * 9} onejuwel={EXPEC_JUWEL}/>
-          <ExampleTableRecord label="オンゲキ3曲3倍 (370GP)" nesexp={props.nesexp} oneexp={ (3 + EXPEC_MONEY /100) *3 +1.5 } cost={ONE_CREDIT} onetime={GAMEPLAY_TIME * 3} onejuwel={EXPEC_JUWEL *3 }/>
-          <ExampleTableRecord label="オンゲキ3曲3倍 (360GP)" nesexp={props.nesexp} oneexp={ (3 + EXPEC_MONEY /100) *3 } cost={ONE_CREDIT} onetime={GAMEPLAY_TIME * 3} onejuwel={EXPEC_JUWEL *3 }/>
+
+          <ExampleTableRecord flag={props.tableflag !== TABLE_HIDDEN_FLAG_370GP} label="マニーラン (370GP)" nesexp={props.nesexp} oneexp={EXP_MONEYRUN_A} cost={ONE_CREDIT} onetime={MONEYRUN_TIME} onejuwel={0} />
+
+          <ExampleTableRecord flag={props.tableflag !== TABLE_HIDDEN_FLAG_360GP} label="マニーラン (360GP)" nesexp={props.nesexp} oneexp={EXP_MONEYRUN_B} cost={ONE_CREDIT} onetime={MONEYRUN_TIME} onejuwel={0}/>
+
+            <ExampleTableRecord flag={props.tableflag !== TABLE_HIDDEN_FLAG_370GP} label="オンゲキ9曲 (370GP)" nesexp={props.nesexp} oneexp={ (3 + EXPEC_MONEY /100) *9 +1.5 } cost={ONE_CREDIT} onetime={GAMEPLAY_TIME *9} onejuwel={EXPEC_JUWEL *9}/>
+
+            <ExampleTableRecord flag={props.tableflag !== TABLE_HIDDEN_FLAG_360GP} label="オンゲキ9曲 (360GP)" nesexp={props.nesexp} oneexp={ (3 + EXPEC_MONEY /100) *9 } cost={ONE_CREDIT} onetime={GAMEPLAY_TIME *9} onejuwel={EXPEC_JUWEL *9}/>
+
+            <ExampleTableRecord flag={props.tableflag !== TABLE_HIDDEN_FLAG_370GP} label="オンゲキ3曲3倍 (370GP)" nesexp={props.nesexp} oneexp={ (3 + EXPEC_MONEY /100) *3 +1.5 } cost={ONE_CREDIT} onetime={GAMEPLAY_TIME *3} onejuwel={EXPEC_JUWEL *3 *3 }/>
+
+            <ExampleTableRecord flag={props.tableflag !== TABLE_HIDDEN_FLAG_360GP} label="オンゲキ3曲3倍 (360GP)" nesexp={props.nesexp} oneexp={ (3 + EXPEC_MONEY /100) *3 } cost={ONE_CREDIT} onetime={GAMEPLAY_TIME *3} onejuwel={EXPEC_JUWEL *3 *3 }/>
         </tbody>
       </table>
     </div>
-    </React.Fragment>
   );
 }
 
@@ -619,20 +698,47 @@ const ExampleTableRecord = props => {
   const nes_count = Math.ceil(props.nesexp / props.oneexp)
   const cost = props.cost ? props.cost : 0
   const realtime = props.onetime ? props.onetime : 0
+  const trstyle = props.flag ? {} : {padding: 0, borderBottom: "none"}
   return(
-    <React.Fragment>
-      <tr>
-        <th className="w-150 text-center">{props.label}</th>
-        <td className="w-50">{nes_count}回</td>
-        <td className="w-70">{nes_count * cost}円</td>
-        <td className="w-120">{convertTime(nes_count * realtime) }
-          <br />ジュエル：{nes_count * props.onejuwel}</td>
+    <tr>
+        <th className="w-150 text-center"  style={trstyle}>
+          <CSSTransition in={props.flag} classNames="hidden-table" timeout={1000}>
+              <div className="hidden-table">
+              {props.label}
+            </div>
+          </CSSTransition>
+        </th>
 
-      </tr>
-    </React.Fragment>
+        <td className="w-50" style={trstyle}>
+          <CSSTransition in={props.flag} classNames="hidden-table" timeout={1000}>
+              <div className="hidden-table">
+          { nes_count }回
+        </div>
+      </CSSTransition>
+    </td>
+
+        <td className="w-70" style={trstyle}>
+          <CSSTransition in={props.flag} classNames="hidden-table" timeout={1000}>
+              <div className="hidden-table">
+          { nes_count * cost }円
+        </div>
+      </CSSTransition>
+    </td>
+
+        <td className="w-120" style={trstyle}>
+          <CSSTransition in={props.flag} classNames="hidden-table" timeout={1000}>
+              <div className="hidden-table">
+          { convertTime(nes_count * realtime) }
+          <br />ジュエル：{ Math.floor(nes_count * props.onejuwel) }
+          </div>
+        </CSSTransition>
+      </td>
+    </tr>
   );
 }
 
+
+//計算系メソッド
 const convertTime = time => {
   let mes = ""
   if(time /60/60 > 0){

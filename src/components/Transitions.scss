@@ -1,4 +1,5 @@
-.changed_value{
+// changed_value /////
+.changed-value{
   position: absolute;
   top: -50px;
   right: 0px;
@@ -6,19 +7,20 @@
   padding: 3pc 10px 5px;
 }
 
-.changed_value-enter{
+.changed-value-enter{
   opacity: 1;
 }
-.changed_value-enter-active{
+.changed-value-enter-active{
   transition: all 1.2s ease-in-out;
   top: -70px;
   opacity: 0;
 }
-.changed_value-enter-done{
+.changed-value-enter-done{
   display: none;
   opacity: 0;
 }
 
+// door /////
 .door{
   display: block;
   color: #111;
@@ -48,4 +50,103 @@
 .door-exit-done{
   max-height: 0px;
   overflow: hidden;
+}
+
+
+// sidedoor /////
+#About{
+  display: none;
+  position: absolute;
+  width: 450px;
+  font-size: 90%;
+  ul{
+    list-style: circle;
+  }
+  margin-bottom: 37px;
+}
+#Main{
+  display: block;
+  position: absolute;
+  width: 450px;
+  margin-bottom: 37px;
+}
+
+.sidedoor{
+}
+.sidedoor-enter{
+  #Main{ transform: rotateY(0deg) }
+  #About{ transform: rotateY(-90deg);
+  display: block;
+  }
+}
+.sidedoor-enter-active{
+  #Main{
+    transition: all 0.4s ease-in;
+    transform: rotateY(90deg)
+  }
+  #About{
+    transition: all 0.4s ease-out 0.4s;
+    transform: rotateY(0deg)
+  }
+}
+.sidedoor-enter-done{
+  #Main{ display: none; }
+  #About{ display: block; }
+}
+
+.sidedoor-exit{
+  #Main{
+    transform: rotateY(90deg);
+    display: block;
+  }
+  #About{
+    transform: rotateY(0deg);
+    display: block;
+  }
+}
+.sidedoor-exit-active{
+  #Main{
+    transition: all 0.4s ease-out 0.4s;
+    transform: rotateY(0deg)
+  }
+  #About{
+    transition: all 0.4s ease-in;
+    transform: rotateY(-90deg)
+  }
+}
+.sidedoor-exit-done{
+  #Main{ display: block; }
+  #About{ display: none; }
+}
+
+
+// hidden_table /////
+$hidden-table-height: 50px;
+
+.hidden-table{
+  overflow: hidden;
+}
+
+.hidden-table-enter{
+  max-height: 0px;
+}
+.hidden-table-enter-active{
+  transition: all 0.5s ease-in-out;
+  max-height: $hidden-table-height;
+}
+.hidden-table-enter-done{
+  max-height: $hidden-table-height;
+}
+
+.hidden-table-exit{
+  max-height: $hidden-table-height;
+}
+.hidden-table-exit-active{
+  transition: all 0.5s ease-in-out;
+  max-height: 0px;
+}
+.hidden-table-exit-done{
+  td{padding: 0;}
+  th{padding: 0;}
+  max-height: 0px;
 }
