@@ -21,6 +21,9 @@ import {
   BUTTON_JUWEL_END,  BUTTON_JUWEL_ALL
   } from '../actions/'
 
+const TABLE_HIDDEN_FLAG_360GP = "FLAG_360GP"
+const TABLE_HIDDEN_FLAG_370GP = "FLAG_370GP"
+const TABLE_HIDDEN_FLAG_BOTH = "FLAG_BOTH"
 const EXP_MONEY = 0.01
 const EXP_ITEM_S = 6
 const EXP_ITEM_M = 20
@@ -42,7 +45,7 @@ class App extends Component {
     this.state = {
       simcon_flag: false,
       updated_flag: false,
-      about_flag: false
+      table_hidden_flag: "TABLE_HIDDEN_FLAG_BOTH"
     }
   }
   simconHandleClick = () => {
@@ -65,12 +68,12 @@ class App extends Component {
 
         <div className="w-450 mx-auto">
           <div className="text-right">
-            <button className="btn-toggle btn-about mb-2" onClick={ this.aboutHandleClick }>{ this.state.about_flag ? "戻る" : "About" }</button>
+            <button className="btn-toggle btn-about d-none" onClick={ this.aboutHandleClick }>{ this.state.about_flag ? "戻る" : "About" }</button>
           </div>
           <CSSTransition in={this.state.about_flag} classNames="sidedoor" timeout={1000}>
-            <div className="sidedoor mx-auto">
+            <div className="sidedoor mx-auto mt-3">
               <div id="About">
-                <About />
+                <About updated={props.updated}/>
               </div>
 
               <div id="Main">
@@ -78,7 +81,7 @@ class App extends Component {
                   <div className="col pt-2 px-1">
                     <Heart label="親密度Lv." lv={getExp2Lv( props.exp.now )} par={ getExp2Lvper( props.exp.now ) } />
                   </div>
-                  <div className="col pos-rel w-200 text-right">
+                  <div className="col pos-rel w-200 text-right pl-2">
                     <InputLv className="" value={props.lv.now} changed={props.changed.lv} buttonChange={props.button_change} inputValue={props.input}/>
                   </div>
                 </div>
@@ -86,23 +89,29 @@ class App extends Component {
                   <div className="col pt-2 px-1">
                     <Heart label="目標の親密度Lv." lv={getExp2Lv( props.exp.goal )} par={ getExp2Lvper( props.exp.goal ) } />
                   </div>
-                  <div className="col pos-rel w-200 text-right">
+                  <div className="col pos-rel w-200 text-right pl-2">
                     <InputLvGoal  value={props.lv.goal} changed={props.changed.goal} buttonChange={props.button_change} inputValue={props.input_goal}/>
                     <div>
                       <p>EXP: <span className="bold">{props.exp.now}</span></p>
                       <p>目標EXP: <span className="bold">{props.exp.goal}</span></p>
                       <p>必要EXP: <span className="bold">{ Math.ceil(props.exp.goal - props.exp.now)}</span></p>
+                      <p>到達度: <span className="bold">{ Math.round( (props.exp.now / props.exp.goal)*10000)/100}%</span></p>
                     </div>
                   </div>
                 </div>
                 <div className="row mx-auto py-1">
-                  <ExampleTable lv={props.lv.now} goal={props.lv.goal} nesexp={ Math.max(props.exp.goal - props.exp.now, 0 ) } />
+                  <ExampleTable lv={props.lv.now} goal={props.lv.goal} nesexp={ Math.max(props.exp.goal - props.exp.now, 0 ) } tableflag={this.state.table_hidden_flag}/>
                 </div>
                 <div className="row mx-auto py-1 text-right">
+                  <select className="hidden-select" value={this.state.table_hidden_flag} onChange={ e => this.setState({table_hidden_flag: e.target.value}) }>
+                    <option value={TABLE_HIDDEN_FLAG_BOTH}>全て表示</option>
+                    <option value={TABLE_HIDDEN_FLAG_360GP}>370GPのみ</option>
+                    <option value={TABLE_HIDDEN_FLAG_370GP}>360GPのみ</option>
+                  </select>
                   <button className="btn-toggle" onClick={ this.simconHandleClick }>シミュレート条件{ this.state.simcon_flag ? "を閉じる" : "" }</button>
                   <CSSTransition in={this.state.simcon_flag} classNames="door" timeout={1000}>
                     <div className="door mx-auto">
-                      <ul className="example_list">
+                      <ul className="example-list">
                         <li>マニーラン1セットにつき{MONEYRUN_TIME}秒</li>
                         <li>オンゲキ1曲につき{GAMEPLAY_TIME}秒</li>
                         <li>1曲で獲得するマニーは{EXPEC_MONEY}マニー、全て親密度に使う</li>
@@ -226,6 +235,7 @@ class App extends Component {
                     <p>アイテムのEXP: <span className="bold">{props.itemexp}</span></p>
                     <p>合計EXP: <span className="bold">{props.exp.now + props.itemexp}</span></p>
                     <p>目標レベルのEXP: <span className="bold">{props.exp.goal}</span></p>
+                    <p>到達度: <span className="bold">{ Math.round( ((props.exp.now + props.itemexp) / props.exp.goal)*10000)/100}%</span></p>
                   </div>
                 </div>
 
@@ -265,17 +275,6 @@ class App extends Component {
                       </tbody>
                     </table>
                   </div>
-                </div>
-
-                <div className="mx-auto mt-5">
-                  <button className="btn-toggle" onClick={ this.updatedHandleClick }>更新履歴{ this.state.updated_flag ? "を閉じる" : "" }</button>
-                  <CSSTransition in={this.state.updated_flag} classNames="door" timeout={1000}>
-                    <div className="door mx-auto">
-                      <div className="message_box updated">
-                        <Messages messages={props.updated} />
-                      </div>
-                    </div>
-                  </CSSTransition>
                 </div>
 
                 <div className="d-none">
@@ -330,7 +329,6 @@ class App extends Component {
                   </div>
                 </div>
 
-
                 <div className="message_box w-400 mx-auto mt-5 d-none">
                   <Messages messages={props.mes} />
                 </div>
@@ -343,6 +341,7 @@ class App extends Component {
     );
   }
 }
+
 const validate = values => {
   const errors = {}
   return errors
@@ -379,6 +378,16 @@ const mapDispatchToProps = ({
 
 
 class About extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      updated_flag: false,
+    }
+  }
+  updatedHandleClick = () => {
+    this.setState( {updated_flag: !this.state.updated_flag} )
+  }
+
   render(){
     return(
       <React.Fragment>
@@ -386,15 +395,27 @@ class About extends Component {
         <ul>
           <li>オンゲキ非公式の親密度シミュレータです。</li>
           <li>計算式は<a href="https://ongeki.gamerch.com/%E8%A6%AA%E5%AF%86%E5%BA%A6" rel="noopener noreferrer" target="_blank">wiki</a>の情報を元に作成しましたが、誤差があったらごめんなさい。</li>
+          <li>必ずしも実機と同じ数値になる保証はありません、マニーラン等は自己責任でお願いします。</li>
           <li>あなたのオンゲキライフがより良い物となりますように。</li>
 
         </ul>
         <ul>
           <li>作者はプログラミング初心者で、Reactの勉強も兼ねて本アプリを制作しました。</li>
-          <li>バグ報告や感想・要望など頂けたら嬉しいです。</li>
+          <li>バグ報告や感想・要望など頂けたら励みになります。</li>
           <li>Twitter</li>
           <li>YouTube</li>
         </ul>
+        <div className="mx-auto mt-2">
+          <button className="btn-toggle mb-2" onClick={ this.updatedHandleClick }>更新履歴{ this.state.updated_flag ? "を閉じる" : "" }</button>
+          <CSSTransition in={this.state.updated_flag} classNames="door" timeout={1000}>
+            <div className="door mx-auto">
+              <div className="message_box updated">
+                <Messages messages={this.props.updated} />
+              </div>
+            </div>
+          </CSSTransition>
+        </div>
+
       </React.Fragment>
     )
   }
@@ -428,8 +449,9 @@ class InputLv extends Component {
   render(){
   return(
     <div className="input_field">
-      <label>現在レベル→</label>
+      <label for="lv_now">現在レベル→</label>
       <input
+        id="lv_now"
         className="input_lv"
         type="tel"
         autoComplete="off"
@@ -457,8 +479,10 @@ class InputLvGoal extends Component {
   render(){
   return(
     <div className="input_field">
-      <label>目標レベル→</label>
-      <input className="input_lv"
+      <label for="lv_goal">目標レベル→</label>
+      <input
+        name="lv_goal"
+        className="input_lv"
         type="tel"
         autoComplete="off"
         maxLength="3"
@@ -536,7 +560,7 @@ const Heart = props => {
 }
 
 const ChangeValue = props => {
-  const classname = "changed_value"
+  const classname = "changed-value"
   const blue = { color: "rgb(40,40,240)"}
   const red = { color: "rgb(240,40,40)"}
   return(
@@ -641,7 +665,7 @@ const ExampleTable = props => {
     <div className="table_example">
       <table>
         <thead>
-          <tr><td colSpan="4">
+          <tr className=""><td colSpan="4">
             Lv.{props.lv}からLv.{props.goal}までの目安
           </td></tr>
         </thead>
@@ -652,12 +676,18 @@ const ExampleTable = props => {
             <td className="w-70 text-center">＝</td>
             <td className="text-left">{ Math.ceil(props.nesexp / EXP_ITEM_L) * 20000 }マニー</td>
           </tr>
-          <ExampleTableRecord label="マニーラン (370GP)" nesexp={props.nesexp} oneexp={EXP_MONEYRUN_A} cost={ONE_CREDIT} onetime={MONEYRUN_TIME} onejuwel={0} />
-          <ExampleTableRecord label="マニーラン (360GP)" nesexp={props.nesexp} oneexp={EXP_MONEYRUN_B} cost={ONE_CREDIT} onetime={MONEYRUN_TIME} onejuwel={0}/>
-          <ExampleTableRecord label="オンゲキ9曲 (370GP)" nesexp={props.nesexp} oneexp={ (3 + EXPEC_MONEY /100) *9 +1.5 } cost={ONE_CREDIT} onetime={GAMEPLAY_TIME *9} onejuwel={EXPEC_JUWEL *9}/>
-          <ExampleTableRecord label="オンゲキ9曲 (360GP)" nesexp={props.nesexp} oneexp={ (3 + EXPEC_MONEY /100) *9 } cost={ONE_CREDIT} onetime={GAMEPLAY_TIME *9} onejuwel={EXPEC_JUWEL *9}/>
-          <ExampleTableRecord label="オンゲキ3曲3倍 (370GP)" nesexp={props.nesexp} oneexp={ (3 + EXPEC_MONEY /100) *3 +1.5 } cost={ONE_CREDIT} onetime={GAMEPLAY_TIME *3} onejuwel={EXPEC_JUWEL *3 *3 }/>
-          <ExampleTableRecord label="オンゲキ3曲3倍 (360GP)" nesexp={props.nesexp} oneexp={ (3 + EXPEC_MONEY /100) *3 } cost={ONE_CREDIT} onetime={GAMEPLAY_TIME *3} onejuwel={EXPEC_JUWEL *3 *3 }/>
+
+          <ExampleTableRecord flag={props.tableflag !== TABLE_HIDDEN_FLAG_370GP} label="マニーラン (370GP)" nesexp={props.nesexp} oneexp={EXP_MONEYRUN_A} cost={ONE_CREDIT} onetime={MONEYRUN_TIME} onejuwel={0} />
+
+          <ExampleTableRecord flag={props.tableflag !== TABLE_HIDDEN_FLAG_360GP} label="マニーラン (360GP)" nesexp={props.nesexp} oneexp={EXP_MONEYRUN_B} cost={ONE_CREDIT} onetime={MONEYRUN_TIME} onejuwel={0}/>
+
+            <ExampleTableRecord flag={props.tableflag !== TABLE_HIDDEN_FLAG_370GP} label="オンゲキ9曲 (370GP)" nesexp={props.nesexp} oneexp={ (3 + EXPEC_MONEY /100) *9 +1.5 } cost={ONE_CREDIT} onetime={GAMEPLAY_TIME *9} onejuwel={EXPEC_JUWEL *9}/>
+
+            <ExampleTableRecord flag={props.tableflag !== TABLE_HIDDEN_FLAG_360GP} label="オンゲキ9曲 (360GP)" nesexp={props.nesexp} oneexp={ (3 + EXPEC_MONEY /100) *9 } cost={ONE_CREDIT} onetime={GAMEPLAY_TIME *9} onejuwel={EXPEC_JUWEL *9}/>
+
+            <ExampleTableRecord flag={props.tableflag !== TABLE_HIDDEN_FLAG_370GP} label="オンゲキ3曲3倍 (370GP)" nesexp={props.nesexp} oneexp={ (3 + EXPEC_MONEY /100) *3 +1.5 } cost={ONE_CREDIT} onetime={GAMEPLAY_TIME *3} onejuwel={EXPEC_JUWEL *3 *3 }/>
+
+            <ExampleTableRecord flag={props.tableflag !== TABLE_HIDDEN_FLAG_360GP} label="オンゲキ3曲3倍 (360GP)" nesexp={props.nesexp} oneexp={ (3 + EXPEC_MONEY /100) *3 } cost={ONE_CREDIT} onetime={GAMEPLAY_TIME *3} onejuwel={EXPEC_JUWEL *3 *3 }/>
         </tbody>
       </table>
     </div>
@@ -668,13 +698,41 @@ const ExampleTableRecord = props => {
   const nes_count = Math.ceil(props.nesexp / props.oneexp)
   const cost = props.cost ? props.cost : 0
   const realtime = props.onetime ? props.onetime : 0
+  const trstyle = props.flag ? {} : {padding: 0, borderBottom: "none"}
   return(
     <tr>
-      <th className="w-150 text-center">{props.label}</th>
-      <td className="w-50">{nes_count}回</td>
-      <td className="w-70">{nes_count * cost}円</td>
-      <td className="w-120">{convertTime(nes_count * realtime) }
-        <br />ジュエル：{nes_count * props.onejuwel}</td>
+        <th className="w-150 text-center"  style={trstyle}>
+          <CSSTransition in={props.flag} classNames="hidden-table" timeout={1000}>
+              <div className="hidden-table">
+              {props.label}
+            </div>
+          </CSSTransition>
+        </th>
+
+        <td className="w-50" style={trstyle}>
+          <CSSTransition in={props.flag} classNames="hidden-table" timeout={1000}>
+              <div className="hidden-table">
+          { nes_count }回
+        </div>
+      </CSSTransition>
+    </td>
+
+        <td className="w-70" style={trstyle}>
+          <CSSTransition in={props.flag} classNames="hidden-table" timeout={1000}>
+              <div className="hidden-table">
+          { nes_count * cost }円
+        </div>
+      </CSSTransition>
+    </td>
+
+        <td className="w-120" style={trstyle}>
+          <CSSTransition in={props.flag} classNames="hidden-table" timeout={1000}>
+              <div className="hidden-table">
+          { convertTime(nes_count * realtime) }
+          <br />ジュエル：{ Math.floor(nes_count * props.onejuwel) }
+          </div>
+        </CSSTransition>
+      </td>
     </tr>
   );
 }

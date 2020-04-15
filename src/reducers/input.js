@@ -35,6 +35,9 @@ const MIN_ZERO = 0
 const updateMessage = () =>{
   let mes = []
   mes.push("更新履歴")
+  mes.push("")
+  mes.push("2020/04/16　360/370GPのON/OFF機能追加")
+  mes.push("2020/04/13　デザイン調整、About追加")
   mes.push("2020/04/12　公開")
   return mes
 }
@@ -50,8 +53,6 @@ const initialState = {  mes: ["ようこそ"],
                         itemflag: {s: true, m: true, l: true, money: true, jall: true},
                         changed: {lv: [], goal:[], items: [], itemm: [], iteml: [], money: [], jend: [], jall: []}
                       }
-
-
 
 const getLv2Exp = lv => {
 

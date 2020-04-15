@@ -38,10 +38,11 @@ tbody{
     thead{
       font-size: 120%;
     }
+    tr:nth-child(even){
+      background: #fafafa;
+    }
   }
-  tr:nth-child(even){
-    background: #fafafa;
-  }
+
 }
 
 .table_lv{
@@ -91,6 +92,7 @@ tbody{
 }
 
 .table_money{
+  tr{height: 10px;}
   .item_name{
     font-size: 120%;
   }
