@@ -67,10 +67,9 @@ class App extends Component {
         <hr />
 
         <div className="w-450 mx-auto">
-          <div className="text-right">
+          <div className="text-right d-none">
             <button className="btn-toggle btn-about" onClick={ this.aboutHandleClick }>{ this.state.about_flag ? "戻る" : "About" }</button>
           </div>
-          <MailForm />
           <CSSTransition in={this.state.about_flag} classNames="sidedoor" timeout={1000}>
             <div className="sidedoor mx-auto mt-3">
               <div id="About">
