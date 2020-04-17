@@ -44,7 +44,7 @@ class App extends Component {
     super(props)
     this.state = {
       simcon_flag: false,
-      updated_flag: false,
+      about_flag: false,
       table_hidden_flag: "TABLE_HIDDEN_FLAG_BOTH"
     }
   }
@@ -68,8 +68,9 @@ class App extends Component {
 
         <div className="w-450 mx-auto">
           <div className="text-right">
-            <button className="btn-toggle btn-about d-none" onClick={ this.aboutHandleClick }>{ this.state.about_flag ? "戻る" : "About" }</button>
+            <button className="btn-toggle btn-about" onClick={ this.aboutHandleClick }>{ this.state.about_flag ? "戻る" : "About" }</button>
           </div>
+          <MailForm />
           <CSSTransition in={this.state.about_flag} classNames="sidedoor" timeout={1000}>
             <div className="sidedoor mx-auto mt-3">
               <div id="About">
@@ -406,6 +407,9 @@ class About extends Component {
           <li>YouTube</li>
         </ul>
         <div className="mx-auto mt-2">
+          <MailForm />
+        </div>
+        <div className="mx-auto mt-2">
           <button className="btn-toggle mb-2" onClick={ this.updatedHandleClick }>更新履歴{ this.state.updated_flag ? "を閉じる" : "" }</button>
           <CSSTransition in={this.state.updated_flag} classNames="door" timeout={1000}>
             <div className="door mx-auto">
@@ -416,6 +420,44 @@ class About extends Component {
           </CSSTransition>
         </div>
 
+      </React.Fragment>
+    )
+  }
+}
+
+class MailForm extends Component {
+  constructor(props) {
+  super(props)
+  this.state = {value: ""}
+  this.handleChange = this.handleChange.bind(this)
+  this.sendEmail = this.sendEmail.bind(this)
+  }
+
+  handleChange(event) {
+  this.setState({value: event.target.value});
+  }
+
+  sendEmail = (event) => {
+    if(window.confirm('送信してもよろしいですか？')){
+      fetch('https://huvjqwh343.execute-api.ap-northeast-1.amazonaws.com/production', {
+        method: 'POST',
+        mode: "no-cors",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify( {"subject":"ONGEKI Intimacy Simulator Mail form", "body": this.state.value} )
+      })
+      }
+    }
+
+  render(){
+    return(
+      <React.Fragment>
+        <form className="mailform" onSubmit={ this.sendEmail }>
+          <textarea placeholder="管理人にメッセージを送る&#13;&#10;返信をご希望の方はTwitterへどうぞ" value={this.state.value} onChange={this.handleChange}></textarea>
+          <input type="submit" value="送信する" className="btn-submit"></input>
+        </form>
       </React.Fragment>
     )
   }
@@ -449,7 +491,7 @@ class InputLv extends Component {
   render(){
   return(
     <div className="input_field">
-      <label for="lv_now">現在レベル→</label>
+      <label htmlFor="lv_now">現在レベル→</label>
       <input
         id="lv_now"
         className="input_lv"
@@ -479,7 +521,7 @@ class InputLvGoal extends Component {
   render(){
   return(
     <div className="input_field">
-      <label for="lv_goal">目標レベル→</label>
+      <label htmlFor="lv_goal">目標レベル→</label>
       <input
         name="lv_goal"
         className="input_lv"
@@ -563,6 +605,7 @@ const ChangeValue = props => {
   const classname = "changed-value"
   const blue = { color: "rgb(40,40,240)"}
   const red = { color: "rgb(240,40,40)"}
+
   return(
     <TransitionGroup>
       {props.value.map((value, index) => (

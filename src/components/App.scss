@@ -185,3 +185,40 @@ ul{ list-style: none; }
 .btn-about{
   width: 90px;
 }
+.mailform{
+  width: 100%;
+
+  textarea{
+    display: block;
+    resize: vertical;
+    margin: 15px auto;
+    font-size: 14px;
+    width: 85%;
+    height: 150px;
+    max-height: 400px;
+    min-height: 100px;
+  }
+  .btn-submit{
+    display: block;
+    font-size: 10px;
+    outline: none;
+    cursor: pointer;
+    width: 100px;
+    margin: 10px auto;
+    border-radius: 4px;
+    box-shadow: $button-shadow;
+    border-color: $button-border;
+    background-color: $button-back;
+    height: $button-height;
+    &:hover{
+      transition: 0.3s;
+      border-color: $button-border-hover;
+      background-color: $button-back-hover;
+    }
+    &:active{
+      box-shadow: $button-shadow-active;
+      top: 2.5px;
+      left: 1.5px;
+    }
+  }
+}
