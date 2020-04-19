@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { reduxForm } from 'redux-form';
 import {CSSTransition, TransitionGroup } from 'react-transition-group';
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import HeartImage from '../image/onheart.png'
+import HeartImage from '../images/onheart.png'
 import { getExp2Lv } from '../reducers/input.js'
 import './App.scss';
 
@@ -67,8 +67,8 @@ class App extends Component {
         <hr />
 
         <div className="w-450 mx-auto">
-          <div className="text-right d-none">
-            <button className="btn-toggle btn-about" onClick={ this.aboutHandleClick }>{ this.state.about_flag ? "戻る" : "About" }</button>
+          <div className="text-right">
+            <button className="btn-toggle btn-about d-none" onClick={ this.aboutHandleClick }>{ this.state.about_flag ? "戻る" : "About" }</button>
           </div>
           <CSSTransition in={this.state.about_flag} classNames="sidedoor" timeout={1000}>
             <div className="sidedoor mx-auto mt-3">
@@ -582,9 +582,9 @@ const Heart = props => {
   const lv = props.lv >= 800 ? 800 : props.lv
   const par = lv === 800 ? 100 : props.par
   const barheight = par * 1.6
-  const bartop = 180 - barheight
+  const bartop = 185 - barheight
   const barstyle = { height: barheight, top: bartop}
-  const backheight = 160 - barheight
+  const backheight = 155 - barheight
   const backtop = bartop - backheight
   const backstyle = { height: backheight, top: backtop}
 
