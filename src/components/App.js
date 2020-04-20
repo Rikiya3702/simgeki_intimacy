@@ -62,11 +62,13 @@ class App extends Component {
 
     return (
       <div id="App">
+        <header>
+          <h1>オンゲキ親密度シミュレーター</h1>
+          <hr />
+        </header>
 
-        <h1 className="signboard">オンゲキ親密度シミュレーター</h1>
-        <hr />
 
-        <div className="w-450 mx-auto">
+        <div className="">
           <div className="text-right">
             <button className="btn-toggle btn-about d-none" onClick={ this.aboutHandleClick }>{ this.state.about_flag ? "戻る" : "About" }</button>
           </div>
@@ -77,52 +79,67 @@ class App extends Component {
               </div>
 
               <div id="Main">
-                <div className="row mx-auto">
-                  <div className="col pt-2 px-1">
+
+                {/* 親密度Lv.入力 */}
+                <div className="row">
+                  <div className="col-2 pt-2 pl-1">
                     <Heart label="親密度Lv." lv={getExp2Lv( props.exp.now )} par={ getExp2Lvper( props.exp.now ) } />
+                      <p className="text-right pr-3">
+                          EXP: <span className="bold">{props.exp.now}</span>
+                        <br />
+                        目標EXP: <span className="bold">{props.exp.goal}</span>
+                      </p>
                   </div>
-                  <div className="col pos-rel w-200 text-right pl-2">
-                    <InputLv className="" value={props.lv.now} changed={props.changed.lv} buttonChange={props.button_change} inputValue={props.input}/>
+                  <div className="col-2 pos-rel text-right">
+                    <InputLv value={props.lv.now} changed={props.changed.lv} buttonChange={props.button_change} inputValue={props.input}/>
                   </div>
                 </div>
-                <div className="row mx-auto pt-1">
-                  <div className="col pt-2 px-1">
+                {/* 目標Lv.入力 */}
+                <div className="row pt-1">
+                  <div className="col-2 pt-2 pl-1">
                     <Heart label="目標の親密度Lv." lv={getExp2Lv( props.exp.goal )} par={ getExp2Lvper( props.exp.goal ) } />
+                    <p className="text-right pr-3">
+                      必要EXP: <span className="bold">{ Math.ceil(props.exp.goal - props.exp.now)}</span>
+                    <br />
+                      到達度: <span className="bold">{ Math.round( (props.exp.now / props.exp.goal)*10000)/100}%</span>
+                    </p>
                   </div>
-                  <div className="col pos-rel w-200 text-right pl-2">
-                    <InputLvGoal  value={props.lv.goal} changed={props.changed.goal} buttonChange={props.button_change} inputValue={props.input_goal}/>
-                    <div>
-                      <p>EXP: <span className="bold">{props.exp.now}</span></p>
-                      <p>目標EXP: <span className="bold">{props.exp.goal}</span></p>
-                      <p>必要EXP: <span className="bold">{ Math.ceil(props.exp.goal - props.exp.now)}</span></p>
-                      <p>到達度: <span className="bold">{ Math.round( (props.exp.now / props.exp.goal)*10000)/100}%</span></p>
-                    </div>
+                  <div className="col-2 pos-rel text-right">
+                    <InputLvGoal value={props.lv.goal} changed={props.changed.goal} buttonChange={props.button_change} inputValue={props.input_goal}/>
                   </div>
                 </div>
-                <div className="row mx-auto py-1">
+
+                {/* 目安テーブル */}
+                <div className="row">
                   <ExampleTable lv={props.lv.now} goal={props.lv.goal} nesexp={ Math.max(props.exp.goal - props.exp.now, 0 ) } tableflag={this.state.table_hidden_flag}/>
                 </div>
-                <div className="row mx-auto py-1 text-right">
-                  <select className="hidden-select" value={this.state.table_hidden_flag} onChange={ e => this.setState({table_hidden_flag: e.target.value}) }>
-                    <option value={TABLE_HIDDEN_FLAG_BOTH}>全て表示</option>
-                    <option value={TABLE_HIDDEN_FLAG_360GP}>370GPのみ</option>
-                    <option value={TABLE_HIDDEN_FLAG_370GP}>360GPのみ</option>
-                  </select>
-                  <button className="btn-toggle" onClick={ this.simconHandleClick }>シミュレート条件{ this.state.simcon_flag ? "を閉じる" : "" }</button>
-                  <CSSTransition in={this.state.simcon_flag} classNames="door" timeout={1000}>
-                    <div className="door mx-auto">
-                      <ul className="example-list">
-                        <li>マニーラン1セットにつき{MONEYRUN_TIME}秒</li>
-                        <li>オンゲキ1曲につき{GAMEPLAY_TIME}秒</li>
-                        <li>1曲で獲得するマニーは{EXPEC_MONEY}マニー、全て親密度に使う</li>
-                        <li>デッキ編成は親密度を上げるキャラクター3枚編成</li>
-                        <li>獲得ジュエルは1曲あたり{EXPEC_JUWEL}個</li>
-                        <li>獲得したジュエルは親密度に使わず、計算に影響しない</li>
-                        <li>370GPはコンテニューなし(余る10GP→150マニーに変換)</li>
-                        <li>ログインボーナス、ミッション等は計算外</li>
-                      </ul>
-                    </div>
-                  </CSSTransition>
+                <div className="row py-2 text-right">
+                  <div className="col-2 pb-1">
+                    <select className="hidden-select ml-2" value={this.state.table_hidden_flag} onChange={ e => this.setState({table_hidden_flag: e.target.value}) }>
+                      <option value={TABLE_HIDDEN_FLAG_BOTH}>全て表示</option>
+                      <option value={TABLE_HIDDEN_FLAG_360GP}>370GPのみ</option>
+                      <option value={TABLE_HIDDEN_FLAG_370GP}>360GPのみ</option>
+                    </select>
+                  </div>
+                  <div className="col-2">
+                    <button className="btn-toggle" onClick={ this.simconHandleClick }>シミュレート条件{ this.state.simcon_flag ? "を閉じる" : "" }</button>
+                  </div>
+                  <div className="row">
+                    <CSSTransition in={this.state.simcon_flag} classNames="door" timeout={1000}>
+                      <div className="door mx-auto">
+                        <ul className="example-list">
+                          <li>マニーラン1セットにつき{MONEYRUN_TIME}秒</li>
+                          <li>オンゲキ1曲につき{GAMEPLAY_TIME}秒</li>
+                          <li>1曲で獲得するマニーは{EXPEC_MONEY}マニー、全て親密度に使う</li>
+                          <li>デッキ編成は親密度を上げるキャラクター3枚編成</li>
+                          <li>獲得ジュエルは1曲あたり{EXPEC_JUWEL}個</li>
+                          <li>獲得したジュエルは親密度に使わず、計算に影響しない</li>
+                          <li>370GPはコンテニューなし(余る10GP→150マニーに変換)</li>
+                          <li>ログインボーナス、ミッション等は計算外</li>
+                        </ul>
+                      </div>
+                    </CSSTransition>
+                  </div>
                 </div>
 
                 <div className="d-none">
@@ -201,6 +218,7 @@ class App extends Component {
 
                 <hr />
 
+                {/* アイテム数テーブル */}
                 <div className="row mx-auto pt-2">
                   <div className="table_money">
                     <table>
@@ -226,11 +244,13 @@ class App extends Component {
                     </table>
                   </div>
                 </div>
-                <div className="heart_with_item row mt-2 mx-auto">
-                  <div className="col pt-2 px-1">
+
+                {/* 使用後の親密度ハート */}
+                <div className="row mt-2 pl-1">
+                  <div className="col-2 pt-2 heart_with_item">
                     <Heart label="全部貢いだ時の親密度Lv." lv={getExp2Lv( props.exp.now + props.itemexp)} par={ getExp2Lvper( props.exp.now + props.itemexp) } />
                   </div>
-                  <div className="col pos-rel w-200 mt-4 text-right">
+                  <div className="col-2 pos-rel mt-4 text-right">
                     <p>現在のEXP: <span className="bold">{props.exp.now}</span></p>
                     <p>アイテムのEXP: <span className="bold">{props.itemexp}</span></p>
                     <p>合計EXP: <span className="bold">{props.exp.now + props.itemexp}</span></p>
@@ -239,6 +259,7 @@ class App extends Component {
                   </div>
                 </div>
 
+                {/* 使用後の親密度テーブル */}
                 <div className="row mx-auto pt-2">
                   <div className="table_lv">
                     <table>
@@ -278,14 +299,6 @@ class App extends Component {
                 </div>
 
                 <div className="d-none">
-                  <button className="btn-toggle" onClick={ this.handleClick }>{ this.state.kore ? "閉じ" : "開け" }まーす</button>
-                  <CSSTransition in={this.state.kore} classNames="door" timeout={1000}>
-                    <div className="door">
-                      <div id="Money">
-                        <p>でしてー</p>
-                      </div>
-                    </div>
-                  </CSSTransition>
                   <div>
                     オンゲキ 1曲プレイ
                     <br /><button onClick={ ()=> {props.button_play("play",0)} }>40 GP(デッキ0枚) でLet'sオンゲキ</button>
@@ -337,6 +350,7 @@ class App extends Component {
             </div>
           </CSSTransition>
         </div>
+
       </div>
     );
   }
@@ -581,18 +595,18 @@ const Messages = props => {
 const Heart = props => {
   const lv = props.lv >= 800 ? 800 : props.lv
   const par = lv === 800 ? 100 : props.par
-  const barheight = par * 1.6
-  const bartop = 185 - barheight
+  const barheight = par * 1.2
+  const bartop = 140 - barheight
   const barstyle = { height: barheight, top: bartop}
-  const backheight = 155 - barheight
+  const backheight = 120 - barheight
   const backtop = bartop - backheight
   const backstyle = { height: backheight, top: backtop}
 
   return(
-    <div className="heart" >
+    <div className="heart">
       <span className="heart_label">{props.label}</span>
       <span className="heart_lv">{ lv }</span>
-      <img src={HeartImage} className="heart_out" alt="ハート"/>
+      <img src={HeartImage} className="heart_out" alt="親密度ハート"/>
 
       <div className="heart_bar" style={ barstyle }></div>
       <div className="heart_back" style={ backstyle }></div>
@@ -622,20 +636,20 @@ const ChangeValue = props => {
 }
 
 const LoveTableWithItem = props => {
-
+  const TABLE_WIDTH = 312
   const parse = Math.floor((props.exp / props.expg )*100)
   const parse_i = Math.floor((props.itemexp / props.expg )*100)
   let parsebar = 0
   let parsebar_i = 0
 
   if(parse >= 100){
-    parsebar = 450
+    parsebar = TABLE_WIDTH
   }else if(parse + parse_i >= 100){
-    parsebar = parse * 4.5
-    parsebar_i = (100 - parse) / 100 * 450
+    parsebar = parse * TABLE_WIDTH / 100
+    parsebar_i = (100 - parse) / 100 * TABLE_WIDTH
   }else{
-    parsebar = parse * 4.5
-    parsebar_i = parse_i * 4.5
+    parsebar = parse * TABLE_WIDTH / 100
+    parsebar_i = parse_i * TABLE_WIDTH / 100
   }
 
   const barstyle = { width: parsebar }
@@ -652,7 +666,7 @@ const LoveTableWithItem = props => {
       <td className="column_exp">{Math.round((props.expg - props.exp - props.itemexp) * 100) / 100 }</td>
       <td className="column_exp">{ parse + parse_i } %</td>
     </tr>
-  );
+  )
 }
 
 const MoneyTableRecordInput = props => {

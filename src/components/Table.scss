@@ -1,10 +1,13 @@
 $table-outborder: 2px solid #111;
 $table-inborder: 1px solid #111;
+$table-check: #faf0f0 ;
 $progbar-red: rgba( 240, 200, 220, 0.5);
 $progbar-yellow: rgba( 250, 250, 210, 1);
 
 table{
-  width: 454px;
+  width: 97%;
+  max-width: 450px;
+  margin: auto;
   border: $table-outborder;
   border-collapse:  collapse;
 }
@@ -35,23 +38,19 @@ tbody{
   table{
     font-size: 85%;
     text-align: right;
-    thead{
-      font-size: 120%;
-    }
-    tr:nth-child(even){
-      background: #fafafa;
-    }
+    thead{ font-size: 120%; }
+    tr:nth-child(even){ background: $table-check; }
   }
-
 }
 
 .table_lv{
-  table{ width: 454px; }
+  table{ width: 316px; }
   tbody{
     .progbar{
       position: absolute;
+      overflow: hidden;
       z-index: 0;
-      width: 225px;
+      width: 156px;
       top: 6px;
       height: 37px;
     }
@@ -60,7 +59,7 @@ tbody{
       background: $progbar-red;
     }
     .progbar_item{
-      left: 225px;
+      left: 156px;
       background: $progbar-yellow;
     }
     td{
