@@ -1,16 +1,24 @@
 version: 0.2
 
 phases:
+  install:
+    commands:
+      - echo update npm...
+      - npm install -g
+      - npm update -g npm
+      - echo install yarn...
+      - npm install -g yarn
   pre_build:
     commands:
       - if [ -e /tmp/node_modules.tar ]; then tar xf /tmp/node_modules.tar; fi
-      - npm install
-      - npm install -g yarn
-      - yarn init
+      - echo Installing source NPM dependencies...
+      - yarn install
       - yarn add redux react-redux
   build:
     commands:
-      - npm run build
+      - echo Build started on `date`
+      - echo Compiling the Node.js code
+      - yarn run build
   post_build:
     commands:
       - tar cf /tmp/node_modules.tar node_modules

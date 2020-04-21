@@ -57,7 +57,7 @@
 #About{
   display: none;
   position: absolute;
-  width: 450px;
+  width: 95%;
   font-size: 90%;
   ul{
     list-style: circle;
@@ -67,7 +67,8 @@
 #Main{
   display: block;
   position: absolute;
-  width: 450px;
+  max-width: 480px;
+  width: 95%;
   margin-bottom: 37px;
 }
 

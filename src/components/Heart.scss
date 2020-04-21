@@ -1,7 +1,14 @@
-$heart-size: 200px;
+$heart-size: 150px;
+$heart-size-inback: 140px;
 $heart-inback: rgb(45, 45, 45);
 $heart-bar: rgb(255, 109, 144);
 $heart-label-shadow: rgba(255, 222, 222, 0.4);
+$heart_grad: repeating-linear-gradient(135deg,
+  #E869DB,
+  #ED92C5 2.4%,
+  #E869DB 2.5%,
+  #ED92C5 2.5%,
+  #E869DB 5% );
 
 .heart{
   clear: left;
@@ -10,6 +17,7 @@ $heart-label-shadow: rgba(255, 222, 222, 0.4);
 }
 
 .heart_out{
+  // opacity: 0.4;
   position: relative;
   z-index: 30;
   width: $heart-size;
@@ -31,29 +39,34 @@ $heart-label-shadow: rgba(255, 222, 222, 0.4);
   position: absolute;
   z-index: 40;
   font-size: 65px;
+  text-shadow: 1px 1px 1px $heart-bar,
+               -1px 1px 1px $heart-bar,
+               1px -1px 1px $heart-bar,
+               -1px -1px 1px $heart-bar;
   text-align: center;
   width: $heart-size;
-  top: 55px;
+  top: 30px;
   color: #fefefd;
 }
 
 .heart_bar{
   position: absolute;
   z-index: 10;
-  background-color: $heart-bar;
+  background: $heart_grad;
   width: $heart-size;
 }
 
 .heart_back{
   position: absolute;
-  width: $heart-size;
+  left: 5px;
+  width: $heart-size-inback;
   z-index: 5;
-  background: $heart-inback;
+  background: $heart_inback;
 }
 
 .heart_with_item{
   .heart_label{
-    width: 280px;
+    width: 250px;
     text-align: left;
   }
 }
