@@ -11,10 +11,39 @@ $button-shadow-active: 0.5px 0.5px rgba(120, 95, 95, 0.7);
 $button-height: 30px;
 $example-back: rgba(250, 240, 240, 0.5);
 
+.vis-se{ display: none; }
+.vis-sm{ display: none; }
+.vis-tb{ display: none; }
 
+@media screen and (max-width: 359px){
+  .vis-se{
+    display: block;
+  }
+}
 @media screen and (min-width: 350px){
+  .vis-sm{
+    display: block;
+  }
+  .table-progbar{
+    table{ width: 364px; }
+    tbody{
+      .progbar{ width: 180px; }
+      .progbar-item{ left: 180px; }
+    }
+  }
 }
 @media screen and (min-width: 481px){
+  .vis-sm{ display: none; }
+  .vis-tb{
+    display: block;
+  }
+  .table-progbar{
+    table{ width: 458px; }
+    tbody{
+      .progbar{ width: 223px; }
+      .progbar-item{ left: 223px; }
+    }
+  }
 }
 
 body{
@@ -75,8 +104,8 @@ ul{ list-style: none; }
   padding-right: auto;
 }
 .bold{ font-weight: bold; }
-.color_red{ color: rgb(185, 110, 114); }
-.color_yellow{ color: rgb(170, 160, 44); }
+.color-red{ color: rgb(185, 110, 114); }
+.color-yellow{ color: rgb(170, 160, 44); }
 .row{
   width: 100%;
   clear: left;

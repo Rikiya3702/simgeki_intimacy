@@ -38,6 +38,10 @@ const GAMEPLAY_TIME = 180
 const EXPEC_JUWEL = 7.5
 const EXPEC_MONEY = 200
 const ONE_CREDIT = 300
+const SE = "SE"
+const SM = "SM"
+const TB = "TB"
+const PC = "PC"
 
 class App extends Component {
   constructor(props) {
@@ -262,43 +266,18 @@ class App extends Component {
                 </div>
 
                 {/* 使用後の親密度テーブル */}
-                <div className="row pt-2">
-                  <div className="table_lv">
-                    <table>
-                      <thead>
-                        <tr><td colSpan="4">
-                          <span className="table_title">アイテム使用後のレベル</span>
-                        </td></tr>
-                        <tr>
-                          <td>目標の親密度</td>
-                          <td>必要EXP</td>
-                          <td>残りEXP</td>
-                          <td>到達度</td>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <LoveTableWithItem exp={props.exp.now} itemexp={props.itemexp} lv={100} expg={3300} />
-                        <LoveTableWithItem exp={props.exp.now} itemexp={props.itemexp} lv={200} expg={7260} />
-                        <LoveTableWithItem exp={props.exp.now} itemexp={props.itemexp} lv={300} expg={11880} />
-                        <LoveTableWithItem exp={props.exp.now} itemexp={props.itemexp} lv={400} expg={17160} />
-                        <LoveTableWithItem exp={props.exp.now} itemexp={props.itemexp} lv={500} expg={23100} />
-                        <LoveTableWithItem exp={props.exp.now} itemexp={props.itemexp} lv={600} expg={29700} />
-                        <LoveTableWithItem exp={props.exp.now} itemexp={props.itemexp} lv={700} expg={42240} />
-                        <LoveTableWithItem exp={props.exp.now} itemexp={props.itemexp} lv={800} expg={59400} />
-                        <tr>
-                          <td className="text-center" colSpan="2">
-                            <span className="graph_text color_red">現在EXP</span>
-                            <div className="progbar progbar_lv" ></div>
-                            <div className="progbar progbar_item" ></div>
-                          </td>
-                          <td className="text-center" colSpan="2">
-                            <span className="graph_text color_yellow">アイテムEXP</span>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+                <div className="row table-progbar">
+                  <div className="vis-se">
+                    <ProgbarTable mode={SE} exp={props.exp.now} itemexp={props.itemexp} />
+                  </div>
+                  <div className="vis-sm">
+                    <ProgbarTable mode={SM} exp={props.exp.now} itemexp={props.itemexp} />
+                  </div>
+                  <div className="vis-tb">
+                    <ProgbarTable mode={TB} exp={props.exp.now} itemexp={props.itemexp} />
                   </div>
                 </div>
+
 
                 <div className="d-none">
                   <div>
@@ -344,7 +323,7 @@ class App extends Component {
                   </div>
                 </div>
 
-                <div className="message_box w-400 mx-auto mt-5 d-none">
+                <div className="message_box mx-auto mt-5 ">
                   <Messages messages={props.mes} />
                 </div>
 
@@ -764,21 +743,50 @@ const MoneyTableRecordInput = props => {
   );
 }
 
-const LoveTableWithItem = props => {
-  const TABLE_WIDTH = 312
+const ProgbarTable = props => {
+  return(
+    <table>
+      <ProgbarTableHead />
+      <tbody>
+        <ProgbarRecord mode={props.mode} exp={props.exp} itemexp={props.itemexp} lv={100} expg={3300} />
+        <ProgbarRecord mode={props.mode} exp={props.exp} itemexp={props.itemexp} lv={200} expg={7260} />
+        <ProgbarRecord mode={props.mode} exp={props.exp} itemexp={props.itemexp} lv={300} expg={11880} />
+        <ProgbarRecord mode={props.mode} exp={props.exp} itemexp={props.itemexp} lv={400} expg={17160} />
+        <ProgbarRecord mode={props.mode} exp={props.exp} itemexp={props.itemexp} lv={500} expg={23100} />
+        <ProgbarRecord mode={props.mode} exp={props.exp} itemexp={props.itemexp} lv={600} expg={29700} />
+        <ProgbarRecord mode={props.mode} exp={props.exp} itemexp={props.itemexp} lv={700} expg={42240} />
+        <ProgbarRecord mode={props.mode} exp={props.exp} itemexp={props.itemexp} lv={800} expg={59400} />
+        <ProgbarTableSamplebar />
+      </tbody>
+    </table>
+  );
+}
+const ProgbarRecord = props => {
+  let table_width = 0
+  switch(props.mode){
+    case SE:
+      table_width = 308; break
+    case SM:
+      table_width = 360; break
+    case TB:
+      table_width = 448; break
+    default:
+      table_width = 312; break
+  }
+
   const parse = Math.floor((props.exp / props.expg )*100)
   const parse_i = Math.floor((props.itemexp / props.expg )*100)
   let parsebar = 0
   let parsebar_i = 0
 
   if(parse >= 100){
-    parsebar = TABLE_WIDTH
+    parsebar = table_width
   }else if(parse + parse_i >= 100){
-    parsebar = parse * TABLE_WIDTH / 100
-    parsebar_i = (100 - parse) / 100 * TABLE_WIDTH
+    parsebar = parse * table_width / 100
+    parsebar_i = (100 - parse) / 100 * table_width
   }else{
-    parsebar = parse * TABLE_WIDTH / 100
-    parsebar_i = parse_i * TABLE_WIDTH / 100
+    parsebar = parse * table_width / 100
+    parsebar_i = parse_i * table_width / 100
   }
 
   const barstyle = { width: parsebar }
@@ -786,18 +794,46 @@ const LoveTableWithItem = props => {
 
   return(
     <tr>
-      <th className="column_lv">
-        <span className="goal_lv">{props.lv}</span>
-        <div className="progbar progbar_lv" style={barstyle}></div>
-        <div className="progbar progbar_item" style={barstyle_i}></div>
+      <th className="column-lv">
+        <span className="goal-lv">{props.mode}-{props.lv}</span>
+        <div className="progbar progbar-lv" style={barstyle}></div>
+        <div className="progbar progbar-item" style={barstyle_i}></div>
       </th>
-      <td className="column_exp">{props.expg}</td>
-      <td className="column_exp">{Math.round((props.expg - props.exp - props.itemexp) * 100) / 100 }</td>
-      <td className="column_exp">{ parse + parse_i } %</td>
+      <td className="column-exp">{props.expg}</td>
+      <td className="column-exp">{Math.round((props.expg - props.exp - props.itemexp) * 100) / 100 }</td>
+      <td className="column-exp">{ parse + parse_i } %</td>
     </tr>
   )
 }
-
+const ProgbarTableHead = () => {
+  return(
+    <thead>
+      <tr><td colSpan="4">
+        <span className="table_title">アイテム使用後のレベル</span>
+      </td></tr>
+      <tr>
+        <td>目標の親密度</td>
+        <td>必要EXP</td>
+        <td>残りEXP</td>
+        <td>到達度</td>
+      </tr>
+    </thead>
+  )
+}
+const ProgbarTableSamplebar = () => {
+  return(
+    <tr>
+      <td className="text-center" colSpan="2">
+        <span className="graph-text color-red">現在EXP</span>
+        <div className="progbar progbar-lv" ></div>
+        <div className="progbar progbar-item" ></div>
+      </td>
+      <td className="text-center" colSpan="2">
+        <span className="graph-text color-yellow">アイテムEXP</span>
+      </td>
+    </tr>
+  )
+}
 
 //計算系メソッド
 const convertTime = time => {

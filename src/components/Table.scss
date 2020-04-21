@@ -43,23 +43,23 @@ tbody{
   }
 }
 
-.table_lv{
-  table{ width: 316px; }
+.table-progbar{
+  table{ width: 312px; }
   tbody{
     .progbar{
       position: absolute;
       overflow: hidden;
       z-index: 0;
-      width: 156px;
+      width: 154px;
       top: 6px;
       height: 37px;
     }
-    .progbar_lv{
+    .progbar-lv{
       left: 0;
       background: $progbar-red;
     }
-    .progbar_item{
-      left: 156px;
+    .progbar-item{
+      left: 154px;
       background: $progbar-yellow;
     }
     td{
@@ -67,19 +67,19 @@ tbody{
       padding: 15px 10px;
     }
   }
-  .goal_lv{
+  .goal-lv{
     position: relative;
     z-index: 10;
   }
-  .column_lv{
+  .column-lv{
     position: relative;
     font-size: 150%;
   }
-  .column_exp{
+  .column-exp{
     padding-right: 20px;
     text-align: right;
   }
-  .graph_text{
+  .graph-text{
     position: relative;
     z-index: 10;
     top: -2px;
