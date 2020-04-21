@@ -13,7 +13,8 @@ $example-back: rgba(250, 240, 240, 0.5);
 
 
 @media screen and (min-width: 350px){
-
+}
+@media screen and (min-width: 481px){
 }
 
 body{
@@ -79,6 +80,7 @@ ul{ list-style: none; }
 .row{
   width: 100%;
   clear: left;
+  margin: auto;
 }
 .col{ float: left; }
 .col-2{
@@ -160,12 +162,11 @@ ul{ list-style: none; }
     font-size: 120%;
     text-align: right;
     height: 1.8rem;
-    padding: 4px;
   }
   button{
     position: relative;
-    margin: 8px;
-    width: 40px;
+    margin: 8px 4px;
+    width: 37px;
     height: 30px;
   }
   .btn-reset{
@@ -176,7 +177,7 @@ ul{ list-style: none; }
 
 .input_lv{
   width: 2.3rem;
-  margin: 0 10px 7px;
+  margin: 0 4px 7px;
 }
 .input_item{
   position: relative;

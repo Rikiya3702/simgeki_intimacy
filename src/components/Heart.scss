@@ -10,13 +10,19 @@ $heart_grad: repeating-linear-gradient(135deg,
   #ED92C5 2.5%,
   #E869DB 5% );
 
-.heart{
+
+.heart-block{
   clear: left;
   position: relative;
+  height: $heart-size;
+}
+.heart{
+  position: absolute;
   z-index: 20;
+  max-width: 200px;
 }
 
-.heart_out{
+.heart-img{
   // opacity: 0.4;
   position: relative;
   z-index: 30;
@@ -24,7 +30,7 @@ $heart_grad: repeating-linear-gradient(135deg,
   height: $heart-size;
 }
 
-.heart_label{
+.heart-label{
   position: absolute;
   z-index: 40;
   font-size: 140%;
@@ -35,7 +41,7 @@ $heart_grad: repeating-linear-gradient(135deg,
   text-shadow: 2px 2px $heart-label-shadow;
 }
 
-.heart_lv{
+.heart-lv{
   position: absolute;
   z-index: 40;
   font-size: 65px;
@@ -49,14 +55,14 @@ $heart_grad: repeating-linear-gradient(135deg,
   color: #fefefd;
 }
 
-.heart_bar{
+.heart-bar{
   position: absolute;
   z-index: 10;
   background: $heart_grad;
   width: $heart-size;
 }
 
-.heart_back{
+.heart-back{
   position: absolute;
   left: 5px;
   width: $heart-size-inback;
@@ -64,8 +70,8 @@ $heart_grad: repeating-linear-gradient(135deg,
   background: $heart_inback;
 }
 
-.heart_with_item{
-  .heart_label{
+.heart-with-item{
+  .heart-label{
     width: 250px;
     text-align: left;
   }

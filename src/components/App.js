@@ -68,12 +68,12 @@ class App extends Component {
         </header>
 
 
-        <div className="">
-          <div className="text-right">
+        <div className="row">
+          <div className="row">
             <button className="btn-toggle btn-about d-none" onClick={ this.aboutHandleClick }>{ this.state.about_flag ? "戻る" : "About" }</button>
           </div>
           <CSSTransition in={this.state.about_flag} classNames="sidedoor" timeout={1000}>
-            <div className="sidedoor mx-auto mt-3">
+            <div className="sidedoor row mt-3">
               <div id="About">
                 <About updated={props.updated}/>
               </div>
@@ -84,11 +84,13 @@ class App extends Component {
                 <div className="row">
                   <div className="col-2 pt-2 pl-1">
                     <Heart label="親密度Lv." lv={getExp2Lv( props.exp.now )} par={ getExp2Lvper( props.exp.now ) } />
+                    <div className="row">
                       <p className="text-right pr-3">
                           EXP: <span className="bold">{props.exp.now}</span>
                         <br />
                         目標EXP: <span className="bold">{props.exp.goal}</span>
                       </p>
+                      </div>
                   </div>
                   <div className="col-2 pos-rel text-right">
                     <InputLv value={props.lv.now} changed={props.changed.lv} buttonChange={props.button_change} inputValue={props.input}/>
@@ -219,7 +221,7 @@ class App extends Component {
                 <hr />
 
                 {/* アイテム数テーブル */}
-                <div className="row mx-auto pt-2">
+                <div className="row pt-2">
                   <div className="table_money">
                     <table>
                       <thead>
@@ -247,7 +249,7 @@ class App extends Component {
 
                 {/* 使用後の親密度ハート */}
                 <div className="row mt-2 pl-1">
-                  <div className="col-2 pt-2 heart_with_item">
+                  <div className="col-2 pt-2 heart-with-item">
                     <Heart label="全部貢いだ時の親密度Lv." lv={getExp2Lv( props.exp.now + props.itemexp)} par={ getExp2Lvper( props.exp.now + props.itemexp) } />
                   </div>
                   <div className="col-2 pos-rel mt-4 text-right">
@@ -260,7 +262,7 @@ class App extends Component {
                 </div>
 
                 {/* 使用後の親密度テーブル */}
-                <div className="row mx-auto pt-2">
+                <div className="row pt-2">
                   <div className="table_lv">
                     <table>
                       <thead>
@@ -389,7 +391,6 @@ const mapDispatchToProps = ({
   radio_juweltype,
   check_itemflag
 })
-
 
 class About extends Component {
   constructor(props) {
@@ -523,7 +524,7 @@ class InputLv extends Component {
       <div>
         <button onClick={ ()=> {this.props.buttonChange(BUTTON_LV, -1)} }>-1</button>
         <button onClick={ ()=> {this.props.buttonChange(BUTTON_LV, -10)} }>-10</button>
-        <button onClick={ ()=> {this.props.buttonChange(BUTTON_LV, -100)} }>-100</button>
+        <button onClick={ ()=> {this.props.buttonChange(BUTTON_LV, -100)} }>-100</button><br />
         <button onClick={ ()=> {this.props.buttonChange(BUTTON_LV, 0)} } className="btn-reset" >リセット</button>
       </div>
     </div>
@@ -603,13 +604,17 @@ const Heart = props => {
   const backstyle = { height: backheight, top: backtop}
 
   return(
-    <div className="heart">
-      <span className="heart_label">{props.label}</span>
-      <span className="heart_lv">{ lv }</span>
-      <img src={HeartImage} className="heart_out" alt="親密度ハート"/>
+    <div className="heart-block">
+      <div className="heart">
+        <span className="heart-label">{props.label}</span>
+        <span className="heart-lv">{ lv }</span>
+        <img src={HeartImage} className="heart-img" alt="親密度ハート"/>
 
-      <div className="heart_bar" style={ barstyle }></div>
-      <div className="heart_back" style={ backstyle }></div>
+        <div className="">
+          <div className="heart-bar" style={ barstyle }></div>
+          <div className="heart-back" style={ backstyle }></div>
+        </div>
+      </div>
     </div>
   )
 }
@@ -632,87 +637,6 @@ const ChangeValue = props => {
         </CSSTransition>
       ))}
     </TransitionGroup>
-  );
-}
-
-const LoveTableWithItem = props => {
-  const TABLE_WIDTH = 312
-  const parse = Math.floor((props.exp / props.expg )*100)
-  const parse_i = Math.floor((props.itemexp / props.expg )*100)
-  let parsebar = 0
-  let parsebar_i = 0
-
-  if(parse >= 100){
-    parsebar = TABLE_WIDTH
-  }else if(parse + parse_i >= 100){
-    parsebar = parse * TABLE_WIDTH / 100
-    parsebar_i = (100 - parse) / 100 * TABLE_WIDTH
-  }else{
-    parsebar = parse * TABLE_WIDTH / 100
-    parsebar_i = parse_i * TABLE_WIDTH / 100
-  }
-
-  const barstyle = { width: parsebar }
-  const barstyle_i = { width: parsebar_i, left: parsebar}
-
-  return(
-    <tr>
-      <th className="column_lv">
-        <span className="goal_lv">{props.lv}</span>
-        <div className="progbar progbar_lv" style={barstyle}></div>
-        <div className="progbar progbar_item" style={barstyle_i}></div>
-      </th>
-      <td className="column_exp">{props.expg}</td>
-      <td className="column_exp">{Math.round((props.expg - props.exp - props.itemexp) * 100) / 100 }</td>
-      <td className="column_exp">{ parse + parse_i } %</td>
-    </tr>
-  )
-}
-
-const MoneyTableRecordInput = props => {
-  let item_name = ""
-  let item_exp = 0
-  switch(props.item){
-    case MONEY:
-      item_name = "マニー"
-      item_exp = EXP_MONEY
-      break
-    case ITEM_S:
-      item_name = "プレゼント（小）"
-      item_exp = EXP_ITEM_S
-      break
-    case ITEM_M:
-      item_name = "プレゼント（中）"
-      item_exp = EXP_ITEM_M
-      break
-    case ITEM_L:
-      item_name = "プレゼント（大）"
-      item_exp = EXP_ITEM_L
-      break
-    case JUWEL_ALL:
-      item_name = "1章 & 2章ジュエル"
-      item_exp = EXP_JUWEL_ALL
-      break
-    default:
-      break
-  }
-  return(
-    <tr>
-      <th className="w-130">{item_name}</th>
-      <td className="w-20 text-right">{item_exp}</td>
-      <td className="w-100 text-right">
-        <input className="table_input"
-          type="tel"
-          autoComplete="off"
-          value={props.stock}
-          onChange={ (eve) => { props.inputValue(eve.target.value)} } />
-      </td>
-      <td className="w-40 text-right">{ Math.floor(item_exp * props.stock) }</td>
-      <td className="w-15 text-center">
-        <input type="checkbox" name="acheck" checked={props.flag}
-           onChange={() => props.itemFlag(props.item)}/>
-     </td>
-    </tr>
   );
 }
 
@@ -791,6 +715,87 @@ const ExampleTableRecord = props => {
       </td>
     </tr>
   );
+}
+
+const MoneyTableRecordInput = props => {
+  let item_name = ""
+  let item_exp = 0
+  switch(props.item){
+    case MONEY:
+      item_name = "マニー"
+      item_exp = EXP_MONEY
+      break
+    case ITEM_S:
+      item_name = "プレゼント（小）"
+      item_exp = EXP_ITEM_S
+      break
+    case ITEM_M:
+      item_name = "プレゼント（中）"
+      item_exp = EXP_ITEM_M
+      break
+    case ITEM_L:
+      item_name = "プレゼント（大）"
+      item_exp = EXP_ITEM_L
+      break
+    case JUWEL_ALL:
+      item_name = "1章 & 2章ジュエル"
+      item_exp = EXP_JUWEL_ALL
+      break
+    default:
+      break
+  }
+  return(
+    <tr>
+      <th className="w-130">{item_name}</th>
+      <td className="w-20 text-right">{item_exp}</td>
+      <td className="w-100 text-right">
+        <input className="table_input"
+          type="tel"
+          autoComplete="off"
+          value={props.stock}
+          onChange={ (eve) => { props.inputValue(eve.target.value)} } />
+      </td>
+      <td className="w-40 text-right">{ Math.floor(item_exp * props.stock) }</td>
+      <td className="w-15 text-center">
+        <input type="checkbox" name="itemcheck" checked={props.flag}
+           onChange={() => props.itemFlag(props.item)}/>
+     </td>
+    </tr>
+  );
+}
+
+const LoveTableWithItem = props => {
+  const TABLE_WIDTH = 312
+  const parse = Math.floor((props.exp / props.expg )*100)
+  const parse_i = Math.floor((props.itemexp / props.expg )*100)
+  let parsebar = 0
+  let parsebar_i = 0
+
+  if(parse >= 100){
+    parsebar = TABLE_WIDTH
+  }else if(parse + parse_i >= 100){
+    parsebar = parse * TABLE_WIDTH / 100
+    parsebar_i = (100 - parse) / 100 * TABLE_WIDTH
+  }else{
+    parsebar = parse * TABLE_WIDTH / 100
+    parsebar_i = parse_i * TABLE_WIDTH / 100
+  }
+
+  const barstyle = { width: parsebar }
+  const barstyle_i = { width: parsebar_i, left: parsebar}
+
+  return(
+    <tr>
+      <th className="column_lv">
+        <span className="goal_lv">{props.lv}</span>
+        <div className="progbar progbar_lv" style={barstyle}></div>
+        <div className="progbar progbar_item" style={barstyle_i}></div>
+      </th>
+      <td className="column_exp">{props.expg}</td>
+      <td className="column_exp">{Math.round((props.expg - props.exp - props.itemexp) * 100) / 100 }</td>
+      <td className="column_exp">{ parse + parse_i } %</td>
+    </tr>
+  )
 }
 
 

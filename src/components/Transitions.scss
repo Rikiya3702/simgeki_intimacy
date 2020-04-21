@@ -66,13 +66,14 @@
 }
 #Main{
   display: block;
-  position: absolute;
+  position: relative;
   max-width: 480px;
   width: 95%;
-  margin-bottom: 37px;
+  margin: 0 auto 37px;
 }
 
 .sidedoor{
+  text-align: center;
 }
 .sidedoor-enter{
   #Main{ transform: rotateY(0deg) }
