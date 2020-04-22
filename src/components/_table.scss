@@ -44,13 +44,13 @@ tbody{
 }
 
 .table-progbar{
-  table{ width: 312px; }
+  table{ width: 364px; }
   tbody{
     .progbar{
       position: absolute;
       overflow: hidden;
       z-index: 0;
-      width: 154px;
+      width: 180px;
       top: 6px;
       height: 37px;
     }
@@ -59,7 +59,7 @@ tbody{
       background: $progbar-red;
     }
     .progbar-item{
-      left: 154px;
+      left: 180px;
       background: $progbar-yellow;
     }
     td{

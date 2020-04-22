@@ -39,9 +39,10 @@ const EXPEC_JUWEL = 7.5
 const EXPEC_MONEY = 200
 const ONE_CREDIT = 300
 const SE = "SE"
-const SM = "SM"
+const SP = "SP"
 const TB = "TB"
 const PC = "PC"
+
 
 class App extends Component {
   constructor(props) {
@@ -86,15 +87,24 @@ class App extends Component {
 
                 {/* 親密度Lv.入力 */}
                 <div className="row">
-                  <div className="col-2 pt-2 pl-1">
-                    <Heart label="親密度Lv." lv={getExp2Lv( props.exp.now )} par={ getExp2Lvper( props.exp.now ) } />
-                    <div className="row">
+                  <div className="col-2 mx-auto pt-2 pl-1">
+                      {/* 現在ハート */}
+                      <div className="vis-se">
+                        <Heart mode={SE} label="親密度Lv." lv={getExp2Lv( props.exp.now )} par={ getExp2Lvper( props.exp.now ) } />
+                      </div>
+                      <div className="vis-sp">
+                        <Heart mode={SP} label="親密度Lv." lv={getExp2Lv( props.exp.now )} par={ getExp2Lvper( props.exp.now ) } />
+                      </div>
+                      <div className="vis-tb">
+                        <Heart mode={TB} label="親密度Lv." lv={getExp2Lv( props.exp.now )} par={ getExp2Lvper( props.exp.now ) } />
+                      </div>
+                    <div className="row vis-se vis-sp">
                       <p className="text-right pr-3">
                           EXP: <span className="bold">{props.exp.now}</span>
                         <br />
                         目標EXP: <span className="bold">{props.exp.goal}</span>
                       </p>
-                      </div>
+                    </div>
                   </div>
                   <div className="col-2 pos-rel text-right">
                     <InputLv value={props.lv.now} changed={props.changed.lv} buttonChange={props.button_change} inputValue={props.input}/>
@@ -103,15 +113,32 @@ class App extends Component {
                 {/* 目標Lv.入力 */}
                 <div className="row pt-1">
                   <div className="col-2 pt-2 pl-1">
-                    <Heart label="目標の親密度Lv." lv={getExp2Lv( props.exp.goal )} par={ getExp2Lvper( props.exp.goal ) } />
-                    <p className="text-right pr-3">
-                      必要EXP: <span className="bold">{ Math.ceil(props.exp.goal - props.exp.now)}</span>
-                    <br />
-                      到達度: <span className="bold">{ Math.round( (props.exp.now / props.exp.goal)*10000)/100}%</span>
-                    </p>
+                    {/* 目標ハート */}
+                    <div className="vis-se">
+                      <Heart mode={SE} label="目標の親密度Lv." lv={getExp2Lv( props.exp.goal )} par={ getExp2Lvper( props.exp.goal ) } />
+                    </div>
+                    <div className="vis-sp">
+                      <Heart mode={SP} label="目標の親密度Lv." lv={getExp2Lv( props.exp.goal )} par={ getExp2Lvper( props.exp.goal ) } />
+                    </div>
+                    <div className="vis-tb">
+                      <Heart mode={TB} label="目標の親密度Lv." lv={getExp2Lv( props.exp.goal )} par={ getExp2Lvper( props.exp.goal ) } />
+                    </div>
+                    <div className="vis-se vis-sp">
+                      <p className="text-right pr-3">
+                        必要EXP: <span className="bold">{ Math.ceil(props.exp.goal - props.exp.now)}</span>
+                      <br />
+                        到達度: <span className="bold">{ Math.round( (props.exp.now / props.exp.goal)*10000)/100}%</span>
+                      </p>
+                    </div>
                   </div>
                   <div className="col-2 pos-rel text-right">
                     <InputLvGoal value={props.lv.goal} changed={props.changed.goal} buttonChange={props.button_change} inputValue={props.input_goal}/>
+                    <div className="vis-tb text-right w-200">
+                      <p>EXP: <span className="bold">{props.exp.now}</span></p>
+                      <p>目標EXP: <span className="bold">{props.exp.goal}</span></p>
+                      <p>必要EXP: <span className="bold">{ Math.ceil(props.exp.goal - props.exp.now)}</span></p>
+                      <p>到達度: <span className="bold">{ Math.round( (props.exp.now / props.exp.goal)*10000)/100}%</span></p>
+                    </div>
                   </div>
                 </div>
 
@@ -237,7 +264,7 @@ class App extends Component {
                           <td>EXP</td>
                           <td>所持数</td>
                           <td>獲得EXP</td>
-                          <td>貢ぐ</td>
+                          <td>献上</td>
                         </tr>
                       </thead>
                       <tbody>
@@ -254,9 +281,18 @@ class App extends Component {
                 {/* 使用後の親密度ハート */}
                 <div className="row mt-2 pl-1">
                   <div className="col-2 pt-2 heart-with-item">
-                    <Heart label="全部貢いだ時の親密度Lv." lv={getExp2Lv( props.exp.now + props.itemexp)} par={ getExp2Lvper( props.exp.now + props.itemexp) } />
+                    {/* 使用後ハート */}
+                    <div className="vis-se">
+                      <Heart mode={SE} label="全部貢いだ時の親密度Lv." lv={getExp2Lv( props.exp.now + props.itemexp)} par={ getExp2Lvper( props.exp.now + props.itemexp) } />
+                    </div>
+                    <div className="vis-sp">
+                      <Heart mode={SP} label="全部貢いだ時の親密度Lv." lv={getExp2Lv( props.exp.now + props.itemexp)} par={ getExp2Lvper( props.exp.now + props.itemexp) } />
+                    </div>
+                    <div className="vis-tb">
+                      <Heart mode={TB} label="全部貢いだ時の親密度Lv." lv={getExp2Lv( props.exp.now + props.itemexp)} par={ getExp2Lvper( props.exp.now + props.itemexp) } />
+                    </div>
                   </div>
-                  <div className="col-2 pos-rel mt-4 text-right">
+                  <div className="col-2 pos-rel mt-4 text-right mw-200">
                     <p>現在のEXP: <span className="bold">{props.exp.now}</span></p>
                     <p>アイテムのEXP: <span className="bold">{props.itemexp}</span></p>
                     <p>合計EXP: <span className="bold">{props.exp.now + props.itemexp}</span></p>
@@ -270,8 +306,8 @@ class App extends Component {
                   <div className="vis-se">
                     <ProgbarTable mode={SE} exp={props.exp.now} itemexp={props.itemexp} />
                   </div>
-                  <div className="vis-sm">
-                    <ProgbarTable mode={SM} exp={props.exp.now} itemexp={props.itemexp} />
+                  <div className="vis-sp">
+                    <ProgbarTable mode={SP} exp={props.exp.now} itemexp={props.itemexp} />
                   </div>
                   <div className="vis-tb">
                     <ProgbarTable mode={TB} exp={props.exp.now} itemexp={props.itemexp} />
@@ -527,7 +563,7 @@ class InputLvGoal extends Component {
       <ChangeValue value={this.props.changed} />
       <div>
         <button onClick={ ()=> {this.props.buttonChange(BUTTON_LV_GOAL, -100)} }>-100</button>
-        <button onClick={ ()=> {this.props.buttonChange(BUTTON_LV_GOAL, 100)} }>+100</button>
+        <button onClick={ ()=> {this.props.buttonChange(BUTTON_LV_GOAL, 100)} }>+100</button><br />
         <button onClick={ ()=> {this.props.buttonChange(BUTTON_LV_GOAL, 0)} } className="btn-reset" >リセット</button>
       </div>
     </div>
@@ -573,12 +609,27 @@ const Messages = props => {
 }
 
 const Heart = props => {
+  let max_size = 0
+  let option_top = 0
+  switch(props.mode){
+    case SE:
+    case SP:
+      max_size = 120
+      option_top = 20
+      break
+    case TB:
+      max_size = 184
+      option_top = 36
+      break
+    default:
+      max_size = 312; break
+  }
   const lv = props.lv >= 800 ? 800 : props.lv
   const par = lv === 800 ? 100 : props.par
-  const barheight = par * 1.2
-  const bartop = 140 - barheight
+  const barheight = par * max_size/100
+  const bartop = max_size + option_top - barheight
   const barstyle = { height: barheight, top: bartop}
-  const backheight = 120 - barheight
+  const backheight = max_size - barheight
   const backtop = bartop - backheight
   const backstyle = { height: backheight, top: backtop}
 
@@ -766,10 +817,10 @@ const ProgbarRecord = props => {
   switch(props.mode){
     case SE:
       table_width = 308; break
-    case SM:
+    case SP:
       table_width = 360; break
     case TB:
-      table_width = 448; break
+      table_width = 474; break
     default:
       table_width = 312; break
   }
