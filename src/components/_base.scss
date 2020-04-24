@@ -49,7 +49,10 @@ hr{
 }
 ul{ list-style: none; }
 
-
+.container{
+  width: 100%;
+  // display: flex;
+}
 .mx-auto{
   margin-left: auto;
   margin-right: auto;
