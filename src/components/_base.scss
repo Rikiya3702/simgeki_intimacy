@@ -21,7 +21,11 @@ header{
     font-size: 21px;
   }
 }
-
+h2{
+  text-align: center;
+  margin: 0;
+  font-size: 18px;
+}
 button{
   font-size: 10px;
   outline: none;
@@ -51,7 +55,10 @@ ul{ list-style: none; }
 
 .container{
   width: 100%;
-  // display: flex;
+}
+.d-flex{
+  display: flex;
+  flex-wrap: wrap;
 }
 .mx-auto{
   margin-left: auto;
@@ -125,6 +132,16 @@ ul{ list-style: none; }
 .d-inline{ display: inline-block;}
 .d-none{ display: none;}
 
+#Simulate{
+  width: 95%;
+  margin: 15px auto;
+  border: 3px double #f0f;
+  display: flex;
+  flex-wrap: wrap;
+  button{
+    margin: 5px;
+  }
+}
 
 .message_box{
   font-size: 90%;
@@ -144,8 +161,15 @@ ul{ list-style: none; }
     }
   }
 }
-.input_field{
-  padding-top: 20px;
+.input-block{
+  position: relative;
+  margin: 0 auto;
+  padding: 5px 7px;
+  text-align: right;
+}
+
+.input-field{
+  padding-top: 15px;
   input{
     font-size: 120%;
     text-align: right;
@@ -162,28 +186,23 @@ ul{ list-style: none; }
     font-size: 80%;
   }
 }
-
-.input_lv{
-  width: 2.3rem;
-  margin: 0 4px 7px;
+.input-lv{
+  span{
+  }
 }
-.input_item{
-  position: relative;
+.input-item{
+  max-width: 110px;
   input{ width: 2.9rem; }
-  button{ width: 45px; }
   span{ right: 20px; }
 }
-.input_juwel{
-  position: relative;
+.input-juwel{
   input{ width: 4.0rem; }
-  button{ width: 45px; }
-  span{ }
+  button{ width: 52px; }
 }
-.input_money{
+.input-money{
   position: relative;
+  text-align: center;
   input{ width: 6rem; }
-  button{ width: 70px; }
-  span{ left: 130px; }
 }
 .example-list{
   position: relative;

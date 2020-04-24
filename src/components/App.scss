@@ -11,10 +11,10 @@
 
 ///////あいぽんSE
 @media screen and (max-width: 349px){
-  .vis-se{ display: block; }
+  .vis-se{ display: block;}
   .vis-sp{ display: none; }
 
-  .input_field{
+  .input-field{
     button{
       margin: 8px 4px;
       width: 33px;
@@ -34,7 +34,11 @@
     }
   }
 }
-
+///////普通のスマホ
+@media screen and (min-width: 350px){
+  .vis-se{ display: none; }
+  .vis-sp{ display: block; }
+}
 ///////タブレット
 @media screen and (min-width: 481px){
   .vis-sp{ display: none; }
@@ -51,7 +55,7 @@
   }
   button{ height: 37px; }
 
-  .input_field{
+  .input-field{
     max-width: 210px;
     margin-top: 20px;
     button{
@@ -92,12 +96,11 @@
 @media screen and (min-width: 769px){
   body{
     max-width: 1760px;
-    background: #eef;
   }
   .vis-sp{ display: none; }
   .vis-tb{ display: none; }
   .vis-pc{ display: block; }
-  
+
   #Contents{
     float: right;
     right: 0;
@@ -111,7 +114,31 @@
     min-width: 250px;
   }
   #Menu{
+    width: 95%;
+    margin: 15px auto;
     border: 3px double #f0f;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+
+  .input-field{
+    margin-top: 0;
+    button{
+      font-size: 11px;
+      margin: 5px;
+      width: 37px;
+      height: 28px;
+    }
+    .btn-reset{
+      width: 80px;
+    }
+  }
+  .input-money{
+    button{ width: 50px; }
+  }
+  .input-juwel{
+    button{ width: 40px; }
   }
 
 }
