@@ -146,7 +146,9 @@ class App extends Component {
         </header>
 
           <div className="row">
-            <button className="btn-toggle btn-about d-none" onClick={ this.aboutHandleClick }>{ this.state.about_flag ? "戻る" : "About" }</button>
+            <div className="btn-about">
+              <button className="btn-toggle btn-about" onClick={ this.aboutHandleClick }>{ this.state.about_flag ? "戻る" : "About" }</button>
+            </div>
           </div>
           <CSSTransition in={this.state.about_flag} classNames="sidedoor" timeout={1000}>
             <div className="sidedoor row mt-3">
@@ -399,14 +401,25 @@ class About extends Component {
 
   render(){
     return(
-      <React.Fragment>
-        <h4>このアプリについて</h4>
+      <div className="about-content">
+        <h2>このアプリについて</h2>
+        <div className="mx-auto ">
+          <div className="text-right">
+            <button className="btn-toggle mt-2" onClick={ this.updatedHandleClick }>更新履歴{ this.state.updated_flag ? "を閉じる" : "" }</button>
+          </div>
+          <CSSTransition in={this.state.updated_flag} classNames="door" timeout={1000}>
+            <div className="door mx-auto">
+              <div className="message_box updated">
+                <Messages messages={this.props.updated} />
+              </div>
+            </div>
+          </CSSTransition>
+        </div>
         <ul>
           <li>オンゲキ非公式の親密度シミュレータです。</li>
           <li>計算式は<a href="https://ongeki.gamerch.com/%E8%A6%AA%E5%AF%86%E5%BA%A6" rel="noopener noreferrer" target="_blank">wiki</a>の情報を元に作成しましたが、誤差があったらごめんなさい。</li>
           <li>必ずしも実機と同じ数値になる保証はありません、マニーラン等は自己責任でお願いします。</li>
           <li>あなたのオンゲキライフがより良い物となりますように。</li>
-
         </ul>
         <ul>
           <li>作者はプログラミング初心者で、Reactの勉強も兼ねて本アプリを制作しました。</li>
@@ -417,18 +430,7 @@ class About extends Component {
         <div className="mx-auto mt-2">
           <MailForm />
         </div>
-        <div className="mx-auto mt-2">
-          <button className="btn-toggle mb-2" onClick={ this.updatedHandleClick }>更新履歴{ this.state.updated_flag ? "を閉じる" : "" }</button>
-          <CSSTransition in={this.state.updated_flag} classNames="door" timeout={1000}>
-            <div className="door mx-auto">
-              <div className="message_box updated">
-                <Messages messages={this.props.updated} />
-              </div>
-            </div>
-          </CSSTransition>
-        </div>
-
-      </React.Fragment>
+      </div>
     )
   }
 }
@@ -447,14 +449,12 @@ class MailForm extends Component {
 
   sendEmail = (event) => {
     if(window.confirm('送信してもよろしいですか？')){
-      fetch('https://huvjqwh343.execute-api.ap-northeast-1.amazonaws.com/production', {
+      fetch('https://s3en248yra.execute-api.ap-northeast-1.amazonaws.com/slack/', {
         method: 'POST',
-        mode: "no-cors",
         headers: {
-          'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify( {"subject":"ONGEKI Intimacy Simulator Mail form", "body": this.state.value} )
+        body: JSON.stringify( {"subject":"SIMGEKI 親密度", "body": this.state.value} )
       })
       }
     }
@@ -672,6 +672,7 @@ const Heart = props => {
           <div className="heart-back" style={ backstyle }></div>
         </div>
       </div>
+      <input type="range" min="0" max="800" step="1" value="600" />
     </div>
   )
 }

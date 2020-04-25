@@ -59,7 +59,7 @@
     max-width: 210px;
     margin-top: 20px;
     button{
-      margin: 10px;
+      margin: 10px 6px;
       width: 48px;
     }
     .btn-reset{
@@ -120,7 +120,12 @@
     display: flex;
     flex-wrap: wrap;
   }
-
+  #About{
+    width: 70%;
+  }
+  .about-content{
+    width: 80%;
+  }
 
   .input-field{
     margin-top: 0;
