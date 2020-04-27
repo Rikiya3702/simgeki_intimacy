@@ -228,7 +228,6 @@ class App extends Component {
                   </div>
                 </div>
 
-
                 {/* 目安テーブル */}
                 <div className="row">
                   <ExampleTable lv={props.lv.now} goal={props.lv.goal} nesexp={ Math.max(props.exp.goal - props.exp.now, 0 ) } tableflag={this.state.table_hidden_flag}/>
@@ -261,7 +260,6 @@ class App extends Component {
                     </CSSTransition>
                   </div>
                 </div>
-
 
                 <hr />
 
@@ -334,8 +332,6 @@ class App extends Component {
                   </div>
                 </div>
 
-
-
                 <div className="message_box mx-auto mt-5 ">
                   <Messages messages={props.mes} />
                 </div>
@@ -344,9 +340,6 @@ class App extends Component {
             </div>
           </CSSTransition>
         </div>
-
-
-
 
       </div>
       </div>
@@ -438,7 +431,12 @@ class About extends Component {
 class MailForm extends Component {
   constructor(props) {
   super(props)
-  this.state = {value: ''}
+  this.state = {
+    value: '',
+    submit_button: true,
+    submiting: false,
+    submitted: false
+  }
   this.handleChange = this.handleChange.bind(this)
   this.sendtoSlack = this.sendtoSlack.bind(this)
   }
@@ -448,39 +446,63 @@ class MailForm extends Component {
   }
 
   sendtoSlack = (event) => {
-    const aws_endpoint = 'https://s3en248yra.execute-api.ap-northeast-1.amazonaws.com/slack/'
-    const sendjson = {
-      title: '【SIMGEKI 親密度】',
-      content: this.state.value
+    if( !this.state.submitting ){
+      this.setState({
+        submit_button: false,
+        submiting: true
+      });
+
+      const aws_endpoint = 'https://s3en248yra.execute-api.ap-northeast-1.amazonaws.com/slack/'
+      const sendjson = {
+        title: '【SIMGEKI 親密度】',
+        content: this.state.value
+      }
+
+      axios.post(aws_endpoint, {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        mode: 'cors',
+        body: JSON.stringify( sendjson ) })
+
+      .then( (response) => {
+        this.setState({
+          submiting: false,
+          submitted: true
+        })
+        return response
+      })
+      .catch( (error) => {
+        alert(error)
+        console.log('ERROR!! '+ error)
+      });
+
     }
-    axios.post(aws_endpoint, {
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      mode: 'cors',
-      body: JSON.stringify( sendjson ) })
-    .then(function(response) {
-      alert(JSON.parse(response).body.res1)
-
-      // 返ってきたレスポンスはそのまま加工せずに callback で呼び出し元へ渡す
-    })
-    .catch(function(error) {
-      alert(error)
-      console.log('ERROR!! occurred in Backend.')
-      console.log('ErroE:'+ error)
-    });
   }
-
   render(){
     return(
-      <React.Fragment>
-        <button onClick={ this.sendtoSlack } >test</button>
-        <form className="mailform" onSubmit={ this.sendEmail }>
-          <textarea placeholder="管理人にメッセージを送る&#13;&#10;返信をご希望の方はTwitterへどうぞ" value={this.state.value} onChange={this.handleChange}></textarea>
-          <input type="submit" value="送信する" className="btn-submit"></input>
-        </form>
-      </React.Fragment>
+      <div className="mailform">
+        {this.state.submit_button &&
+          <React.Fragment>
+            <textarea value={this.state.value} onChange={this.handleChange} placeholder="管理人にメッセージを送る&#13;&#10;返信をご希望の方はTwitterへどうぞ"></textarea>
+            <button onClick={ this.sendtoSlack }>送信する</button>
+          </React.Fragment>
+        }
+        {this.state.submiting &&
+          <React.Fragment>
+            <textarea value={this.state.value} disabled></textarea>
+            <button disabled>送信しています...</button>
+          </React.Fragment>
+        }
+        {this.state.submitted &&
+          <React.Fragment>
+            <textarea value={this.state.value} disabled></textarea>
+            <button disabled>送信に成功しました</button>
+            <h2>メッセージありがとうございます！</h2>
+          </React.Fragment>
+        }
+      </div>
     )
   }
 }
@@ -887,7 +909,7 @@ const ProgbarRecord = props => {
   return(
     <tr>
       <th className="column-lv">
-        <span className="goal-lv">{props.mode}-{props.lv}</span>
+        <span className="goal-lv">{props.lv}</span>
         <div className="progbar progbar-lv" style={barstyle}></div>
         <div className="progbar progbar-item" style={barstyle_i}></div>
       </th>
