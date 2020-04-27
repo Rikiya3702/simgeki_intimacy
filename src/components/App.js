@@ -6,7 +6,7 @@ import {CSSTransition, TransitionGroup } from 'react-transition-group';
 import HeartImage from '../images/onheart.png'
 import { getExp2Lv } from '../reducers/input.js'
 import './App.scss';
-
+import axios from 'axios';
 import {
   input, input_goal,
   input_item_s, input_item_m, input_item_l, input_money,
@@ -438,30 +438,44 @@ class About extends Component {
 class MailForm extends Component {
   constructor(props) {
   super(props)
-  this.state = {value: ""}
+  this.state = {value: ''}
   this.handleChange = this.handleChange.bind(this)
-  this.sendEmail = this.sendEmail.bind(this)
+  this.sendtoSlack = this.sendtoSlack.bind(this)
   }
 
   handleChange(event) {
   this.setState({value: event.target.value});
   }
 
-  sendEmail = (event) => {
-    if(window.confirm('送信してもよろしいですか？')){
-      fetch('https://s3en248yra.execute-api.ap-northeast-1.amazonaws.com/slack/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify( {"subject":"SIMGEKI 親密度", "body": this.state.value} )
-      })
-      }
+  sendtoSlack = (event) => {
+    const aws_endpoint = 'https://s3en248yra.execute-api.ap-northeast-1.amazonaws.com/slack/'
+    const sendjson = {
+      title: '【SIMGEKI 親密度】',
+      content: this.state.value
     }
+    axios.post(aws_endpoint, {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      mode: 'cors',
+      body: JSON.stringify( sendjson ) })
+    .then(function(response) {
+      alert(JSON.parse(response).body.res1)
+
+      // 返ってきたレスポンスはそのまま加工せずに callback で呼び出し元へ渡す
+    })
+    .catch(function(error) {
+      alert(error)
+      console.log('ERROR!! occurred in Backend.')
+      console.log('ErroE:'+ error)
+    });
+  }
 
   render(){
     return(
       <React.Fragment>
+        <button onClick={ this.sendtoSlack } >test</button>
         <form className="mailform" onSubmit={ this.sendEmail }>
           <textarea placeholder="管理人にメッセージを送る&#13;&#10;返信をご希望の方はTwitterへどうぞ" value={this.state.value} onChange={this.handleChange}></textarea>
           <input type="submit" value="送信する" className="btn-submit"></input>
@@ -672,7 +686,6 @@ const Heart = props => {
           <div className="heart-back" style={ backstyle }></div>
         </div>
       </div>
-      <input type="range" min="0" max="800" step="1" value="600" />
     </div>
   )
 }

@@ -13,7 +13,7 @@ phases:
       - if [ -e /tmp/node_modules.tar ]; then tar xf /tmp/node_modules.tar; fi
       - echo Installing source NPM dependencies...
       - yarn install
-      - yarn add redux react-redux
+      - yarn add redux react-redux axios
   build:
     commands:
       - echo Build started on `date`
