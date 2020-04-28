@@ -281,3 +281,39 @@ ul{ list-style: none; }
     height: 37px;
   }
 }
+.range-slider{
+  position: relative;
+  padding: 5px 15px;
+  height: 80px;
+  width: 80%;
+  input{
+    margin: 5px 10px;
+    width: 90%;
+  }
+
+  .range-label{
+    position: relative;
+    top: 10px;
+  }
+  .range-min{
+    position: absolute;
+    font-size: 9px;
+    left: 40px;
+    top: 45px;
+  }
+  .range-max{
+    position: absolute;
+    font-size: 9px;
+    right: 40px;
+    top: 45px;
+  }
+  .range-textfield{
+    position: absolute;
+    text-align: right;
+    right: -40px;
+    top: 10px;
+    font-size: 19px;
+    width: 40px;
+    height: 45px;
+  }
+}

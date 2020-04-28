@@ -11,19 +11,17 @@ import {
   input, input_goal,
   input_item_s, input_item_m, input_item_l, input_money,
   input_juwel_end, input_juwel_all,
-  button_change, button_play, radio_juweltype, check_itemflag
+  button_change, button_play, radio_juweltype, radio_table_hidden, check_itemflag
   } from '../actions'
 
 import {
   ITEM_S, ITEM_M, ITEM_L, MONEY, JUWEL_END, JUWEL_ALL,
   BUTTON_LV,  BUTTON_LV_GOAL,
   BUTTON_ITEM_S,  BUTTON_ITEM_M,  BUTTON_ITEM_L,  BUTTON_MONEY,
-  BUTTON_JUWEL_END,  BUTTON_JUWEL_ALL
+  BUTTON_JUWEL_END,  BUTTON_JUWEL_ALL,
+  TABLE_HIDDEN_FLAG_360GP, TABLE_HIDDEN_FLAG_370GP, TABLE_HIDDEN_FLAG_BOTH
   } from '../actions/'
 
-const TABLE_HIDDEN_FLAG_360GP = "FLAG_360GP"
-const TABLE_HIDDEN_FLAG_370GP = "FLAG_370GP"
-const TABLE_HIDDEN_FLAG_BOTH = "FLAG_BOTH"
 const EXP_MONEY = 0.01
 const EXP_ITEM_S = 6
 const EXP_ITEM_M = 20
@@ -42,7 +40,6 @@ const SE = "SE"
 const SP = "SP"
 const TB = "TB"
 const PC = "PC"
-
 
 class App extends Component {
   constructor(props) {
@@ -76,10 +73,16 @@ class App extends Component {
 
               {/* レベル */}
               <div className="input-block input-lv">
-                <InputLv value={props.lv.now} changed={props.changed.lv} buttonChange={props.button_change} inputValue={props.input}/>
+                <div className="input-field">
+                  <InputLv label="現在レベル→" value={props.lv.now} changed={props.changed.lv} inputValue={props.input}/>
+                  <InputLvButtons buttonChange={props.button_change}/>
+                </div>
               </div>
               <div className="input-block input-lv">
-                <InputLvGoal value={props.lv.goal} changed={props.changed.goal} buttonChange={props.button_change} inputValue={props.input_goal}/>
+                <div className="input-field">
+                  <InputLv label="目標レベル→" value={props.lv.goal} changed={props.changed.goal} inputValue={props.input_goal}/>
+                  <InputGoalButtons buttonChange={props.button_change}/>
+                </div>
               </div>
               <hr />
               {/* マニー */}
@@ -158,9 +161,9 @@ class App extends Component {
 
               <div id="Main">
 
-                {/* 親密度Lv.入力 */}
-                <div className="row vis-se vis-sp vis-tb">
-                  <div className="col-2 mx-auto pt-2 pl-1">
+                {/* 親密度Lv.入力 SE/SP/TB */}
+                <div className="row">
+                  <div className="col-2 mx-auto pl-1">
                       {/* 現在ハート */}
                       <div className="vis-se">
                         <Heart mode={SE} label="親密度Lv." lv={getExp2Lv( props.exp.now )} par={ getExp2Lvper( props.exp.now ) } />
@@ -171,74 +174,39 @@ class App extends Component {
                       <div className="vis-tb">
                         <Heart mode={TB} label="親密度Lv." lv={getExp2Lv( props.exp.now )} par={ getExp2Lvper( props.exp.now ) } />
                       </div>
-                    <div className="row vis-se vis-sp">
-                      <p className="text-right pr-3">
-                          EXP: <span className="bold">{props.exp.now}</span>
-                        <br />
-                        目標EXP: <span className="bold">{props.exp.goal}</span>
-                      </p>
-                    </div>
+                      <div className="vis-pc">
+                        <Heart mode={PC} label="親密度Lv." lv={getExp2Lv( props.exp.now )} par={ getExp2Lvper( props.exp.now ) } />
+                      </div>
                   </div>
                   <div className="col-2 pos-rel text-right">
-                    <InputLv value={props.lv.now} changed={props.changed.lv} buttonChange={props.button_change} inputValue={props.input}/>
+                    <p>EXP: <span className="bold">{props.exp.now}</span></p>
+                    <p>目標EXP: <span className="bold">{props.exp.goal}</span></p>
+                    <p>必要EXP: <span className="bold">{ Math.ceil(props.exp.goal - props.exp.now)}</span></p>
+                    <p>到達度: <span className="bold">{ Math.round( (props.exp.now / props.exp.goal)*10000)/100}%</span></p>
                   </div>
-                </div>
-                {/* 目標Lv.入力 */}
-                <div className="row vis-se vis-sp vis-tb pt-1">
-                  <div className="col-2 pt-2 pl-1">
-                    {/* 目標ハート */}
-                    <div className="vis-se">
-                      <Heart mode={SE} label="目標の親密度Lv." lv={getExp2Lv( props.exp.goal )} par={ getExp2Lvper( props.exp.goal ) } />
-                    </div>
-                    <div className="vis-sp">
-                      <Heart mode={SP} label="目標の親密度Lv." lv={getExp2Lv( props.exp.goal )} par={ getExp2Lvper( props.exp.goal ) } />
-                    </div>
-                    <div className="vis-tb">
-                      <Heart mode={TB} label="目標の親密度Lv." lv={getExp2Lv( props.exp.goal )} par={ getExp2Lvper( props.exp.goal ) } />
-                    </div>
-                    <div className="vis-se vis-sp">
-                      <p className="text-right pr-3">
-                        必要EXP: <span className="bold">{ Math.ceil(props.exp.goal - props.exp.now)}</span>
-                      <br />
-                        到達度: <span className="bold">{ Math.round( (props.exp.now / props.exp.goal)*10000)/100}%</span>
-                      </p>
-                    </div>
+                  <div className="row">
+                    <RangeSlider label="現在の親密度Lv." max="800" min="0" value={props.lv.now} step={1} inputValue={props.input} changed={props.changed.lv} />
                   </div>
-                  <div className="col-2 pos-rel text-right">
-                    <InputLvGoal value={props.lv.goal} changed={props.changed.goal} buttonChange={props.button_change} inputValue={props.input_goal}/>
-                    <div className="vis-tb text-right w-200">
-                      <p>EXP: <span className="bold">{props.exp.now}</span></p>
-                      <p>目標EXP: <span className="bold">{props.exp.goal}</span></p>
-                      <p>必要EXP: <span className="bold">{ Math.ceil(props.exp.goal - props.exp.now)}</span></p>
-                      <p>到達度: <span className="bold">{ Math.round( (props.exp.now / props.exp.goal)*10000)/100}%</span></p>
-                    </div>
+                  <div className="row">
+                    <RangeSlider label="目標の親密度Lv." max="800" min="0" value={props.lv.goal} step={100} inputValue={props.input_goal} changed={props.changed.goal} />
                   </div>
                 </div>
 
-                <div className="row vis-pc">
-                  <div className="col-2 vis-pc">
-                    <Heart mode={PC} label="親密度Lv." lv={getExp2Lv( props.exp.now )} par={ getExp2Lvper( props.exp.now ) } />
-                      <p>EXP: <span className="bold">{props.exp.now}</span></p>
-                      <p>目標EXP: <span className="bold">{props.exp.goal}</span></p>
-                  </div>
-                  <div className="col-2 vis-pc pl-2">
-                    <Heart mode={PC} label="目標の親密度Lv." lv={getExp2Lv( props.exp.goal )} par={ getExp2Lvper( props.exp.goal ) } />
-                      <p>必要EXP: <span className="bold">{ Math.ceil(props.exp.goal - props.exp.now)}</span></p>
-                      <p>到達度: <span className="bold">{ Math.round( (props.exp.now / props.exp.goal)*10000)/100}%</span></p>
-                  </div>
-                </div>
-
-                {/* 目安テーブル */}
+                {/* 目安テーブル SE/SP/TB */}
                 <div className="row">
-                  <ExampleTable lv={props.lv.now} goal={props.lv.goal} nesexp={ Math.max(props.exp.goal - props.exp.now, 0 ) } tableflag={this.state.table_hidden_flag}/>
+                  <ExampleTable lv={props.lv.now} goal={props.lv.goal} nesexp={ Math.max(props.exp.goal - props.exp.now, 0 ) } tableflag={props.table_hidden}/>
                 </div>
                 <div className="row py-2 text-right">
                   <div className="col-2 pb-1">
-                    <select className="hidden-select ml-2" value={this.state.table_hidden_flag} onChange={ e => this.setState({table_hidden_flag: e.target.value}) }>
-                      <option value={TABLE_HIDDEN_FLAG_BOTH}>全て表示</option>
-                      <option value={TABLE_HIDDEN_FLAG_360GP}>370GPのみ</option>
-                      <option value={TABLE_HIDDEN_FLAG_370GP}>360GPのみ</option>
-                    </select>
+                    <label>全て表示</label>
+                    <input type="radio" name="hidden_select" checked={props.table_hidden === TABLE_HIDDEN_FLAG_BOTH}
+                           onChange={() => props.radio_table_hidden(TABLE_HIDDEN_FLAG_BOTH)}/> <br />
+                    <label>370GPのみ</label>
+                    <input type="radio" name="hidden_select" checked={props.table_hidden === TABLE_HIDDEN_FLAG_360GP}
+                           onChange={() => props.radio_table_hidden(TABLE_HIDDEN_FLAG_360GP)}/> <br />
+                    <label>360GPのみ</label>
+                    <input type="radio" name="hidden_select" checked={props.table_hidden === TABLE_HIDDEN_FLAG_370GP}
+                           onChange={() => props.radio_table_hidden(TABLE_HIDDEN_FLAG_370GP)}/> <br />
                   </div>
                   <div className="col-2">
                     <button className="btn-toggle" onClick={ this.simconHandleClick }>シミュレート条件{ this.state.simcon_flag ? "を閉じる" : "" }</button>
@@ -361,6 +329,7 @@ const mapStateToProps = state => ({
   money: state.input.money,
   juwel: state.input.juwel,
   juweltype: state.input.juweltype,
+  table_hidden: state.input.table_hidden,
   changed: state.input.changed,
   itemflag: state.input.itemflag,
   itemexp: getItemExp(state.input)
@@ -378,6 +347,7 @@ const mapDispatchToProps = ({
   button_change,
   button_play,
   radio_juweltype,
+  radio_table_hidden,
   check_itemflag
 })
 
@@ -534,8 +504,8 @@ class InputMoney extends Component {
 class InputLv extends Component {
   render(){
   return(
-    <div className="input-field">
-      <label>現在レベル→</label>
+    <React.Fragment>
+      <label>{this.props.label}</label>
       <input
         type="tel"
         autoComplete="off"
@@ -544,40 +514,7 @@ class InputLv extends Component {
         value={this.props.value}
         onChange={ (eve) => { this.props.inputValue(eve.target.value)} } />
       <ChangeValue value={this.props.changed} />
-      <div>
-        <button onClick={ ()=> {this.props.buttonChange(BUTTON_LV, 1)} }>+1</button>
-        <button onClick={ ()=> {this.props.buttonChange(BUTTON_LV, 10)} }>+10</button>
-        <button onClick={ ()=> {this.props.buttonChange(BUTTON_LV, 100)} }>+100</button>
-      </div>
-      <div>
-        <button onClick={ ()=> {this.props.buttonChange(BUTTON_LV, -1)} }>-1</button>
-        <button onClick={ ()=> {this.props.buttonChange(BUTTON_LV, -10)} }>-10</button>
-        <button onClick={ ()=> {this.props.buttonChange(BUTTON_LV, -100)} }>-100</button><br />
-        <button onClick={ ()=> {this.props.buttonChange(BUTTON_LV, 0)} } className="btn-reset" >リセット</button>
-      </div>
-    </div>
-  )}
-}
-
-class InputLvGoal extends Component {
-  render(){
-  return(
-    <div className="input-field">
-      <label>目標レベル→</label>
-      <input
-        type="tel"
-        autoComplete="off"
-        maxLength="3"
-        size="3"
-        value={this.props.value}
-        onChange={ (eve) => { this.props.inputValue(eve.target.value)} } />
-      <ChangeValue value={this.props.changed} />
-      <div>
-        <button onClick={ ()=> {this.props.buttonChange(BUTTON_LV_GOAL, -100)} }>-100</button>
-        <button onClick={ ()=> {this.props.buttonChange(BUTTON_LV_GOAL, 100)} }>+100</button><br />
-        <button onClick={ ()=> {this.props.buttonChange(BUTTON_LV_GOAL, 0)} } className="btn-reset" >リセット</button>
-      </div>
-    </div>
+    </React.Fragment>
   )}
 }
 
@@ -628,6 +565,34 @@ class InputItem extends Component {
   )}
 }
 
+const InputLvButtons = props => {
+  return(
+    <React.Fragment>
+      <div>
+        <button onClick={ ()=> {props.buttonChange(BUTTON_LV, 1)} }>+1</button>
+        <button onClick={ ()=> {props.buttonChange(BUTTON_LV, 10)} }>+10</button>
+        <button onClick={ ()=> {props.buttonChange(BUTTON_LV, 100)} }>+100</button>
+      </div>
+      <div>
+        <button onClick={ ()=> {props.buttonChange(BUTTON_LV, -1)} }>-1</button>
+        <button onClick={ ()=> {props.buttonChange(BUTTON_LV, -10)} }>-10</button>
+        <button onClick={ ()=> {props.buttonChange(BUTTON_LV, -100)} }>-100</button><br />
+        <button onClick={ ()=> {props.buttonChange(BUTTON_LV, 0)} } className="btn-reset" >リセット</button>
+      </div>
+    </React.Fragment>
+  )
+}
+const InputGoalButtons = props => {
+  return(
+    <React.Fragment>
+      <div>
+        <button onClick={ ()=> {props.buttonChange(BUTTON_LV_GOAL, -100)} }>-100</button>
+        <button onClick={ ()=> {props.buttonChange(BUTTON_LV_GOAL, 100)} }>+100</button><br />
+        <button onClick={ ()=> {props.buttonChange(BUTTON_LV_GOAL, 0)} } className="btn-reset" >リセット</button>
+      </div>
+    </React.Fragment>
+  )
+}
 const InputItemButtons = props => {
   return(
     <React.Fragment>
@@ -659,6 +624,60 @@ const InputJuwelButtons = props => {
     </div>
   </React.Fragment>
   )
+}
+
+const ChangeValue = props => {
+  const classname = "changed-value"
+  const blue = { color: "rgb(40,40,240)"}
+  const red = { color: "rgb(240,40,40)"}
+
+  return(
+    <TransitionGroup>
+      {props.value.map((value, index) => (
+        <CSSTransition
+          key={index}
+          classNames={classname}
+          timeout={1000}
+          unmountOnExit
+          >
+            <span className={classname} style={value >= 0 ? blue : red}>{value >= 0 ? "+"+value : value}</span>
+        </CSSTransition>
+      ))}
+    </TransitionGroup>
+  );
+}
+
+class RangeSlider extends Component {
+  render(){
+    return(
+      <div className="range-slider">
+        <span className="range-label">{this.props.label}</span>
+        <span className="range-min">{0}</span>
+        <input
+          type="range"
+          value={this.props.value}
+          max={this.props.max}
+          min={this.props.min}
+          step={this.props.step}
+          autoComplete="off"
+          onChange={ (eve) => { this.props.inputValue(eve.target.value)} }/>
+        { this.props.changed &&
+          <React.Fragment>
+            <input
+              type="tel"
+              autoComplete="off"
+              maxLength="3"
+              size="3"
+              className="range-textfield"
+              value={this.props.value}
+              onChange={ (eve) => { this.props.inputValue(eve.target.value)} } />
+            <ChangeValue value={this.props.changed} />
+          </React.Fragment>
+        }
+        <span className="range-max">{this.props.max}</span>
+      </div>
+    )
+  }
 }
 
 const Messages = props => {
@@ -710,27 +729,6 @@ const Heart = props => {
       </div>
     </div>
   )
-}
-
-const ChangeValue = props => {
-  const classname = "changed-value"
-  const blue = { color: "rgb(40,40,240)"}
-  const red = { color: "rgb(240,40,40)"}
-
-  return(
-    <TransitionGroup>
-      {props.value.map((value, index) => (
-        <CSSTransition
-          key={index}
-          classNames={classname}
-          timeout={1000}
-          unmountOnExit
-          >
-            <span className={classname} style={value >= 0 ? blue : red}>{value >= 0 ? "+"+value : value}</span>
-        </CSSTransition>
-      ))}
-    </TransitionGroup>
-  );
 }
 
 const ExampleTable = props => {
@@ -909,7 +907,7 @@ const ProgbarRecord = props => {
   return(
     <tr>
       <th className="column-lv">
-        <span className="goal-lv">{props.lv}</span>
+        <span className="goal-lv">{props.mode}-{props.lv}</span>
         <div className="progbar progbar-lv" style={barstyle}></div>
         <div className="progbar progbar-item" style={barstyle_i}></div>
       </th>

@@ -23,7 +23,9 @@ import {
   JUWEL_END,
   JUWEL_ALL,
   RADIO_JUWEL,
-  CHECK_ITEMFLAG
+  RADIO_TABLE_HIDDEN,
+  CHECK_ITEMFLAG,
+  TABLE_HIDDEN_FLAG_BOTH
 } from '../actions'
 
 const MAX_LV = 800
@@ -53,6 +55,7 @@ const initialState = {  mes: ["ようこそ"],
                         money: 0,
                         juwel: {end: 0, all: 0},
                         juweltype: JUWEL_END,
+                        table_hidden: TABLE_HIDDEN_FLAG_BOTH,
                         itemflag: {s: true, m: true, l: true, money: true, jall: true},
                         changed: {lv: [], goal:[], items: [], itemm: [], iteml: [], money: [], jend: [], jall: []}
                       }
@@ -312,6 +315,9 @@ export default (state = initialState, action) => {
 
     case RADIO_JUWEL:
       return Object.assign({}, state,{ juweltype: action.juwel })
+
+    case RADIO_TABLE_HIDDEN:
+      return Object.assign({}, state,{ table_hidden: action.value })
 
     case BUTTON_LV:
       new_lv = action.change === 0 ? 0 : validate(state.lv.now + action.change, MAX_LV)

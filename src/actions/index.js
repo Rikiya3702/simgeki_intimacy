@@ -17,6 +17,7 @@ export const BUTTON_JUWEL_END = "BUTTON_JUWEL_END"
 export const BUTTON_JUWEL_ALL = "BUTTON_JUWEL_ALL"
 export const BUTTON_PLAY = "BUTTON_PLAY"
 export const RADIO_JUWEL = "RADIO_JUWEL"
+export const RADIO_TABLE_HIDDEN = "RADIO_TABLE_HIDDEN"
 export const CHECK_ITEMFLAG = "CHECK_ITEMFLAG"
 
 export const MONEY = "MONEY"
@@ -25,6 +26,9 @@ export const ITEM_M = "ITEM_M"
 export const ITEM_L = "ITEM_L"
 export const JUWEL_END = "JUWEL_END"
 export const JUWEL_ALL = "JUWEL_ALL"
+export const TABLE_HIDDEN_FLAG_360GP = "FLAG_360GP"
+export const TABLE_HIDDEN_FLAG_370GP = "FLAG_370GP"
+export const TABLE_HIDDEN_FLAG_BOTH = "FLAG_BOTH"
 
 const types = (type) => {
   switch(type){
@@ -78,6 +82,11 @@ export const input_juwel_all = (juwel) => ({
 export const radio_juweltype = (juwel) => ({
   type: RADIO_JUWEL,
   juwel: juwel
+})
+
+export const radio_table_hidden = (value) => ({
+  type: RADIO_TABLE_HIDDEN,
+  value: value
 })
 
 export const button_change = (type, value) => ({
