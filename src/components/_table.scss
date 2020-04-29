@@ -34,12 +34,24 @@ tbody{
   }
 }
 
-.table_example{
+.table-example{
   table{
     font-size: 85%;
     text-align: right;
     thead{ font-size: 120%; }
     tr:nth-child(even){ background: $table-check; }
+  }
+}
+
+.table-item{
+  tr{ height: 10px; }
+  .item-name{ font-size: 120%; }
+  .table-input{
+    font-size: 120%;
+    text-align: right;
+    height: 1.8rem;
+    width: 100px;
+    padding: 4px;
   }
 }
 
@@ -87,17 +99,5 @@ tbody{
     font-weight: bold;
     font-size: 85%;
     text-shadow: 1px 2px #ddd;
-  }
-}
-
-.table_money{
-  tr{ height: 10px; }
-  .item_name{ font-size: 120%; }
-  .table_input{
-    font-size: 120%;
-    text-align: right;
-    height: 1.8rem;
-    width: 100px;
-    padding: 4px;
   }
 }

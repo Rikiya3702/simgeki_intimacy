@@ -38,6 +38,7 @@ const updateMessage = () =>{
   let mes = []
   mes.push("更新履歴")
   mes.push("")
+  mes.push("2020/04/28　ボタンからスライダーバーへUI変更")
   mes.push("2020/04/27　メールフォーム修正")
   mes.push("2020/04/24　レスポンシブ化")
   mes.push("2020/04/19　メールフォーム追加、ハートのデザイン調整")

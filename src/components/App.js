@@ -27,6 +27,7 @@ const EXP_ITEM_S = 6
 const EXP_ITEM_M = 20
 const EXP_ITEM_L = 200
 const EXP_JUWEL_ALL = 0.5
+const EXP_JUWEL_END = 0
 const EXP_MONEYRUN_A = 55.5
 const EXP_MONEYRUN_B = 54
 const MONEYRUN_A = 5550
@@ -178,11 +179,11 @@ class App extends Component {
                         <Heart mode={PC} label="親密度Lv." lv={getExp2Lv( props.exp.now )} par={ getExp2Lvper( props.exp.now ) } />
                       </div>
                   </div>
-                  <div className="col-2 pos-rel text-right">
-                    <p>EXP: <span className="bold">{props.exp.now}</span></p>
-                    <p>目標EXP: <span className="bold">{props.exp.goal}</span></p>
-                    <p>必要EXP: <span className="bold">{ Math.ceil(props.exp.goal - props.exp.now)}</span></p>
-                    <p>到達度: <span className="bold">{ Math.round( (props.exp.now / props.exp.goal)*10000)/100}%</span></p>
+                  <div className="col-2 mx-auto">
+                      <p>EXP: <span className="bold">{props.exp.now}</span></p>
+                      <p>目標EXP: <span className="bold">{props.exp.goal}</span></p>
+                      <p>必要EXP: <span className="bold">{ Math.ceil(props.exp.goal - props.exp.now)}</span></p>
+                      <p>到達度: <span className="bold">{ Math.round( (props.exp.now / props.exp.goal)*10000)/100}%</span></p>
                   </div>
                   <div className="row">
                     <RangeSlider label="現在の親密度Lv." max="800" min="0" value={props.lv.now} step={1} inputValue={props.input} changed={props.changed.lv} />
@@ -198,34 +199,21 @@ class App extends Component {
                 </div>
                 <div className="row py-2 text-right">
                   <div className="col-2 pb-1">
-                    <label>全て表示</label>
                     <input type="radio" name="hidden_select" checked={props.table_hidden === TABLE_HIDDEN_FLAG_BOTH}
-                           onChange={() => props.radio_table_hidden(TABLE_HIDDEN_FLAG_BOTH)}/> <br />
-                    <label>370GPのみ</label>
+                           onChange={() => props.radio_table_hidden(TABLE_HIDDEN_FLAG_BOTH)}/>
+                    <label>全て表示</label><br />
                     <input type="radio" name="hidden_select" checked={props.table_hidden === TABLE_HIDDEN_FLAG_360GP}
-                           onChange={() => props.radio_table_hidden(TABLE_HIDDEN_FLAG_360GP)}/> <br />
-                    <label>360GPのみ</label>
+                           onChange={() => props.radio_table_hidden(TABLE_HIDDEN_FLAG_360GP)}/>
+                   <label>370GPのみ</label><br />
                     <input type="radio" name="hidden_select" checked={props.table_hidden === TABLE_HIDDEN_FLAG_370GP}
-                           onChange={() => props.radio_table_hidden(TABLE_HIDDEN_FLAG_370GP)}/> <br />
+                           onChange={() => props.radio_table_hidden(TABLE_HIDDEN_FLAG_370GP)}/>
+                   <label>360GPのみ</label><br />
                   </div>
                   <div className="col-2">
                     <button className="btn-toggle" onClick={ this.simconHandleClick }>シミュレート条件{ this.state.simcon_flag ? "を閉じる" : "" }</button>
                   </div>
                   <div className="row">
-                    <CSSTransition in={this.state.simcon_flag} classNames="door" timeout={1000}>
-                      <div className="door mx-auto">
-                        <ul className="example-list">
-                          <li>マニーラン1セットにつき{MONEYRUN_TIME}秒</li>
-                          <li>オンゲキ1曲につき{GAMEPLAY_TIME}秒</li>
-                          <li>1曲で獲得するマニーは{EXPEC_MONEY}マニー、全て親密度に使う</li>
-                          <li>デッキ編成は親密度を上げるキャラクター3枚編成</li>
-                          <li>獲得ジュエルは1曲あたり{EXPEC_JUWEL}個</li>
-                          <li>獲得したジュエルは親密度に使わず、計算に影響しない</li>
-                          <li>370GPはコンテニューなし(余る10GP→150マニーに変換)</li>
-                          <li>ログインボーナス、ミッション等は計算外</li>
-                        </ul>
-                      </div>
-                    </CSSTransition>
+                    <ExampleList flag={this.state.simcon_flag}/>
                   </div>
                 </div>
 
@@ -233,29 +221,7 @@ class App extends Component {
 
                 {/* アイテム数テーブル */}
                 <div className="row pt-2">
-                  <div className="table_money">
-                    <table>
-                      <thead>
-                        <tr><td colSpan="5">
-                          <span className="table_title">アイテム使用後のレベルを計算</span>
-                        </td></tr>
-                        <tr>
-                          <td>アイテム</td>
-                          <td>EXP</td>
-                          <td>所持数</td>
-                          <td>獲得EXP</td>
-                          <td>献上</td>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <MoneyTableRecordInput item={MONEY} stock={props.money} flag={props.itemflag.money} itemFlag={props.check_itemflag} inputValue={props.input_money}/>
-                        <MoneyTableRecordInput item={ITEM_S} stock={props.item.s} flag={props.itemflag.s} itemFlag={props.check_itemflag} inputValue={props.input_item_s}/>
-                        <MoneyTableRecordInput item={ITEM_M} stock={props.item.m} flag={props.itemflag.m} itemFlag={props.check_itemflag} inputValue={props.input_item_m}/>
-                        <MoneyTableRecordInput item={ITEM_L} stock={props.item.l} flag={props.itemflag.l} itemFlag={props.check_itemflag} inputValue={props.input_item_l}/>
-                        <MoneyTableRecordInput item={JUWEL_ALL} stock={props.juwel.all} flag={props.itemflag.jall} itemFlag={props.check_itemflag} inputValue={props.input_juwel_all}/>
-                      </tbody>
-                    </table>
-                  </div>
+                  <ItemTable props={props} />
                 </div>
 
                 {/* 使用後の親密度ハート */}
@@ -477,73 +443,70 @@ class MailForm extends Component {
   }
 }
 
-class InputMoney extends Component {
-  render(){
+const InputMoney = props => {
   return(
     <div className="input-field input-money">
       <input
         type="tel"
         autoComplete="off"
-        value={this.props.value} onChange={ (eve) => { this.props.inputValue(eve.target.value)} } />
-      <ChangeValue value={this.props.changed} />
+        value={props.value} onChange={ (eve) => { props.inputValue(eve.target.value)} } />
+      <ChangeValue value={props.changed} />
       <div>
-        <button onClick={ ()=> {this.props.buttonChange(BUTTON_MONEY,10000) } }>+10k</button>
-        <button onClick={ ()=> {this.props.buttonChange(BUTTON_MONEY,100000)} }>+100k</button>
-        <button onClick={ ()=> {this.props.buttonChange(BUTTON_MONEY,1000000)} }>+1m</button>
+        <button onClick={ ()=> {props.buttonChange(BUTTON_MONEY,10000) } }>+10k</button>
+        <button onClick={ ()=> {props.buttonChange(BUTTON_MONEY,100000)} }>+100k</button>
+        <button onClick={ ()=> {props.buttonChange(BUTTON_MONEY,1000000)} }>+1m</button>
       </div>
       <div>
-        <button onClick={ ()=> {this.props.buttonChange(BUTTON_MONEY,-10000)} }>-10k</button>
-        <button onClick={ ()=> {this.props.buttonChange(BUTTON_MONEY,-100000)} }>-100k</button>
-        <button onClick={ ()=> {this.props.buttonChange(BUTTON_MONEY,-1000000)} }>-1m</button>
-        <button onClick={ ()=> {this.props.buttonChange(BUTTON_MONEY,0)} } className="btn-reset">リセット</button>
+        <button onClick={ ()=> {props.buttonChange(BUTTON_MONEY,-10000)} }>-10k</button>
+        <button onClick={ ()=> {props.buttonChange(BUTTON_MONEY,-100000)} }>-100k</button>
+        <button onClick={ ()=> {props.buttonChange(BUTTON_MONEY,-1000000)} }>-1m</button>
+        <button onClick={ ()=> {props.buttonChange(BUTTON_MONEY,0)} } className="btn-reset">リセット</button>
       </div>
     </div>
-  )}
+  )
 }
 
-class InputLv extends Component {
-  render(){
+const InputLv = props => {
   return(
     <React.Fragment>
-      <label>{this.props.label}</label>
+      <label>{props.label}</label>
       <input
         type="tel"
         autoComplete="off"
         maxLength="3"
         size="3"
-        value={this.props.value}
-        onChange={ (eve) => { this.props.inputValue(eve.target.value)} } />
-      <ChangeValue value={this.props.changed} />
+        value={props.value}
+        onChange={ (eve) => { props.inputValue(eve.target.value)} } />
+      <ChangeValue value={props.changed} />
     </React.Fragment>
-  )}
+  )
 }
 
-class InputItem extends Component {
-  render(){
-    const labeled = type => {
-      switch(type){
-        case BUTTON_ITEM_S: return "（小）"
-        case BUTTON_ITEM_M: return "（中）"
-        case BUTTON_ITEM_L: return "（大）"
-        case BUTTON_JUWEL_END: return "3章 "
-        case BUTTON_JUWEL_ALL: return "1/2章 "
-        default: return "（？）→"
-      }
+const InputItem = props => {
+  const labeling = type => {
+    switch(type){
+      case BUTTON_ITEM_S: return "（小）"
+      case BUTTON_ITEM_M: return "（中）"
+      case BUTTON_ITEM_L: return "（大）"
+      case BUTTON_JUWEL_END: return "3章 "
+      case BUTTON_JUWEL_ALL: return "1/2章 "
+      default: return "（？）→"
     }
-    const label = labeled( this.props.type)
+  }
+  const label = labeling( props.type)
+  const isItem = type =>{
+    switch(type){
+      case BUTTON_ITEM_S:
+      case BUTTON_ITEM_M:
+      case BUTTON_ITEM_L:
+        return true
+      case BUTTON_JUWEL_END:
+      case BUTTON_JUWEL_ALL:
+      default:
+        return false
+    }
+  }
 
-    const isItem = type =>{
-      switch(type){
-        case BUTTON_ITEM_S:
-        case BUTTON_ITEM_M:
-        case BUTTON_ITEM_L:
-          return true
-        case BUTTON_JUWEL_END:
-        case BUTTON_JUWEL_ALL:
-        default:
-          return false
-      }
-    }
   return(
     <div className="input-field">
       <label>{label}</label>
@@ -552,17 +515,17 @@ class InputItem extends Component {
         autoComplete="off"
         maxLength="4"
         size="4"
-        value={this.props.value}
-        onChange={ (eve) => { this.props.inputValue(eve.target.value)} } />
-      <ChangeValue value={this.props.changed} />
-      {isItem(this.props.type) &&
-       <InputItemButtons buttonChange={this.props.buttonChange} type={this.props.type} />
+        value={props.value}
+        onChange={ (eve) => { props.inputValue(eve.target.value)} } />
+      <ChangeValue value={props.changed} />
+      {isItem(props.type) &&
+       <InputItemButtons buttonChange={props.buttonChange} type={props.type} />
        }
-      {!isItem(this.props.type) &&
-       <InputJuwelButtons buttonChange={this.props.buttonChange} type={this.props.type} />
+      {!isItem(props.type) &&
+       <InputJuwelButtons buttonChange={props.buttonChange} type={props.type} />
        }
     </div>
-  )}
+  )
 }
 
 const InputLvButtons = props => {
@@ -647,37 +610,35 @@ const ChangeValue = props => {
   );
 }
 
-class RangeSlider extends Component {
-  render(){
-    return(
-      <div className="range-slider">
-        <span className="range-label">{this.props.label}</span>
-        <span className="range-min">{0}</span>
-        <input
-          type="range"
-          value={this.props.value}
-          max={this.props.max}
-          min={this.props.min}
-          step={this.props.step}
-          autoComplete="off"
-          onChange={ (eve) => { this.props.inputValue(eve.target.value)} }/>
-        { this.props.changed &&
-          <React.Fragment>
-            <input
-              type="tel"
-              autoComplete="off"
-              maxLength="3"
-              size="3"
-              className="range-textfield"
-              value={this.props.value}
-              onChange={ (eve) => { this.props.inputValue(eve.target.value)} } />
-            <ChangeValue value={this.props.changed} />
-          </React.Fragment>
-        }
-        <span className="range-max">{this.props.max}</span>
-      </div>
-    )
-  }
+const RangeSlider = props => {
+  return(
+    <div className="range-slider">
+      <span className="range-label">{props.label}</span>
+      <span className="range-min">{0}</span>
+      <input
+        type="range"
+        value={props.value}
+        max={props.max}
+        min={props.min}
+        step={props.step}
+        autoComplete="off"
+        onChange={ (eve) => { props.inputValue(eve.target.value)} }/>
+      { props.changed &&
+        <React.Fragment>
+          <input
+            type="tel"
+            autoComplete="off"
+            maxLength="3"
+            size="3"
+            className="range-textfield"
+            value={props.value}
+            onChange={ (eve) => { props.inputValue(eve.target.value)} } />
+          <ChangeValue value={props.changed} />
+        </React.Fragment>
+      }
+      <span className="range-max">{props.max}</span>
+    </div>
+  )
 }
 
 const Messages = props => {
@@ -733,7 +694,7 @@ const Heart = props => {
 
 const ExampleTable = props => {
   return(
-    <div className="table_example">
+    <div className="table-example">
       <table>
         <thead>
           <tr className=""><td colSpan="4">
@@ -747,24 +708,17 @@ const ExampleTable = props => {
             <td className="w-70 text-center">＝</td>
             <td className="text-left">{ Math.ceil(props.nesexp / EXP_ITEM_L) * 20000 }マニー</td>
           </tr>
-
-          <ExampleTableRecord flag={props.tableflag !== TABLE_HIDDEN_FLAG_370GP} label="マニーラン (370GP)" nesexp={props.nesexp} oneexp={EXP_MONEYRUN_A} cost={ONE_CREDIT} onetime={MONEYRUN_TIME} onejuwel={0} />
-
-          <ExampleTableRecord flag={props.tableflag !== TABLE_HIDDEN_FLAG_360GP} label="マニーラン (360GP)" nesexp={props.nesexp} oneexp={EXP_MONEYRUN_B} cost={ONE_CREDIT} onetime={MONEYRUN_TIME} onejuwel={0}/>
-
+            <ExampleTableRecord flag={props.tableflag !== TABLE_HIDDEN_FLAG_370GP} label="マニーラン (370GP)" nesexp={props.nesexp} oneexp={EXP_MONEYRUN_A} cost={ONE_CREDIT} onetime={MONEYRUN_TIME} onejuwel={0} />
+            <ExampleTableRecord flag={props.tableflag !== TABLE_HIDDEN_FLAG_360GP} label="マニーラン (360GP)" nesexp={props.nesexp} oneexp={EXP_MONEYRUN_B} cost={ONE_CREDIT} onetime={MONEYRUN_TIME} onejuwel={0}/>
             <ExampleTableRecord flag={props.tableflag !== TABLE_HIDDEN_FLAG_370GP} label="オンゲキ9曲 (370GP)" nesexp={props.nesexp} oneexp={ (3 + EXPEC_MONEY /100) *9 +1.5 } cost={ONE_CREDIT} onetime={GAMEPLAY_TIME *9} onejuwel={EXPEC_JUWEL *9}/>
-
             <ExampleTableRecord flag={props.tableflag !== TABLE_HIDDEN_FLAG_360GP} label="オンゲキ9曲 (360GP)" nesexp={props.nesexp} oneexp={ (3 + EXPEC_MONEY /100) *9 } cost={ONE_CREDIT} onetime={GAMEPLAY_TIME *9} onejuwel={EXPEC_JUWEL *9}/>
-
             <ExampleTableRecord flag={props.tableflag !== TABLE_HIDDEN_FLAG_370GP} label="オンゲキ3曲3倍 (370GP)" nesexp={props.nesexp} oneexp={ (3 + EXPEC_MONEY /100) *3 +1.5 } cost={ONE_CREDIT} onetime={GAMEPLAY_TIME *3} onejuwel={EXPEC_JUWEL *3 *3 }/>
-
             <ExampleTableRecord flag={props.tableflag !== TABLE_HIDDEN_FLAG_360GP} label="オンゲキ3曲3倍 (360GP)" nesexp={props.nesexp} oneexp={ (3 + EXPEC_MONEY /100) *3 } cost={ONE_CREDIT} onetime={GAMEPLAY_TIME *3} onejuwel={EXPEC_JUWEL *3 *3 }/>
         </tbody>
       </table>
     </div>
   );
 }
-
 const ExampleTableRecord = props => {
   const nes_count = Math.ceil(props.nesexp / props.oneexp)
   const cost = props.cost ? props.cost : 0
@@ -772,43 +726,93 @@ const ExampleTableRecord = props => {
   const trstyle = props.flag ? {} : {padding: 0, borderBottom: "none"}
   return(
     <tr>
-        <th className="w-150 text-center"  style={trstyle}>
-          <CSSTransition in={props.flag} classNames="hidden-table" timeout={1000}>
-              <div className="hidden-table">
-              {props.label}
-            </div>
-          </CSSTransition>
-        </th>
+      <th className="w-150 text-center"  style={trstyle}>
+        <CSSTransition in={props.flag} classNames="hidden-table" timeout={1000}>
+          <div className="hidden-table">
+            {props.label}
+          </div>
+        </CSSTransition>
+      </th>
 
-        <td className="w-50" style={trstyle}>
-          <CSSTransition in={props.flag} classNames="hidden-table" timeout={1000}>
-              <div className="hidden-table">
-          { nes_count }回
-        </div>
-      </CSSTransition>
-    </td>
+      <td className="w-50" style={trstyle}>
+        <CSSTransition in={props.flag} classNames="hidden-table" timeout={1000}>
+          <div className="hidden-table">
+            { nes_count }回
+          </div>
+        </CSSTransition>
+      </td>
 
-        <td className="w-70" style={trstyle}>
-          <CSSTransition in={props.flag} classNames="hidden-table" timeout={1000}>
-              <div className="hidden-table">
-          { nes_count * cost }円
-        </div>
-      </CSSTransition>
-    </td>
+      <td className="w-70" style={trstyle}>
+        <CSSTransition in={props.flag} classNames="hidden-table" timeout={1000}>
+          <div className="hidden-table">
+            { nes_count * cost }円
+          </div>
+        </CSSTransition>
+      </td>
 
-        <td className="w-120" style={trstyle}>
-          <CSSTransition in={props.flag} classNames="hidden-table" timeout={1000}>
-              <div className="hidden-table">
-          { convertTime(nes_count * realtime) }
-          <br />ジュエル：{ Math.floor(nes_count * props.onejuwel) }
+      <td className="w-120" style={trstyle}>
+        <CSSTransition in={props.flag} classNames="hidden-table" timeout={1000}>
+          <div className="hidden-table">
+            { convertTime(nes_count * realtime) }<br />
+            ジュエル：{ Math.floor(nes_count * props.onejuwel) }
           </div>
         </CSSTransition>
       </td>
     </tr>
   );
 }
+const ExampleList = props => {
+  return(
+    <CSSTransition in={props.flag} classNames="door" timeout={1000}>
+      <div className="door mx-auto">
+        <ul className="example-list">
+          <li>マニーラン1セットにつき{MONEYRUN_TIME}秒</li>
+          <li>オンゲキ1曲につき{GAMEPLAY_TIME}秒</li>
+          <li>1曲で獲得するマニーは{EXPEC_MONEY}マニー、全て親密度に使う</li>
+          <li>デッキ編成は親密度を上げるキャラクター3枚編成</li>
+          <li>獲得ジュエルは1曲あたり{EXPEC_JUWEL}個</li>
+          <li>獲得したジュエルは親密度に使わず、計算に影響しない</li>
+          <li>370GPはコンテニューなし(余る10GP→150マニーに変換)</li>
+          <li>ログインボーナス、ミッション等は計算外</li>
+        </ul>
+      </div>
+    </CSSTransition>
+  );
+}
 
-const MoneyTableRecordInput = props => {
+const ItemTable = stat => {
+  const props = stat.props
+  return(
+    <div className="table-item">
+      <table>
+        <thead>
+          <tr><td colSpan="5">
+            <span className="table-title">アイテム使用後のレベルを計算</span>
+          </td></tr>
+          <tr>
+            <td>アイテム</td>
+            <td>EXP</td>
+            <td>所持数</td>
+            <td>獲得EXP</td>
+            <td>献上</td>
+          </tr>
+        </thead>
+        <tbody>
+          <ItemTableRecord item={MONEY} stock={props.money} flag={props.itemflag.money} itemFlag={props.check_itemflag} inputValue={props.input_money}/>
+          <tr><td colSpan="5">
+            <RangeSlider label="マにー" max="999999" min="0" value={props.money} step={100} inputValue={props.input_money} />
+          </td></tr>
+          <ItemTableRecord item={ITEM_S} stock={props.item.s} flag={props.itemflag.s} itemFlag={props.check_itemflag} inputValue={props.input_item_s}/>
+          <ItemTableRecord item={ITEM_M} stock={props.item.m} flag={props.itemflag.m} itemFlag={props.check_itemflag} inputValue={props.input_item_m}/>
+          <ItemTableRecord item={ITEM_L} stock={props.item.l} flag={props.itemflag.l} itemFlag={props.check_itemflag} inputValue={props.input_item_l}/>
+          <ItemTableRecord item={JUWEL_ALL} stock={props.juwel.all} flag={props.itemflag.jall} itemFlag={props.check_itemflag} inputValue={props.input_juwel_all}/>
+          <ItemTableRecord item={JUWEL_END} stock={props.juwel.end} flag={props.itemflag.jend} itemFlag={props.check_itemflag} inputValue={props.input_juwel_end}/>
+        </tbody>
+      </table>
+    </div>
+  );
+}
+const ItemTableRecord = props => {
   let item_name = ""
   let item_exp = 0
   switch(props.item){
@@ -832,6 +836,10 @@ const MoneyTableRecordInput = props => {
       item_name = "1章 & 2章ジュエル"
       item_exp = EXP_JUWEL_ALL
       break
+    case JUWEL_END:
+      item_name = "3章ジュエル"
+      item_exp = EXP_JUWEL_END
+      break
     default:
       break
   }
@@ -840,7 +848,7 @@ const MoneyTableRecordInput = props => {
       <th className="w-130">{item_name}</th>
       <td className="w-20 text-right">{item_exp}</td>
       <td className="w-100 text-right">
-        <input className="table_input"
+        <input className="table-input"
           type="tel"
           autoComplete="off"
           value={props.stock}
