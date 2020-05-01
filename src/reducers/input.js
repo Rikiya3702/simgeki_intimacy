@@ -16,6 +16,8 @@ import {
   BUTTON_JUWEL_END,
   BUTTON_JUWEL_ALL,
   BUTTON_PLAY,
+  BUTTON_MONEYRUN,
+  BUTTON_CREDIT_MODE,
   MONEY,
   ITEM_S,
   ITEM_M,
@@ -24,8 +26,14 @@ import {
   JUWEL_ALL,
   RADIO_JUWEL,
   RADIO_TABLE_HIDDEN,
+  RADIO_BOOST,
+  SELECT_CARDS,
+  SELECT_TUNES,
+  SELECT_RUNS,
   CHECK_ITEMFLAG,
-  TABLE_HIDDEN_FLAG_BOTH
+  TABLE_HIDDEN_FLAG_BOTH,
+  ONE_CREDIT, MONEYRUN_TIME, GAMEPLAY_TIME,
+  MODE_360, MODE_370
 } from '../actions'
 
 const MAX_LV = 800
@@ -38,6 +46,7 @@ const updateMessage = () =>{
   let mes = []
   mes.push("更新履歴")
   mes.push("")
+  mes.push("2020/05/01　シミュレート・マニーラン機能")
   mes.push("2020/04/28　ボタンからスライダーバーへUI変更")
   mes.push("2020/04/27　メールフォーム修正")
   mes.push("2020/04/24　レスポンシブ化")
@@ -57,6 +66,14 @@ const initialState = {  mes: ["ようこそ"],
                         juwel: {end: 0, all: 0},
                         juweltype: JUWEL_END,
                         table_hidden: TABLE_HIDDEN_FLAG_BOTH,
+                        gps: 0,
+                        credits: 0,
+                        playtime: 0,
+                        boost: 1,
+                        cards: 3,
+                        credit_mode: MODE_360,
+                        tunes: 1,
+                        runs: 1,
                         itemflag: {s: true, m: true, l: true, money: true, jall: true},
                         changed: {lv: [], goal:[], items: [], itemm: [], iteml: [], money: [], jend: [], jall: []}
                       }
@@ -198,6 +215,22 @@ const flag_toggle = (type, itemflag) => {
   return retobj
 }
 
+const getMoney = tunes => {
+  let money = 0
+  for( let i = 0; i < tunes; i++){
+    money += Math.floor(Math.random() * 100) %100 +150
+  }
+  return money
+}
+const getJuwel = (tunes, boost) => {
+  let juwel = 0
+  for( let i = 0; i < tunes; i++){
+    juwel += (Math.floor(Math.random() * 6) %6 +5 ) * boost
+  }
+  return juwel
+}
+
+
 export default (state = initialState, action) => {
   let new_lv = validate(action.lv, MAX_LV)
   let new_item = validate(action.item, MAX_ITEM)
@@ -320,6 +353,18 @@ export default (state = initialState, action) => {
     case RADIO_TABLE_HIDDEN:
       return Object.assign({}, state,{ table_hidden: action.value })
 
+    case RADIO_BOOST:
+      return Object.assign({}, state,{ boost: action.value })
+
+    case SELECT_CARDS:
+      return Object.assign({}, state,{ cards: Math.floor(action.value) })
+
+    case SELECT_TUNES:
+      return Object.assign({}, state,{ tunes: Math.floor(action.value) })
+
+    case SELECT_RUNS:
+      return Object.assign({}, state,{ runs: Math.floor(action.value) })
+
     case BUTTON_LV:
       new_lv = action.change === 0 ? 0 : validate(state.lv.now + action.change, MAX_LV)
       new_exp = getLv2Exp(new_lv)
@@ -431,11 +476,12 @@ export default (state = initialState, action) => {
       })
 
     case BUTTON_PLAY:
-      const get_money = Math.floor(Math.random() * 100) %100 +150
-      const get_juwel = Math.floor(Math.random() * 7) %7 +4
+      const get_money = getMoney(state.tunes)
+      const get_juwel = getJuwel(state.tunes, state.boost)
       const get_juweltype = state.juweltype === JUWEL_END ? "エンド" : "オールマイティ"
+      let boost_mes = ""
       let changed = {}
-      new_exp = state.exp.now + action.womens
+      new_exp = state.exp.now + (state.cards * state.tunes)
       new_money = state.money + get_money
       switch(state.juweltype){
         case JUWEL_END:
@@ -448,11 +494,14 @@ export default (state = initialState, action) => {
           break
         default: break
       }
-      mes.push("デッキ" +action.womens+ "枚編成で1曲遊びました。（獲得EXP: " +action.womens+ "　マニー: " +get_money+ "　" +get_juweltype+ "ジュエル: " +get_juwel+ "）")
+      if(state.boost !== 1){
+        boost_mes = "(" +state.boost+ "倍ブースト)"
+      }
+      mes.push("デッキ" +state.cards+ "枚編成で" +state.tunes+ "曲" +boost_mes+ "オンゲキしました。（獲得EXP: " +state.cards * state.tunes+ "　マニー: " +get_money+ "　" +get_juweltype+ "ジュエル: " +get_juwel+ "）")
 
       new_lv = getExp2Lv(new_exp)
       if( new_lv > state.lv.now){
-        mes.push("1レベル上昇！" +new_lv+ "レベルになりました")
+        mes.push(new_lv - state.lv.now+ "レベル上昇！" +new_lv+ "レベルになりました")
       }
 
       return Object.assign({}, state, {
@@ -460,9 +509,28 @@ export default (state = initialState, action) => {
         exp:{now: new_exp, goal: state.exp.goal},
         money: new_money,
         juwel: new_juwel,
+        gps: state.gps + ( 40 * state.boost * state.tunes),
+        playtime: state.playtime + GAMEPLAY_TIME * state.tunes,
         mes: mes.concat( state.mes ),
         changed: changed
        })
+
+   case BUTTON_MONEYRUN:
+     new_money = validate(state.money + action.value * state.runs, MAX_MONEY)
+     changed_value = new_money - state.money
+     mes.push( action.value /15 *state.runs +"GP（" +state.runs * ONE_CREDIT+ "円）でマニーランしました。（" +action.value * state.runs+ "マニー獲得）")
+     return Object.assign({}, state,{
+       money: new_money,
+       mes: mes.concat( state.mes ),
+       gps: state.gps + ( action.value /15 ),
+       playtime: state.playtime + MONEYRUN_TIME * state.runs,
+       changed: changeds(action.type, state.changed, changed_value)
+     })
+
+   case BUTTON_CREDIT_MODE:
+     return Object.assign({}, state,{
+       credit_mode: action.value
+     })
 
     case CHECK_ITEMFLAG:
       return Object.assign({}, state, {

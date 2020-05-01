@@ -81,6 +81,9 @@ ul{ list-style: none; }
   clear: left;
   margin: auto;
 }
+.f-left{ float: left; }
+.f-right{ float: right; }
+.c-right{ clear: right; }
 .col{ float: left; }
 .col-2{
   width: 48%;
@@ -102,7 +105,6 @@ ul{ list-style: none; }
 .w-300{ width: 300px; }
 .w-400{ width: 400px; }
 .w-450{ width: 450px; }
-.w-200{ max-width: 200px; }
 .mw-200{ max-width: 200px; }
 .mw-640{ max-width: 640px; }
 .ml-2{ margin-left: 20px;}
@@ -146,7 +148,30 @@ ul{ list-style: none; }
   display: flex;
   flex-wrap: wrap;
   button{
+    height: 50px;
     margin: 5px;
+    padding: 5px;
+    font-weight: bold;
+    font-size: 11px;
+  }
+  table{
+    margin: auto;
+    border: none;
+    thead{
+      th{
+
+        background: #fff;
+        color: #000;
+      }
+    }
+    th{
+      font-weight: normal;
+      border-bottom: none;
+    }
+    td{
+      text-align: left;
+      border-bottom: none;
+    }
   }
 }
 #About{
@@ -186,6 +211,42 @@ ul{ list-style: none; }
     }
   }
 }
+.range-slider{
+  position: relative;
+  padding: 5px 15px;
+  height: 80px;
+  width: 80%;
+  input{
+    position: relative;
+    margin: 5px 10px;
+    width: 90%;
+  }
+  .range-label{
+    position: relative;
+    top: 10px;
+  }
+  .range-min{
+    position: absolute;
+    font-size: 9px;
+    left: 40px;
+    top: 45px;
+  }
+  .range-max{
+    position: absolute;
+    font-size: 9px;
+    right: 40px;
+    top: 45px;
+  }
+  .range-textfield{
+    position: absolute;
+    text-align: right;
+    right: -40px;
+    top: 10px;
+    font-size: 19px;
+    width: 40px;
+    height: 45px;
+  }
+}
 .input-block{
   position: relative;
   margin: 0 auto;
@@ -194,7 +255,12 @@ ul{ list-style: none; }
 }
 
 .input-field{
-  padding-top: 15px;
+  width: 100%;
+  label{
+    font-size: 15px;
+    font-weight: bold;
+    padding-left: 10px;
+  }
   input{
     font-size: 120%;
     text-align: right;
@@ -210,15 +276,35 @@ ul{ list-style: none; }
     width: 60px;
     font-size: 80%;
   }
+  .range-slider{
+    position: relative;
+    top: -8px;
+    height: 50px;
+    width: 100%;
+    margin-top: 0;
+    padding: 0 5px;
+    input{
+      margin-top: 0;
+      padding-top: 0;
+      width: 90%;
+    }
+    .range-min{
+      left: 20px;
+      top: 20px;
+    }
+    .range-max{
+      right: 15px;
+      top: 20px;
+    }
+  }
 }
 .input-lv{
   span{
   }
 }
 .input-item{
-  max-width: 110px;
+  text-align: right;
   input{ width: 2.9rem; }
-  span{ right: 20px; }
 }
 .input-juwel{
   input{ width: 4.0rem; }
@@ -226,7 +312,8 @@ ul{ list-style: none; }
 }
 .input-money{
   position: relative;
-  text-align: center;
+  max-height: 40px;
+  text-align: right;
   input{ width: 6rem; }
 }
 .example-list{
@@ -280,41 +367,5 @@ ul{ list-style: none; }
     font-size: 12px;
     width: 160px;
     height: 37px;
-  }
-}
-.range-slider{
-  position: relative;
-  padding: 5px 15px;
-  height: 80px;
-  width: 80%;
-  input{
-    margin: 5px 10px;
-    width: 90%;
-  }
-
-  .range-label{
-    position: relative;
-    top: 10px;
-  }
-  .range-min{
-    position: absolute;
-    font-size: 9px;
-    left: 40px;
-    top: 45px;
-  }
-  .range-max{
-    position: absolute;
-    font-size: 9px;
-    right: 40px;
-    top: 45px;
-  }
-  .range-textfield{
-    position: absolute;
-    text-align: right;
-    right: -40px;
-    top: 10px;
-    font-size: 19px;
-    width: 40px;
-    height: 45px;
   }
 }

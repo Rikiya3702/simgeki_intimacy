@@ -16,8 +16,14 @@ export const BUTTON_MONEY = "BUTTON_MONEY"
 export const BUTTON_JUWEL_END = "BUTTON_JUWEL_END"
 export const BUTTON_JUWEL_ALL = "BUTTON_JUWEL_ALL"
 export const BUTTON_PLAY = "BUTTON_PLAY"
+export const BUTTON_MONEYRUN = "BUTTON_MONEYRUN"
+export const BUTTON_CREDIT_MODE = "BUTTON_CREDIT_MODE"
+export const SELECT_CARDS = "SELECT_CARDS"
+export const SELECT_TUNES = "SELECT_TUNES"
+export const SELECT_RUNS = "SELECT_RUNS"
 export const RADIO_JUWEL = "RADIO_JUWEL"
 export const RADIO_TABLE_HIDDEN = "RADIO_TABLE_HIDDEN"
+export const RADIO_BOOST = "RADIO_BOOST"
 export const CHECK_ITEMFLAG = "CHECK_ITEMFLAG"
 
 export const MONEY = "MONEY"
@@ -29,6 +35,12 @@ export const JUWEL_ALL = "JUWEL_ALL"
 export const TABLE_HIDDEN_FLAG_360GP = "FLAG_360GP"
 export const TABLE_HIDDEN_FLAG_370GP = "FLAG_370GP"
 export const TABLE_HIDDEN_FLAG_BOTH = "FLAG_BOTH"
+
+export const ONE_CREDIT = 300
+export const MONEYRUN_TIME = 50
+export const GAMEPLAY_TIME = 180
+export const MODE_360 = 360
+export const MODE_370 = 370
 
 const types = (type) => {
   switch(type){
@@ -79,6 +91,21 @@ export const input_juwel_all = (juwel) => ({
   juwel: juwel
 })
 
+export const select_cards = (value) => ({
+  type: SELECT_CARDS,
+  value: value
+})
+
+export const select_tunes = (value) => ({
+  type: SELECT_TUNES,
+  value: value
+})
+
+export const select_runs = (value) => ({
+  type: SELECT_RUNS,
+  value: value
+})
+
 export const radio_juweltype = (juwel) => ({
   type: RADIO_JUWEL,
   juwel: juwel
@@ -86,6 +113,11 @@ export const radio_juweltype = (juwel) => ({
 
 export const radio_table_hidden = (value) => ({
   type: RADIO_TABLE_HIDDEN,
+  value: value
+})
+
+export const radio_boost = (value) => ({
+  type: RADIO_BOOST,
   value: value
 })
 
@@ -99,7 +131,16 @@ export const check_itemflag = (type) => ({
   check: type
 })
 
-export const button_play = (type, value) => ({
+export const button_play = (value) => ({
   type: BUTTON_PLAY,
   womens: value,
+})
+export const button_moneyrun = (value) => ({
+  type: BUTTON_MONEYRUN,
+  value: value,
+})
+
+export const button_credit_mode = (value) => ({
+  type: BUTTON_CREDIT_MODE,
+  value: value,
 })

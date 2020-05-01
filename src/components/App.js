@@ -11,7 +11,10 @@ import {
   input, input_goal,
   input_item_s, input_item_m, input_item_l, input_money,
   input_juwel_end, input_juwel_all,
-  button_change, button_play, radio_juweltype, radio_table_hidden, check_itemflag
+  button_change, check_itemflag,
+  radio_juweltype, radio_table_hidden, radio_boost,
+  select_cards, select_tunes, select_runs,
+  button_play, button_moneyrun, button_credit_mode
   } from '../actions'
 
 import {
@@ -19,7 +22,9 @@ import {
   BUTTON_LV,  BUTTON_LV_GOAL,
   BUTTON_ITEM_S,  BUTTON_ITEM_M,  BUTTON_ITEM_L,  BUTTON_MONEY,
   BUTTON_JUWEL_END,  BUTTON_JUWEL_ALL,
-  TABLE_HIDDEN_FLAG_360GP, TABLE_HIDDEN_FLAG_370GP, TABLE_HIDDEN_FLAG_BOTH
+  TABLE_HIDDEN_FLAG_360GP, TABLE_HIDDEN_FLAG_370GP, TABLE_HIDDEN_FLAG_BOTH,
+  ONE_CREDIT, MONEYRUN_TIME, GAMEPLAY_TIME,
+  MODE_360, MODE_370
   } from '../actions/'
 
 const EXP_MONEY = 0.01
@@ -32,11 +37,8 @@ const EXP_MONEYRUN_A = 55.5
 const EXP_MONEYRUN_B = 54
 const MONEYRUN_A = 5550
 const MONEYRUN_B = 5400
-const MONEYRUN_TIME = 50
-const GAMEPLAY_TIME = 180
 const EXPEC_JUWEL = 7.5
 const EXPEC_MONEY = 200
-const ONE_CREDIT = 300
 const SE = "SE"
 const SP = "SP"
 const TB = "TB"
@@ -48,7 +50,7 @@ class App extends Component {
     this.state = {
       simcon_flag: false,
       about_flag: false,
-      table_hidden_flag: "TABLE_HIDDEN_FLAG_BOTH"
+      table_hidden_flag: "TABLE_HIDDEN_FLAG_BOTH",
     }
   }
   simconHandleClick = () => {
@@ -60,6 +62,7 @@ class App extends Component {
   aboutHandleClick = () => {
     this.setState( {about_flag: !this.state.about_flag} )
   }
+
   render(){
     const props = this.props
 
@@ -69,77 +72,151 @@ class App extends Component {
 
           {/* スピリット・左側 */}
           <div id="Menubar" className="vis-pc">
-            {/* inputとbuttonたち */}
-            <div id="Menu">
-
-              {/* レベル */}
-              <div className="input-block input-lv">
-                <div className="input-field">
-                  <InputLv label="現在レベル→" value={props.lv.now} changed={props.changed.lv} inputValue={props.input}/>
-                  <InputLvButtons buttonChange={props.button_change}/>
-                </div>
-              </div>
-              <div className="input-block input-lv">
-                <div className="input-field">
-                  <InputLv label="目標レベル→" value={props.lv.goal} changed={props.changed.goal} inputValue={props.input_goal}/>
-                  <InputGoalButtons buttonChange={props.button_change}/>
-                </div>
-              </div>
-              <hr />
-              {/* マニー */}
-              <div className="input-block w-250">
-                <h2>マニー</h2>
-                <InputMoney value={props.money} changed={props.changed.money} buttonChange={props.button_change} inputValue={props.input_money}/>
-              </div>
-              <hr />
-              {/* アイテム */}
-              <div className="row">
-                <h2>親密度上昇プレゼント</h2>
-                <div className="d-flex">
-                  <div className="input-block input-item">
-                    <InputItem type={BUTTON_ITEM_S} value={props.item.s} changed={props.changed.items} buttonChange={props.button_change} inputValue={props.input_item_s}/>
-                  </div>
-                  <div className="input-block input-item">
-                    <InputItem type={BUTTON_ITEM_M} value={props.item.m} changed={props.changed.itemm} buttonChange={props.button_change} inputValue={props.input_item_m}/>
-                  </div>
-                  <div className="input-block input-item">
-                    <InputItem type={BUTTON_ITEM_L} value={props.item.l} changed={props.changed.iteml} buttonChange={props.button_change} inputValue={props.input_item_l}/>
-                  </div>
-                </div>
-              </div>
-              <hr />
-              <div className="row">
-                <h2>ジュエル</h2>
-                <div className="d-flex">
-                  <div className="input-block input-juwel">
-                    <InputItem type={BUTTON_JUWEL_ALL} value={props.juwel.all} changed={props.changed.jall} buttonChange={props.button_change} inputValue={props.input_juwel_all}/>
-                  </div>
-                  <div className="input-block input-juwel">
-                    <InputItem type={BUTTON_JUWEL_END} value={props.juwel.end} changed={props.changed.jend} buttonChange={props.button_change} inputValue={props.input_juwel_end}/>
-                  </div>
-                </div>
-              </div>
-            </div>
 
             {/* シミュレート部 */}
             <div id="Simulate">
               <div className="row text-center">
-                <h2>オンゲキ 1曲プレイ</h2>
+                <h2 className="py-1">オンゲキ {props.tunes}曲プレイ</h2>
+                <table>
+                  <tbody>
+                    <tr>
+                      <th>推しデッキ</th>
+                      <td>
+                        <select value={props.cards} onChange={(e) => props.select_cards(e.target.value)}>
+                          <option value={0}>編成なし</option>
+                          <option value={1}>1枚編成</option>
+                          <option value={2}>2枚編成</option>
+                          <option value={3}>3枚編成</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>チャプター</th>
+                      <td>
+                        <select value={props.juweltype} onChange={(e) => props.radio_juweltype(e.target.value)}>
+                          <option value={JUWEL_ALL}>1 / 2 章</option>
+                          <option value={JUWEL_END}>3章</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>ジュエルブースト</th>
+                      <td>
+                        <select value={props.boost} onChange={(e) => props.radio_boost(e.target.value)}>
+                          <option value={1}>×1</option>
+                          <option value={2}>×2</option>
+                          <option value={3}>×3</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>オンゲキ回数</th>
+                      <td>
+                        <select value={props.tunes} onChange={(e) => props.select_tunes(e.target.value)}>
+                          <option value={1}>1曲</option>
+                          <option value={3}>3曲</option>
+                          <option value={9}>9曲</option>
+                          <option value={30}>30曲</option>
+                          <option value={90}>90曲</option>
+                          <option value={300}>300曲</option>
+                          <option value={900}>900曲</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>ゲームモード</th>
+                    </tr>
+                    <tr>
+                      <td>
+                        <input type="radio" name="mode_select" checked={props.credit_mode === MODE_370}
+                               onChange={() => props.button_credit_mode(MODE_370)}/>
+                        <label>A設定<br />(3クレ : 370GP)</label>
+                      </td>
+                      <td>
+                        <input type="radio" name="mode_select" checked={props.credit_mode === MODE_360}
+                               onChange={() => props.button_credit_mode(MODE_360)}/>
+                        <label>B設定<br />(3クレ : 360GP)</label>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <hr />
+                <button onClick={ ()=> {props.button_play(props.cards)} }>この条件でオンゲキする({40 * props.tunes * props.boost}GP)
+                  <br />({ONE_CREDIT * props.tunes * props.boost}円)
+                </button>
+                <div className="row">
+                  <hr />
+                  <h2 className="py-1">マニーラン</h2>
+                  <table>
+                    <tbody>
+                      <tr>
+                        <th>貢ぐ回数</th>
+                        <td>
+                          <select value={props.runs} onChange={(e) => props.select_runs(e.target.value)}>
+                            <option value={1}>1回</option>
+                            <option value={10}>10回</option>
+                            <option value={100}>100回</option>
+                          </select>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <hr />
+                  {props.credit_mode === MODE_370 &&
+                    <button onClick={ ()=> {props.button_moneyrun(MONEYRUN_A) } }>
+                      マニーラン {MODE_370 * props.runs}GP
+                      <br />({ONE_CREDIT * props.runs}円)
+                    </button>
+                  }
+                  {props.credit_mode === MODE_360 &&
+                    <button onClick={ ()=> {props.button_moneyrun(MONEYRUN_B)} }>
+                      マニーラン {MODE_360 * props.runs}GP
+                      <br />({ONE_CREDIT * props.runs}円)
+                    </button>
+                  }
+                </div>
+              </div>
+              <hr />
 
-                <br /><button onClick={ ()=> {props.button_play("play",0)} }>40 GP(デッキ0枚) でLet'sオンゲキ</button>
-                <br /><button onClick={ ()=> {props.button_play("play",1)} }>40 GP(デッキ1枚)  でLet'sオンゲキ</button>
-                <br /><button onClick={ ()=> {props.button_play("play",2)} }>40 GP(デッキ2枚)  でLet'sオンゲキ</button>
-                <br /><button onClick={ ()=> {props.button_play("play",3)} }>40 GP(デッキ3枚)  でLet'sオンゲキ</button>
-                <br />
-
-                <label>End Juwel</label>
-                <input type="radio" name="aradio" checked={props.juweltype === JUWEL_END}
-                       onChange={() => props.radio_juweltype(JUWEL_END)}/> <br />
-                <label>All Juwel</label>
-                <input type="radio" name="aradio" checked={props.juweltype === JUWEL_ALL}
-                       onChange={() => props.radio_juweltype(JUWEL_ALL)}/>
+              <div className="row text-center">
+                 <div className="row">
+                   <p>プレイ時間：{convertTime(props.playtime)}</p>
+                   <p>消費GP：{props.gps} GP</p>
+                   <p>リアルマネー：{props.credits} 円</p>
+                 </div>
               </div>
             </div>
+
+            {/* inputたち */}
+            <div id="Menu">
+              <div className="row">
+                <h2 className="py-1">数値入力</h2>
+              </div>
+              {/* レベル */}
+              {/* マニー */}
+              <div className="row">
+                <MoneyInput value={props.money} changed={props.changed.money} inputValue={props.input_money} max="3000000" min="0" step={100} />
+              </div>
+              <hr />
+              {/* アイテム */}
+              <div className="row">
+                <ItemInput type={BUTTON_ITEM_S} value={props.item.s} changed={props.changed.items} inputValue={props.input_item_s}  max="99" min="0" step={1} />
+              </div>
+              <div className="row">
+                <ItemInput type={BUTTON_ITEM_M} value={props.item.m} changed={props.changed.itemm} inputValue={props.input_item_m}  max="99" min="0" step={1} />
+              </div>
+              <div className="row">
+                <ItemInput type={BUTTON_ITEM_L} value={props.item.l} changed={props.changed.iteml} inputValue={props.input_item_l}  max="99" min="0" step={1} />
+              </div>
+              <hr />
+              <div className="row">
+                <ItemInput type={BUTTON_JUWEL_ALL} value={props.juwel.all} changed={props.changed.jall} inputValue={props.input_juwel_all}  max="9999" min="0" step={1} />
+              </div>
+              <div className="row">
+                <ItemInput type={BUTTON_JUWEL_END} value={props.juwel.end} changed={props.changed.jend} inputValue={props.input_juwel_end}  max="9999" min="0" step={1} />
+              </div>
+            </div>
+
           </div>
 
         {/* スピリット・右側 */}
@@ -165,33 +242,34 @@ class App extends Component {
                 {/* 親密度Lv.入力 SE/SP/TB */}
                 <div className="row">
                   <div className="col-2 mx-auto pl-1">
-                      {/* 現在ハート */}
-                      <div className="vis-se">
-                        <Heart mode={SE} label="親密度Lv." lv={getExp2Lv( props.exp.now )} par={ getExp2Lvper( props.exp.now ) } />
-                      </div>
-                      <div className="vis-sp">
-                        <Heart mode={SP} label="親密度Lv." lv={getExp2Lv( props.exp.now )} par={ getExp2Lvper( props.exp.now ) } />
-                      </div>
-                      <div className="vis-tb">
-                        <Heart mode={TB} label="親密度Lv." lv={getExp2Lv( props.exp.now )} par={ getExp2Lvper( props.exp.now ) } />
-                      </div>
-                      <div className="vis-pc">
-                        <Heart mode={PC} label="親密度Lv." lv={getExp2Lv( props.exp.now )} par={ getExp2Lvper( props.exp.now ) } />
-                      </div>
+                    {/* 現在ハート */}
+                    <div className="vis-se">
+                      <Heart mode={SE} label="親密度Lv." lv={getExp2Lv( props.exp.now )} par={ getExp2Lvper( props.exp.now ) } />
+                    </div>
+                    <div className="vis-sp">
+                      <Heart mode={SP} label="親密度Lv." lv={getExp2Lv( props.exp.now )} par={ getExp2Lvper( props.exp.now ) } />
+                    </div>
+                    <div className="vis-tb">
+                      <Heart mode={TB} label="親密度Lv." lv={getExp2Lv( props.exp.now )} par={ getExp2Lvper( props.exp.now ) } />
+                    </div>
+                    <div className="vis-pc">
+                      <Heart mode={PC} label="親密度Lv." lv={getExp2Lv( props.exp.now )} par={ getExp2Lvper( props.exp.now ) } />
+                    </div>
                   </div>
                   <div className="col-2 mx-auto">
-                      <p>EXP: <span className="bold">{props.exp.now}</span></p>
-                      <p>目標EXP: <span className="bold">{props.exp.goal}</span></p>
-                      <p>必要EXP: <span className="bold">{ Math.ceil(props.exp.goal - props.exp.now)}</span></p>
-                      <p>到達度: <span className="bold">{ Math.round( (props.exp.now / props.exp.goal)*10000)/100}%</span></p>
+                    <p>EXP: <span className="bold">{props.exp.now}</span></p>
+                    <p>目標EXP: <span className="bold">{props.exp.goal}</span></p>
+                    <p>必要EXP: <span className="bold">{ Math.ceil(props.exp.goal - props.exp.now)}</span></p>
+                    <p>到達度: <span className="bold">{ Math.round( (props.exp.now / props.exp.goal)*10000)/100}%</span></p>
                   </div>
+                    </div>
                   <div className="row">
                     <RangeSlider label="現在の親密度Lv." max="800" min="0" value={props.lv.now} step={1} inputValue={props.input} changed={props.changed.lv} />
                   </div>
                   <div className="row">
                     <RangeSlider label="目標の親密度Lv." max="800" min="0" value={props.lv.goal} step={100} inputValue={props.input_goal} changed={props.changed.goal} />
                   </div>
-                </div>
+
 
                 {/* 目安テーブル SE/SP/TB */}
                 <div className="row">
@@ -266,7 +344,7 @@ class App extends Component {
                   </div>
                 </div>
 
-                <div className="message_box mx-auto mt-5 ">
+                <div className="message_box mx-auto mt-5 vis-pc">
                   <Messages messages={props.mes} />
                 </div>
 
@@ -298,7 +376,15 @@ const mapStateToProps = state => ({
   table_hidden: state.input.table_hidden,
   changed: state.input.changed,
   itemflag: state.input.itemflag,
-  itemexp: getItemExp(state.input)
+  gps: state.input.gps,
+  credits: Math.floor(state.input.gps / state.input.credit_mode * ONE_CREDIT),
+  credit_mode: state.input.credit_mode,
+  playtime: state.input.playtime,
+  boost: state.input.boost,
+  cards: state.input.cards,
+  tunes: state.input.tunes,
+  runs: state.input.runs,
+  itemexp: getItemExp(state.input),
  })
 
 const mapDispatchToProps = ({
@@ -312,8 +398,14 @@ const mapDispatchToProps = ({
   input_juwel_all,
   button_change,
   button_play,
+  button_moneyrun,
+  button_credit_mode,
   radio_juweltype,
   radio_table_hidden,
+  radio_boost,
+  select_tunes,
+  select_cards,
+  select_runs,
   check_itemflag
 })
 
@@ -465,7 +557,38 @@ const InputMoney = props => {
     </div>
   )
 }
+const MoneyInput = props => {
+  return(
+    <div className="input-field">
+      <div className="input-money">
+        <div className="f-left">
+          <label >マニー</label>
+        </div>
+        <div className="f-right">
+          <input
+            type="tel"
+            autoComplete="off"
+            value={props.value} onChange={ (eve) => { props.inputValue(eve.target.value)} } />
+          <ChangeValue value={props.changed} />
+        </div>
+      </div>
 
+      <div className="range-slider row c-right">
+        <span className="range-min">{0}</span>
+        <input
+          type="range"
+          value={props.value}
+          max={props.max}
+          min={props.min}
+          step={props.step}
+          autoComplete="off"
+          onChange={ (eve) => { props.inputValue(eve.target.value)} }/>
+        <span className="range-max">{props.max}</span>
+      </div>
+
+    </div>
+  )
+}
 const InputLv = props => {
   return(
     <React.Fragment>
@@ -481,7 +604,6 @@ const InputLv = props => {
     </React.Fragment>
   )
 }
-
 const InputItem = props => {
   const labeling = type => {
     switch(type){
@@ -524,6 +646,63 @@ const InputItem = props => {
       {!isItem(props.type) &&
        <InputJuwelButtons buttonChange={props.buttonChange} type={props.type} />
        }
+    </div>
+  )
+}
+const ItemInput = props => {
+  const labeling = type => {
+    switch(type){
+      case BUTTON_ITEM_S: return "プレゼント（小）"
+      case BUTTON_ITEM_M: return "プレゼント（中）"
+      case BUTTON_ITEM_L: return "プレゼント（大）"
+      case BUTTON_JUWEL_END: return "3章ジュエル "
+      case BUTTON_JUWEL_ALL: return "1/2章ジュエル"
+      default: return "（？）→"
+    }
+  }
+  const label = labeling( props.type)
+  const isItem = type =>{
+    switch(type){
+      case BUTTON_ITEM_S:
+      case BUTTON_ITEM_M:
+      case BUTTON_ITEM_L:
+        return true
+      case BUTTON_JUWEL_END:
+      case BUTTON_JUWEL_ALL:
+      default:
+        return false
+    }
+  }
+
+  return(
+    <div className="input-field">
+      <div className="input-item">
+        <div className="f-left">
+          <label>{label}</label>
+        </div>
+        <div className="f-right">
+          <input
+            type="tel"
+            autoComplete="off"
+            maxLength="4"
+            size="4"
+            value={props.value}
+            onChange={ (eve) => { props.inputValue(eve.target.value)} } />
+          <ChangeValue value={props.changed} />
+        </div>
+      </div>
+      <div className="range-slider row c-right">
+        <span className="range-min">{0}</span>
+        <input
+          type="range"
+          value={props.value}
+          max={props.max}
+          min={props.min}
+          step={props.step}
+          autoComplete="off"
+          onChange={ (eve) => { props.inputValue(eve.target.value)} }/>
+        <span className="range-max">{props.max}</span>
+      </div>
     </div>
   )
 }
@@ -798,15 +977,12 @@ const ItemTable = stat => {
           </tr>
         </thead>
         <tbody>
-          <ItemTableRecord item={MONEY} stock={props.money} flag={props.itemflag.money} itemFlag={props.check_itemflag} inputValue={props.input_money}/>
-          <tr><td colSpan="5">
-            <RangeSlider label="マにー" max="999999" min="0" value={props.money} step={100} inputValue={props.input_money} />
-          </td></tr>
-          <ItemTableRecord item={ITEM_S} stock={props.item.s} flag={props.itemflag.s} itemFlag={props.check_itemflag} inputValue={props.input_item_s}/>
-          <ItemTableRecord item={ITEM_M} stock={props.item.m} flag={props.itemflag.m} itemFlag={props.check_itemflag} inputValue={props.input_item_m}/>
-          <ItemTableRecord item={ITEM_L} stock={props.item.l} flag={props.itemflag.l} itemFlag={props.check_itemflag} inputValue={props.input_item_l}/>
-          <ItemTableRecord item={JUWEL_ALL} stock={props.juwel.all} flag={props.itemflag.jall} itemFlag={props.check_itemflag} inputValue={props.input_juwel_all}/>
-          <ItemTableRecord item={JUWEL_END} stock={props.juwel.end} flag={props.itemflag.jend} itemFlag={props.check_itemflag} inputValue={props.input_juwel_end}/>
+          <ItemTableRecord item={MONEY} stock={props.money} flag={props.itemflag.money} itemFlag={props.check_itemflag} inputValue={props.input_money} changed={props.changed.money}/>
+          <ItemTableRecord item={ITEM_S} stock={props.item.s} flag={props.itemflag.s} itemFlag={props.check_itemflag} inputValue={props.input_item_s} changed={props.changed.items}/>
+          <ItemTableRecord item={ITEM_M} stock={props.item.m} flag={props.itemflag.m} itemFlag={props.check_itemflag} inputValue={props.input_item_m} changed={props.changed.itemm}/>
+          <ItemTableRecord item={ITEM_L} stock={props.item.l} flag={props.itemflag.l} itemFlag={props.check_itemflag} inputValue={props.input_item_l} changed={props.changed.iteml}/>
+          <ItemTableRecord item={JUWEL_ALL} stock={props.juwel.all} flag={props.itemflag.jall} itemFlag={props.check_itemflag} inputValue={props.input_juwel_all} changed={props.changed.jall}/>
+          <ItemTableRecord item={JUWEL_END} stock={props.juwel.end} flag={props.itemflag.jend} itemFlag={props.check_itemflag} inputValue={props.input_juwel_end} changed={props.changed.jend}/>
         </tbody>
       </table>
     </div>
@@ -858,9 +1034,9 @@ const ItemTableRecord = props => {
       <td className="w-15 text-center">
         <input type="checkbox" name="itemcheck" checked={props.flag}
            onChange={() => props.itemFlag(props.item)}/>
-     </td>
+      </td>
     </tr>
-  );
+  )
 }
 
 const ProgbarTable = props => {
@@ -915,7 +1091,7 @@ const ProgbarRecord = props => {
   return(
     <tr>
       <th className="column-lv">
-        <span className="goal-lv">{props.mode}-{props.lv}</span>
+        <span className="goal-lv">{props.lv}</span>
         <div className="progbar progbar-lv" style={barstyle}></div>
         <div className="progbar progbar-item" style={barstyle_i}></div>
       </th>
@@ -958,16 +1134,16 @@ const ProgbarTableSamplebar = () => {
 //計算系メソッド
 const convertTime = time => {
   let mes = ""
-  if(time /60/60 > 0){
+  if(time /60/60 >= 1){
     mes += Math.floor(time /60/60) + "時間"
   }
-  if(time %3600 /60 > 0){
+  if(time %3600 /60 >= 1){
     mes += Math.floor(time %3600 /60) + "分"
   }
   if(time%60 > 0){
     mes += Math.floor(time %60) + "秒"
   }
-  return mes
+  return mes === "" ? "-" : mes
 }
 
 const getItemExp = props => {
